@@ -118,30 +118,61 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        padding: 0.6rem 1rem;
-        color: rgba(255, 255, 255, 0.7);
+        padding: 0.65rem 1rem;
+        color: rgba(255, 255, 255, 0.65);
         text-decoration: none;
         border-radius: 0.75rem;
-        transition: all 0.3s ease;
+        transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                    color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                    transform 0.2s ease;
         font-weight: 500;
         font-size: 0.9rem;
         margin-bottom: 0.15rem;
+        position: relative;
+        overflow: hidden;
       }
 
       .nav-item:hover {
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.08);
         color: var(--white);
+        transform: translateX(4px);
       }
 
       .nav-item.active {
-        background: var(--primary);
         color: var(--white);
+        font-weight: 600;
+        position: relative;
+        background: transparent; /* Animation will handle the background */
       }
 
-      .nav-item i {
-        width: 20px;
-        text-align: center;
-        font-size: 1.1rem;
+      .nav-item.active::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--primary);
+        border-radius: 0.75rem;
+        z-index: -1;
+        animation: slideInBg 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+      }
+
+      @keyframes slideInBg {
+        from {
+          transform: translateX(-100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      .nav-item.active:hover {
+        transform: none; /* Don't move if already active */
+      }
+
+      .nav-item i, .nav-item span {
+        transition: inherit;
       }
 
       /* Main Content */
@@ -317,6 +348,25 @@
       /* Content Area */
       .content {
         padding: 2rem;
+        background-color: #f0f2f5; /* Use a distinct background color */
+        min-height: calc(100vh - var(--header-height));
+        animation: fadeInUp 0.5s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Transitions for navigation */
+      .nav-item {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       /* Responsive */
