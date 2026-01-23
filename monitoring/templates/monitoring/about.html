@@ -1,0 +1,477 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À Propos | EcoWatch</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #3b82f6;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --white: #ffffff;
+            --gray: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        /* User Profile Dropdown */
+        .user-profile {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-trigger {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 1rem;
+            transition: all 0.3s;
+            color: var(--dark);
+        }
+
+        .profile-trigger:hover {
+            background: var(--light);
+        }
+
+        .avatar-circle {
+            width: 35px;
+            height: 35px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .username {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: var(--white);
+            min-width: 200px;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem;
+            display: none;
+            flex-direction: column;
+            z-index: 1001;
+            border: 1px solid #eee;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-dropdown.show {
+            display: flex;
+        }
+
+        .profile-dropdown a,
+        .profile-dropdown button {
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            color: var(--dark);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .profile-dropdown a:hover,
+        .profile-dropdown button:hover {
+            background: var(--light);
+            color: var(--primary);
+        }
+
+        .profile-dropdown form {
+            margin: 0;
+        }
+
+        .profile-dropdown .divider {
+            height: 1px;
+            background: #eee;
+            margin: 0.5rem 0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--white);
+            color: var(--dark);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Hero About */
+        .hero-about {
+            padding: 8rem 5%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .hero-about h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .hero-about p {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Content Sections */
+        .section {
+            padding: 6rem 5%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+
+        .section p {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        .featured-image {
+            width: 100%;
+            border-radius: 2rem;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Values Grid */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .value-card {
+            padding: 2.5rem;
+            background: var(--light);
+            border-radius: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .value-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .value-card h3 {
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        /* Team Section */
+        .team-section {
+            background: var(--light);
+            padding: 6rem 5%;
+            text-align: center;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1000px;
+            margin: 4rem auto 0;
+        }
+
+        .team-member {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .member-avatar {
+            width: 100px;
+            height: 100px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0 auto 1.5rem;
+        }
+
+        .team-member h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-member p {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--white);
+            padding: 4rem 5%;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: block;
+            text-decoration: none;
+        }
+
+        .copyright {
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-about h1 {
+                font-size: 2.5rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="/" class="logo">EcoWatch</a>
+        <div class="nav-links">
+            <a href="/">Accueil</a>
+            <a href="/dashboard/">Carte</a>
+            <a href="/contact/">Contact</a>
+            {% if user.is_authenticated %}
+            <div class="user-profile">
+                <div class="profile-trigger" id="profileTrigger">
+                    <div class="avatar-circle">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span class="username">{{ user.username }}</span>
+                    <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="/dashboard/"><i class="fas fa-chart-line"></i> Tableau de bord</a>
+                    <a href="/admin/"><i class="fas fa-cog"></i> Paramètres</a>
+                    <div class="divider"></div>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" style="color: #ef4444;"><i class="fas fa-sign-out-alt"></i>
+                            Déconnexion</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <a href="/accounts/login/" class="btn-primary">Connexion</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <header class="hero-about">
+        <h1>Innover pour l'environnement.</h1>
+        <p>EcoWatch est une plateforme de surveillance de la qualité de l'air de nouvelle génération, alliant
+            technologie IoT et analyses de données pour protéger la santé publique.</p>
+    </header>
+
+    <section class="section">
+        <div class="grid-2">
+            <div>
+                <h2>Notre Mission</h2>
+                <p>Né d'un besoin crucial de données environnementales fiables en Afrique de l'Ouest, EcoWatch s'est
+                    donné pour mission de rendre l'invisible visible. Nous pensons que chaque citoyen a le droit de
+                    connaître la qualité de l'air qu'il respire.</p>
+                <p>En déployant des capteurs intelligents à travers les zones urbaines, nous fournissons aux autorités
+                    et aux habitants des informations exploitables pour réduire l'exposition à la pollution.</p>
+            </div>
+            <div>
+                <img src="{% static 'monitoring/images/slide1.png' %}" alt="Technologie EcoWatch"
+                    class="featured-image">
+            </div>
+        </div>
+
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon"><i class="fas fa-microchip"></i></div>
+                <h3>Innovation</h3>
+                <p>Utilisation de capteurs IoT autonomes et précis pour une surveillance continue.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon"><i class="fas fa-eye"></i></div>
+                <h3>Transparence</h3>
+                <p>Des données ouvertes à tous pour encourager la prise de conscience collective.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon"><i class="fas fa-heartbeat"></i></div>
+                <h3>Santé</h3>
+                <p>Une priorité absolue : prévenir les maladies respiratoires par l'information.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="team-section">
+        <div class="section">
+            <h2>L'Équipe</h2>
+            <p>Un groupe passionné d'ingénieurs et de développeurs engagés pour un avenir plus vert.</p>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-avatar">E</div>
+                    <h4>Équipe Projet</h4>
+                    <p>Développement & IoT</p>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">G</div>
+                    <h4>Groupe 4</h4>
+                    <p>Conception & Analyse</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <a href="/" class="footer-logo">EcoWatch</a>
+            <p class="copyright">&copy; 2026 EcoWatch - Concrétisation de la surveillance environnementale.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Profile Dropdown Toggle
+        const profileTrigger = document.getElementById('profileTrigger');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        if (profileTrigger) {
+            profileTrigger.addEventListener('click', function (e) {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('show');
+            });
+
+            document.addEventListener('click', function () {
+                profileDropdown.classList.remove('show');
+            });
+        }
+    </script>
+</body>
+
+</html>
