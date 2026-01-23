@@ -1,0 +1,533 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}EcoWatch Dashboard{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    {% block extra_css %}{% endblock %}
+
+    <style>
+      :root {
+        --primary: #10b981;
+        --primary-dark: #059669;
+        --primary-light: #d1fae5;
+        --secondary: #3b82f6;
+        --dark: #1f2937;
+        --dark-light: #374151;
+        --light: #f9fafb;
+        --white: #ffffff;
+        --gray: #6b7280;
+        --gray-light: #e5e7eb;
+        --sidebar-width: 260px;
+        --header-height: 70px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--light);
+        color: var(--dark);
+        line-height: 1.6;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: var(--sidebar-width);
+        height: 100vh;
+        background: var(--dark);
+        padding: 1.5rem 0;
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-logo {
+        padding: 0 1.5rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1rem;
+      }
+
+      .sidebar-logo h1 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .sidebar-logo .logo-icon {
+        width: 36px;
+        height: 36px;
+        background: var(--primary);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
+
+      .sidebar-nav {
+        padding: 0 1rem;
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 120px);
+      }
+
+      .nav-bottom {
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .nav-section {
+        margin-bottom: 0.75rem;
+      }
+
+      .nav-section-title {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--gray);
+        padding: 0 0.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 1rem;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        border-radius: 0.75rem;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        font-size: 0.9rem;
+        margin-bottom: 0.15rem;
+      }
+
+      .nav-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--white);
+      }
+
+      .nav-item.active {
+        background: var(--primary);
+        color: var(--white);
+      }
+
+      .nav-item i {
+        width: 20px;
+        text-align: center;
+        font-size: 1.1rem;
+      }
+
+      /* Main Content */
+      .main-wrapper {
+        margin-left: var(--sidebar-width);
+        min-height: 100vh;
+      }
+
+      /* Header */
+      .header {
+        background: var(--white);
+        height: var(--header-height);
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-left h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark);
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      /* Search Bar */
+      .search-bar {
+        position: relative;
+      }
+
+      .search-bar input {
+        width: 300px;
+        padding: 0.6rem 1rem 0.6rem 2.5rem;
+        border: 1px solid var(--gray-light);
+        border-radius: 0.75rem;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+        font-family: inherit;
+      }
+
+      .search-bar input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+
+      .search-bar i {
+        position: absolute;
+        left: 0.9rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray);
+      }
+
+      /* User Profile */
+      .user-profile {
+        position: relative;
+        cursor: pointer;
+      }
+
+      .profile-trigger {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.75rem;
+        transition: all 0.3s;
+      }
+
+      .profile-trigger:hover {
+        background: var(--light);
+      }
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        background: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+      }
+
+      .profile-info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .profile-name {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--dark);
+      }
+
+      .profile-role {
+        font-size: 0.75rem;
+        color: var(--gray);
+      }
+
+      .profile-dropdown {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        background: var(--white);
+        min-width: 200px;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        padding: 0.5rem;
+        display: none;
+        flex-direction: column;
+        border: 1px solid var(--gray-light);
+        animation: fadeIn 0.2s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .profile-dropdown.show {
+        display: flex;
+      }
+
+      .profile-dropdown a,
+      .profile-dropdown button {
+        padding: 0.75rem 1rem;
+        text-decoration: none;
+        color: var(--dark);
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: none;
+        font-family: inherit;
+        cursor: pointer;
+      }
+
+      .profile-dropdown a:hover,
+      .profile-dropdown button:hover {
+        background: var(--light);
+        color: var(--primary);
+      }
+
+      .profile-dropdown .divider {
+        height: 1px;
+        background: var(--gray-light);
+        margin: 0.5rem 0;
+      }
+
+      /* Content Area */
+      .content {
+        padding: 2rem;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+
+        .sidebar.mobile-open {
+          transform: translateX(0);
+        }
+
+        .main-wrapper {
+          margin-left: 0;
+        }
+
+        .search-bar input {
+          width: 200px;
+        }
+      }
+      /* Notification Button */
+      .notification-btn {
+        position: relative;
+        background: var(--light);
+        width: 40px;
+        height: 40px;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gray);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid var(--gray-light);
+      }
+
+      .notification-btn:hover {
+        background: var(--gray-light);
+        color: var(--primary);
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: var(--danger, #ef4444);
+        color: white;
+        font-size: 0.65rem;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--white);
+        font-weight: 700;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1>
+          <span class="logo-icon">
+            <i class="fas fa-leaf"></i>
+          </span>
+          EcoWatch
+        </h1>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div>
+          <div class="nav-section">
+            <div class="nav-section-title">Principal</div>
+            <a
+              href="{% url 'dashboard' %}"
+              class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+            >
+              <i class="fas fa-chart-line"></i>
+              <span>Tableau de bord</span>
+            </a>
+          </div>
+
+              <div class="nav-section">
+                  <a href="{% url 'stations' %}" class="nav-item {% if request.resolver_match.url_name == 'stations' %}active{% endif %}">
+                      <i class="fas fa-map-marked-alt"></i>
+                      <span>Stations</span>
+                  </a>
+                  <a href="{% url 'dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                      <i class="fas fa-wind"></i>
+                      <span>Qualité de l'air</span>
+                  </a>
+                  <a href="{% url 'alerts' %}" class="nav-item {% if request.resolver_match.url_name == 'alerts' %}active{% endif %}">
+                      <i class="fas fa-bell"></i>
+                      <span>Alertes</span>
+                  </a>
+              </div>
+
+              <div class="nav-section">
+                  <a href="{% url 'reports' %}" class="nav-item {% if request.resolver_match.url_name == 'reports' %}active{% endif %}">
+                      <i class="fas fa-file-alt"></i>
+                      <span>Rapports</span>
+                  </a>
+                  <a href="#" class="nav-item">
+                      <i class="fas fa-download"></i>
+                      <span>Exports</span>
+                  </a>
+                  <a href="#" class="nav-item">
+                      <i class="fas fa-chart-bar"></i>
+                      <span>Analyses</span>
+                  </a>
+              </div>
+        </div>
+
+        <div class="nav-bottom">
+          <a
+            href="{% url 'index' %}"
+            class="nav-item {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+          >
+            <i class="fas fa-home"></i>
+            <span>Accueil</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-left">
+          <h2>{% block page_title %}Tableau de bord{% endblock %}</h2>
+        </div>
+
+        <div class="header-right">
+          <!-- Search Bar -->
+          <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Rechercher..." />
+          </div>
+
+          <!-- Notifications -->
+          <div class="notification-btn">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">3</span>
+          </div>
+
+          <!-- User Profile -->
+          {% if user.is_authenticated %}
+          <div class="user-profile">
+            <div class="profile-trigger" id="profileTrigger">
+              <div class="avatar">{{ user.username|slice:":1"|upper }}</div>
+              <div class="profile-info">
+                <span class="profile-name">{{ user.username }}</span>
+                <span class="profile-role">Administrateur</span>
+              </div>
+              <i
+                class="fas fa-chevron-down"
+                style="font-size: 0.8rem; color: var(--gray)"
+              ></i>
+            </div>
+            <div class="profile-dropdown" id="profileDropdown">
+              <a href="/admin/"><i class="fas fa-user"></i> Mon profil</a>
+              <a href="#"><i class="fas fa-cog"></i> Paramètres</a>
+              <div class="divider"></div>
+              <form action="{% url 'logout' %}" method="post" style="margin: 0">
+                {% csrf_token %}
+                <button type="submit" style="color: #ef4444">
+                  <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
+              </form>
+            </div>
+          </div>
+          {% else %}
+          <a
+            href="{% url 'login' %}"
+            style="
+              text-decoration: none;
+              color: var(--primary);
+              font-weight: 600;
+            "
+          >
+            Connexion
+          </a>
+          {% endif %}
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="content">{% block content %}{% endblock %}</main>
+    </div>
+
+    <script>
+      // Profile Dropdown Toggle
+      const profileTrigger = document.getElementById("profileTrigger");
+      const profileDropdown = document.getElementById("profileDropdown");
+
+      if (profileTrigger) {
+        profileTrigger.addEventListener("click", function (e) {
+          e.stopPropagation();
+          profileDropdown.classList.toggle("show");
+        });
+
+        document.addEventListener("click", function () {
+          profileDropdown.classList.remove("show");
+        });
+      }
+    </script>
+
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

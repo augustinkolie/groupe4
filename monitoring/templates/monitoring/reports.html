@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Rapports - EcoWatch{% endblock %}
+{% block page_title %}Génération de Rapports{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'monitoring/css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="flex-between mb-4">
+    <div>
+        <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem;">Rapports et Analyses</h1>
+        <p style="color: var(--gray);">Générez des rapports détaillés sur la qualité de l'air et exportez les données</p>
+    </div>
+</div>
+
+<!-- Stats Overview -->
+<div class="grid-4 mb-4">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-file-alt"></i>
+        </div>
+        <div class="stat-value">0</div>
+        <div class="stat-label">Rapports Générés</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #dbeafe; color: #3b82f6;">
+            <i class="fas fa-download"></i>
+        </div>
+        <div class="stat-value" style="color: #3b82f6;">0</div>
+        <div class="stat-label">Exports ce Mois</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #fef3c7; color: #f59e0b;">
+            <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-value" style="color: #f59e0b;">0</div>
+        <div class="stat-label">En Attente</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #d1fae5; color: #059669;">
+            <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="stat-value" style="color: #059669;">0</div>
+        <div class="stat-label">Rapports Planifiés</div>
+    </div>
+</div>
+
+<!-- Alert Info Banner -->
+<div class="alert alert-info mb-4">
+    <i class="fas fa-info-circle" style="font-size: 1.25rem;"></i>
+    <div>
+        <strong>Fonctionnalité en développement</strong><br>
+        La génération automatique de rapports PDF et Excel sera bientôt disponible. Vous pourrez créer des rapports personnalisés avec analyses statistiques et tendances.
+    </div>
+</div>
+
+<!-- Report Generator -->
+<div class="grid-2 mb-4">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Nouveau Rapport</h3>
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label class="form-label">Type de Rapport</label>
+                <select class="form-control form-select">
+                    <option>Rapport Quotidien</option>
+                    <option>Rapport Hebdomadaire</option>
+                    <option>Rapport Mensuel</option>
+                    <option>Rapport Annuel</option>
+                    <option>Rapport Personnalisé</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Période</label>
+                <div class="grid-2" style="gap: 0.75rem;">
+                    <input type="date" class="form-control">
+                    <input type="date" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Stations</label>
+                <select class="form-control form-select" multiple style="height: 120px;">
+                    {% for station in stations %}
+                    <option>{{ station.name }}</option>
+                    {% endfor %}
+                </select>
+                <small style="color: var(--gray); font-size: 0.8rem;">Maintenez Ctrl pour sélectionner plusieurs stations</small>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Polluants à Inclure</label>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" checked style="width: 18px; height: 18px;">
+                        <span>IQA (Indice de Qualité de l'Air)</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" checked style="width: 18px; height: 18px;">
+                        <span>PM2.5 (Particules Fines)</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" checked style="width: 18px; height: 18px;">
+                        <span>PM10 (Particules)</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" checked style="width: 18px; height: 18px;">
+                        <span>CO (Monoxyde de Carbone)</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" style="width: 18px; height: 18px;">
+                        <span>Température et Humidité</span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Format d'Export</label>
+                <div style="display: flex; gap: 0.75rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="radio" name="format" checked style="width: 18px; height: 18px;">
+                        <span>PDF</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="radio" name="format" style="width: 18px; height: 18px;">
+                        <span>Excel</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="radio" name="format" style="width: 18px; height: 18px;">
+                        <span>CSV</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-primary" disabled>
+                <i class="fas fa-file-download"></i>
+                Générer le Rapport
+            </button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Rapports Récents</h3>
+        </div>
+        <div class="card-body">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h3 class="empty-state-title">Aucun rapport généré</h3>
+                <p class="empty-state-text">Créez votre premier rapport en utilisant le formulaire ci-contre</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Export -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Export Rapide des Données</h3>
+    </div>
+    <div class="card-body">
+        <p style="color: var(--gray); margin-bottom: 1.5rem;">
+            Exportez rapidement les données brutes sans générer un rapport complet
+        </p>
+        <div class="flex gap-2">
+            <button class="btn btn-outline" disabled>
+                <i class="fas fa-file-csv"></i>
+                Exporter Toutes les Données (CSV)
+            </button>
+            <button class="btn btn-outline" disabled>
+                <i class="fas fa-file-excel"></i>
+                Exporter vers Excel
+            </button>
+            <button class="btn btn-outline" disabled>
+                <i class="fas fa-database"></i>
+                Exporter Base de Données
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

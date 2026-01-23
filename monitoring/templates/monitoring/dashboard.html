@@ -1,468 +1,311 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="fr">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoWatch - Suivi Local de la Qualité de l'Air</title>
+{% block title %}Tableau de bord - EcoWatch{% endblock %}
+{% block page_title %}Tableau de bord{% endblock %}
 
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'monitoring/css/dashboard.css' %}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<style>
+    #map {
+        height: 500px;
+        border-radius: 0.75rem;
+    }
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    #chart-container {
+        height: 300px;
+    }
 
-    <style>
-        :root {
-            --primary: #10b981;
-            --secondary: #3b82f6;
-            --dark: #1f2937;
-            --light: #f3f4f6;
-            --white: #ffffff;
-        }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light);
-            color: var(--dark);
-        }
+    .iqa-card {
+        grid-column: span 2;
+        background: var(--primary);
+        color: white;
+    }
 
-        header {
-            background-color: var(--white);
-            padding: 0.75rem 2rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
+    .iqa-card .stat-value {
+        color: white;
+        font-size: 3rem;
+    }
 
-        /* User Profile Dropdown */
-        .user-profile {
-            position: relative;
-            cursor: pointer;
-        }
+    .iqa-card .stat-label {
+        color: rgba(255, 255, 255, 0.9);
+    }
 
-        .profile-trigger {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem 0.75rem;
-            border-radius: 1rem;
-            transition: all 0.3s;
-            color: var(--dark);
-        }
+    #station-info {
+        margin-bottom: 1rem;
+    }
 
-        .profile-trigger:hover {
-            background: var(--light);
-        }
+    #station-info h4 {
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
 
-        .avatar-circle {
-            width: 35px;
-            height: 35px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.9rem;
-        }
+    #station-info p {
+        color: var(--gray);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
 
-        .username {
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .profile-dropdown {
-            position: absolute;
-            top: calc(100% + 10px);
-            right: 0;
-            background: var(--white);
-            min-width: 200px;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            padding: 0.5rem;
-            display: none;
-            flex-direction: column;
-            z-index: 1001;
-            border: 1px solid #eee;
-            animation: fadeIn 0.2s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .profile-dropdown.show {
-            display: flex;
-        }
-
-        .profile-dropdown a,
-        .profile-dropdown button {
-            padding: 0.75rem 1rem;
-            text-decoration: none;
-            color: var(--dark);
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 0.5rem;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            width: 100%;
-            text-align: left;
-            background: none;
-            border: none;
-            font-family: inherit;
-            cursor: pointer;
-        }
-
-        .profile-dropdown a:hover,
-        .profile-dropdown button:hover {
-            background: var(--light);
-            color: var(--primary);
-        }
-
-        .profile-dropdown form {
-            margin: 0;
-        }
-
-        .profile-dropdown .divider {
-            height: 1px;
-            background: #eee;
-            margin: 0.5rem 0;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        main {
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            height: auto;
-        }
-
-        .card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        #map-container {
-            position: relative;
-            height: 500px;
-            width: 100%;
-        }
-
-        #map {
-            height: 100%;
-            border-radius: 8px;
-        }
-
-        .bottom-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        @media (max-width: 1024px) {
-            .bottom-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .stat-card {
-            background: var(--light);
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: #6b7280;
-            text-transform: uppercase;
-        }
-
-        #chart-container {
-            height: 300px;
-        }
-    </style>
-</head>
-
-<body>
-    <header>
-        <div class="logo">EcoWatch</div>
-        <nav style="display: flex; align-items: center; gap: 1.5rem;">
-            <a href="/" style="text-decoration: none; color: var(--dark); font-weight: 600;">Accueil</a>
-            {% if user.is_authenticated %}
-            <div class="user-profile">
-                <div class="profile-trigger" id="profileTrigger">
-                    <div class="avatar-circle">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <span class="username">{{ user.username }}</span>
-                    <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
-                </div>
-                <div class="profile-dropdown" id="profileDropdown">
-                    <a href="/dashboard/"><i class="fas fa-chart-line"></i> Tableau de bord</a>
-                    <a href="/admin/"><i class="fas fa-cog"></i> Paramètres</a>
-                    <div class="divider"></div>
-                    <form action="{% url 'logout' %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" style="color: #ef4444;"><i class="fas fa-sign-out-alt"></i>
-                            Déconnexion</button>
-                    </form>
-                </div>
-            </div>
-            {% else %}
-            <a href="{% url 'login' %}"
-                style="text-decoration: none; color: var(--primary); font-weight: 600;">Connexion</a>
-            <a href="{% url 'signup' %}"
-                style="text-decoration: none; background: var(--primary); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600;">S'inscrire</a>
-            {% endif %}
-        </nav>
-    </header>
-
-    <main>
-        <div class="card" id="map-container">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h2 style="margin: 0;">Carte de la Qualité de l'Air</h2>
-                <div id="map-legend" style="display: flex; gap: 0.5rem; font-size: 0.75rem;">
-                    <span style="display:flex; align-items:center; gap:3px;"><span
-                            style="width:10px; height:10px; background:#10b981; border-radius:50%;"></span> Bon</span>
-                    <span style="display:flex; align-items:center; gap:3px;"><span
-                            style="width:10px; height:10px; background:#f59e0b; border-radius:50%;"></span>
-                        Modéré</span>
-                    <span style="display:flex; align-items:center; gap:3px;"><span
-                            style="width:10px; height:10px; background:#ef4444; border-radius:50%;"></span>
-                        Mauvais</span>
-                </div>
-            </div>
-            <div id="map"></div>
+{% block content %}
+<!-- Stats Overview -->
+<div class="grid-4 mb-4">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-map-marker-alt"></i>
         </div>
+        <div class="stat-value" id="total-stations">-</div>
+        <div class="stat-label">Stations Actives</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #dbeafe; color: #3b82f6;">
+            <i class="fas fa-wind"></i>
+        </div>
+        <div class="stat-value" style="color: #3b82f6;" id="avg-iqa">-</div>
+        <div class="stat-label">IQA Moyen</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #fef3c7; color: #f59e0b;">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="stat-value" style="color: #f59e0b;">0</div>
+        <div class="stat-label">Alertes Actives</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #fee2e2; color: #ef4444;">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="stat-value" style="color: #ef4444;" id="readings-today">-</div>
+        <div class="stat-label">Relevés Aujourd'hui</div>
+    </div>
+</div>
 
-        <div class="bottom-grid">
-            <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h3 style="margin: 0;">Détails de la Station</h3>
-                    <button id="export-btn" class="btn-primary"
-                        style="padding: 0.4rem 0.8rem; font-size: 0.8rem; display: none;">
-                        <i class="fas fa-download"></i> Export CSV
-                    </button>
-                </div>
-                <div id="station-info">
-                    <p>Sélectionnez une station sur la carte pour voir les détails.</p>
-                </div>
-                <div class="stats-grid" id="current-stats" style="display: none;">
-                    <div class="stat-card" id="card-iqa"
-                        style="grid-column: span 2; background: var(--primary); color: white;">
-                        <div class="stat-label" style="color: rgba(255,255,255,0.8)">Indice IQA</div>
-                        <div class="stat-value" id="val-iqa" style="font-size: 2rem; color: white;">-</div>
-                        <div id="iqa-status" style="font-size: 0.8rem; font-weight: 600;">Chargement...</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="val-pm25">-</div>
-                        <div class="stat-label">PM2.5 (µg/m³)</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="val-co">-</div>
-                        <div class="stat-label">CO (ppm)</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="val-temp">-</div>
-                        <div class="stat-label">Temp °C</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="val-hum">-</div>
-                        <div class="stat-label">Humidité %</div>
-                    </div>
-                </div>
+<!-- Map Card -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">Carte de la Qualité de l'Air</h3>
+        <div style="display: flex; gap: 0.75rem; font-size: 0.85rem;">
+            <span style="display:flex; align-items:center; gap:5px;">
+                <span style="width:12px; height:12px; background:#10b981; border-radius:50%;"></span>
+                Bon
+            </span>
+            <span style="display:flex; align-items:center; gap:5px;">
+                <span style="width:12px; height:12px; background:#f59e0b; border-radius:50%;"></span>
+                Modéré
+            </span>
+            <span style="display:flex; align-items:center; gap:5px;">
+                <span style="width:12px; height:12px; background:#ef4444; border-radius:50%;"></span>
+                Mauvais
+            </span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div id="map"></div>
+    </div>
+</div>
+
+<!-- Station Details & Chart -->
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Détails de la Station</h3>
+            <button id="export-btn" class="btn btn-primary btn-sm" style="display: none;">
+                <i class="fas fa-download"></i> Export CSV
+            </button>
+        </div>
+        <div class="card-body">
+            <div id="station-info">
+                <p style="color: var(--gray);">Sélectionnez une station sur la carte pour voir les détails.</p>
             </div>
-
-            <div class="card">
-                <h3 style="margin-top: 0;">Évolution Temporelle</h3>
-                <div id="chart-container">
-                    <canvas id="airChart"></canvas>
+            <div class="stats-grid" id="current-stats" style="display: none;">
+                <div class="stat-card iqa-card" id="card-iqa">
+                    <div class="stat-label">Indice IQA</div>
+                    <div class="stat-value" id="val-iqa">-</div>
+                    <div id="iqa-status" style="font-size: 0.9rem; font-weight: 600;">Chargement...</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="val-pm25">-</div>
+                    <div class="stat-label">PM2.5 (µg/m³)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="val-co">-</div>
+                    <div class="stat-label">CO (ppm)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="val-temp">-</div>
+                    <div class="stat-label">Temp °C</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="val-hum">-</div>
+                    <div class="stat-label">Humidité %</div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Évolution Temporelle</h3>
+        </div>
+        <div class="card-body">
+            <div id="chart-container">
+                <canvas id="airChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-    <script>
-        // Initialiser la carte sur la Guinée avec Leaflet
-        const map = L.map('map').setView([10.5, -11.0], 7);
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        // Couches de base
-        const standard = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+<script>
+    // Initialize map
+    const map = L.map('map').setView([10.5, -11.0], 7);
+
+    const standard = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+
+    const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri'
+    });
+
+    standard.addTo(map);
+    L.control.layers({ "Standard": standard, "Satellite": satellite }).addTo(map);
+
+    let airChart;
+    let currentReadings = [];
+
+    function getIQAColor(iqa) {
+        if (iqa <= 50) return "#10b981";
+        if (iqa <= 100) return "#f59e0b";
+        return "#ef4444";
+    }
+
+    function createCustomIcon(iqa) {
+        const color = getIQAColor(iqa);
+        return L.divIcon({
+            className: 'custom-div-icon',
+            html: `<div style="background-color:${color}; border: 3px solid white; width:16px; height:16px; border-radius:50%; box-shadow: 0 0 10px rgba(0,0,0,0.2);"></div>`,
+            iconSize: [16, 16],
+            iconAnchor: [8, 8]
         });
+    }
 
-        const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-        });
+    async function fetchStations() {
+        try {
+            const response = await fetch('/api/stations/');
+            const stations = await response.json();
+            
+            document.getElementById('total-stations').innerText = stations.length;
+            let totalIQA = 0;
+            let totalReadings = 0;
 
-        // Ajouter la couche standard par défaut
-        standard.addTo(map);
-
-        // Contrôle des couches
-        const baseMaps = {
-            "Standard": standard,
-            "Satellite": satellite
-        };
-        L.control.layers(baseMaps).addTo(map);
-
-        let airChart;
-        let currentReadings = [];
-
-        function getIQAColor(iqa) {
-            if (iqa <= 50) return "#10b981"; // Green
-            if (iqa <= 100) return "#f59e0b"; // Yellow
-            return "#ef4444"; // Red
-        }
-
-        function createCustomIcon(iqa) {
-            const color = getIQAColor(iqa);
-            return L.divIcon({
-                className: 'custom-div-icon',
-                html: `<div style="background-color:${color}; border: 3px solid white; width:16px; height:16px; border-radius:50%; box-shadow: 0 0 10px rgba(0,0,0,0.2);"></div>`,
-                iconSize: [16, 16],
-                iconAnchor: [8, 8]
-            });
-        }
-
-        async function fetchStations() {
-            try {
-                const response = await fetch('/api/stations/');
-                const stations = await response.json();
-
-                for (const station of stations) {
-                    const rResp = await fetch(`/api/readings/?station=${station.id}`);
-                    const readings = await rResp.json();
-                    const iqa = readings.length > 0 ? readings[0].iqa : 0;
-
-                    const marker = L.marker([station.latitude, station.longitude], {
-                        icon: createCustomIcon(iqa)
-                    }).addTo(map);
-
-                    marker.bindPopup(`<b>${station.name}</b><br>IQA actuel: ${iqa}`);
-                    marker.on('click', () => updateStationDetails(station, readings));
+            for (const station of stations) {
+                const rResp = await fetch(`/api/readings/?station=${station.id}`);
+                const readings = await rResp.json();
+                const iqa = readings.length > 0 ? readings[0].iqa : 0;
+                
+                if (readings.length > 0) {
+                    totalIQA += iqa;
+                    totalReadings += readings.length;
                 }
-            } catch (error) { console.error(error); }
-        }
 
-        async function updateStationDetails(station, readings) {
-            currentReadings = readings;
-            document.getElementById('station-info').innerHTML = `<h4>${station.name}</h4><p>${station.location_description || 'Aucune description'}</p>`;
-            document.getElementById('current-stats').style.display = 'grid';
-            document.getElementById('export-btn').style.display = 'block';
+                const marker = L.marker([station.latitude, station.longitude], {
+                    icon: createCustomIcon(iqa)
+                }).addTo(map);
 
-            if (readings.length > 0) {
-                const latest = readings[0];
-                document.getElementById('val-iqa').innerText = latest.iqa;
-                document.getElementById('val-pm25').innerText = latest.pm25;
-                document.getElementById('val-co').innerText = latest.co;
-                document.getElementById('val-temp').innerText = latest.temperature;
-                document.getElementById('val-hum').innerText = latest.humidity;
-
-                const iqaCard = document.getElementById('card-iqa');
-                const iqaStatus = document.getElementById('iqa-status');
-                const color = getIQAColor(latest.iqa);
-                iqaCard.style.backgroundColor = color;
-                iqaStatus.innerText = latest.iqa <= 50 ? "BON - Air sain" : (latest.iqa <= 100 ? "MODÉRÉ - Attention" : "MAUVAIS - Alerte");
-
-                updateChart(readings.slice(0, 15).reverse());
-            } else {
-                alert("Pas de données pour cette station.");
+                marker.bindPopup(`<b>${station.name}</b><br>IQA actuel: ${iqa}`);
+                marker.on('click', () => updateStationDetails(station, readings));
             }
+            
+            if (stations.length > 0) {
+                document.getElementById('avg-iqa').innerText = Math.round(totalIQA / stations.length);
+            }
+            document.getElementById('readings-today').innerText = totalReadings;
+            
+        } catch (error) {
+            console.error('Error fetching stations:', error);
         }
+    }
 
-        function updateChart(data) {
-            const ctx = document.getElementById('airChart').getContext('2d');
-            if (airChart) airChart.destroy();
-            airChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: data.map(r => new Date(r.timestamp).toLocaleTimeString()),
-                    datasets: [{
-                        label: 'IQA',
-                        data: data.map(r => r.iqa),
-                        borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', fill: true, tension: 0.4
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
+    async function updateStationDetails(station, readings) {
+        currentReadings = readings;
+        document.getElementById('station-info').innerHTML = `<h4>${station.name}</h4><p>${station.location_description || 'Aucune description'}</p>`;
+        document.getElementById('current-stats').style.display = 'grid';
+        document.getElementById('export-btn').style.display = 'inline-flex';
+
+        if (readings.length > 0) {
+            const latest = readings[0];
+            document.getElementById('val-iqa').innerText = latest.iqa;
+            document.getElementById('val-pm25').innerText = latest.pm25.toFixed(1);
+            document.getElementById('val-co').innerText = latest.co.toFixed(2);
+            document.getElementById('val-temp').innerText = latest.temperature.toFixed(1);
+            document.getElementById('val-hum').innerText = latest.humidity.toFixed(1);
+
+            const iqaCard = document.getElementById('card-iqa');
+            const iqaStatus = document.getElementById('iqa-status');
+            const color = getIQAColor(latest.iqa);
+            iqaCard.style.backgroundColor = color;
+            iqaStatus.innerText = latest.iqa <= 50 ? "BON - Air sain" : (latest.iqa <= 100 ? "MODÉRÉ - Attention" : "MAUVAIS - Alerte");
+
+            updateChart(readings.slice(0, 15).reverse());
         }
+    }
 
-        document.getElementById('export-btn').addEventListener('click', () => {
-            if (!currentReadings.length) return;
-            let csv = "Timestamp,IQA,PM2.5,CO,Temp,Humidity\n";
-            currentReadings.forEach(r => {
-                csv += `${r.timestamp},${r.iqa},${r.pm25},${r.co},${r.temperature},${r.humidity}\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `readings_${new Date().getTime()}.csv`;
-            a.click();
+    function updateChart(data) {
+        const ctx = document.getElementById('airChart').getContext('2d');
+        if (airChart) airChart.destroy();
+        airChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(r => new Date(r.timestamp).toLocaleTimeString()),
+                datasets: [{
+                    label: 'IQA',
+                    data: data.map(r => r.iqa),
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16,185,129,0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
         });
+    }
 
-        fetchStations();
+    document.getElementById('export-btn').addEventListener('click', () => {
+        if (!currentReadings.length) return;
+        let csv = "Timestamp,IQA,PM2.5,CO,Temp,Humidity\n";
+        currentReadings.forEach(r => {
+            csv += `${r.timestamp},${r.iqa},${r.pm25},${r.co},${r.temperature},${r.humidity}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `readings_${new Date().getTime()}.csv`;
+        a.click();
+    });
 
-        // Profile Dropdown Toggle
-        const profileTrigger = document.getElementById('profileTrigger');
-        const profileDropdown = document.getElementById('profileDropdown');
-
-        if (profileTrigger) {
-            profileTrigger.addEventListener('click', function (e) {
-                e.stopPropagation();
-                profileDropdown.classList.toggle('show');
-            });
-
-            document.addEventListener('click', function () {
-                profileDropdown.classList.remove('show');
-            });
-        }
-    </script>
-</body>
-
-</html>
+    fetchStations();
+</script>
+{% endblock %}
