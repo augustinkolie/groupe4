@@ -147,7 +147,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 5%;
+            padding: 0.3rem 5%;
             background: var(--white);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             position: sticky;
@@ -156,10 +156,23 @@
         }
 
         .logo {
-            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 0;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
             font-weight: 800;
             color: var(--primary);
-            text-decoration: none;
+            letter-spacing: -1px;
+            margin-left: -17px;
+        }
+
+        .logo img {
+            height: 75px;
+            width: auto;
         }
 
         .nav-links {
@@ -313,31 +326,165 @@
             font-size: 0.9rem;
         }
 
-        /* Footer */
+        /* Premium Footer Redesign */
         footer {
-            background: var(--white);
-            padding: 4rem 5%;
-            border-top: 1px solid var(--border);
-            text-align: center;
+            background: #0f172a;
+            color: #f1f5f9;
+            padding: 5rem 5% 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: left;
+            /* Reset body text-align */
         }
 
-        .footer-content {
+        .footer-content-premium {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .footer-brand .footer-logo {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            text-decoration: none;
+        }
+
+        .footer-brand .footer-logo .logo-text {
+            color: var(--white);
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-left: -17px;
+        }
+
+        .footer-brand .footer-logo img {
+            height: 70px;
+            width: auto;
+        }
+
+        .footer-brand p {
+            color: #94a3b8;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            max-width: 320px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .footer-links-group h4 {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-links-group h4::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .footer-links-group ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links-group li {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links-group a {
+            text-decoration: none;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .footer-links-group a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .footer-bottom-premium {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #64748b;
+            font-size: 0.9rem;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .footer-logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            display: block;
-            text-decoration: none;
+        .footer-bottom-links {
+            display: flex;
+            gap: 2rem;
         }
 
-        .copyright {
-            color: var(--gray);
-            font-size: 0.875rem;
+        .footer-bottom-links a {
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-bottom-links a:hover {
+            color: white;
+        }
+
+        @media (max-width: 1024px) {
+            .footer-content-premium {
+                grid-template-columns: 1fr 1fr;
+                gap: 3rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .footer-content-premium {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom-premium {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
         }
 
         @media (max-width: 768px) {
@@ -358,7 +505,10 @@
 
 <body>
     <nav>
-        <a href="/" class="logo">EcoWatch</a>
+        <a href="/" class="logo">
+            <img src="{% static 'monitoring/images/logo.png' %}" alt="EcoWatch Logo">
+            <span class="logo-text">EcoWatch</span>
+        </a>
         <div class="nav-links">
             <a href="/">Accueil</a>
             <a href="/dashboard/">Carte</a>
@@ -450,9 +600,62 @@
     </section>
 
     <footer>
-        <div class="footer-content">
-            <a href="/" class="footer-logo">EcoWatch</a>
-            <p class="copyright">&copy; 2026 EcoWatch - Concrétisation de la surveillance environnementale.</p>
+        <div class="footer-content-premium">
+            <div class="footer-brand">
+                <a href="/" class="footer-logo">
+                    <img src="{% static 'monitoring/images/logo.png' %}" alt="EcoWatch Logo">
+                    <span class="logo-text">EcoWatch</span>
+                </a>
+                <p>Le premier réseau intelligent de surveillance environnementale en Afrique de l'Ouest. Technologie IoT
+                    au service de votre santé.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links-group">
+                <h4>Plateforme</h4>
+                <ul>
+                    <li><a href="/#zones">Zones à risque</a></li>
+                    <li><a href="/dashboard/">Tableau de bord</a></li>
+                    <li><a href="/#features">Technologie IoT</a></li>
+                    <li><a href="#">Analytique</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-group">
+                <h4>ÉcoSystème</h4>
+                <ul>
+                    <li><a href="/about/">À Propos</a></li>
+                    <li><a href="#">Équipe Projet</a></li>
+                    <li><a href="/contact/">Devenir Partenaire</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-group">
+                <h4>Contact</h4>
+                <ul>
+                    <li style="color: #94a3b8;"><i class="fas fa-envelope"
+                            style="margin-right: 10px; color: var(--primary);"></i> support@ecowatch.gn</li>
+                    <li style="color: #94a3b8;"><i class="fas fa-phone"
+                            style="margin-right: 10px; color: var(--primary);"></i> +224 6XX XX XX XX</li>
+                    <li style="color: #94a3b8;"><i class="fas fa-map-marker-alt"
+                            style="margin-right: 10px; color: var(--primary);"></i> Conakry, Guinée</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom-premium">
+            <p>&copy; 2026 EcoWatch Platform - Groupe 4. Tous droits réservés.</p>
+            <div class="footer-bottom-links">
+                <a href="#">Confidentialité</a>
+                <a href="#">Conditions</a>
+                <a href="#">Cookies</a>
+            </div>
         </div>
     </footer>
 
