@@ -194,21 +194,24 @@
 
         /* Hero About */
         .hero-about {
-            padding: 8rem 5%;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 10rem 2%;
+            background: linear-gradient(rgba(16, 185, 129, 0.5), rgba(5, 150, 105, 0.6)), url("https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?auto=format&fit=crop&w=1920&q=80");
+            background-size: cover;
+            background-position: center 25%;
+            background-attachment: fixed;
             color: white;
             text-align: center;
         }
 
         .hero-about h1 {
-            font-size: 4rem;
+            font-size: 2.5rem;
             font-weight: 800;
             margin-bottom: 1.5rem;
             letter-spacing: -1px;
         }
 
         .hero-about p {
-            font-size: 1.25rem;
+            font-size: 1.05rem;
             max-width: 800px;
             margin: 0 auto;
             opacity: 0.9;
@@ -216,8 +219,8 @@
 
         /* Content Sections */
         .section {
-            padding: 6rem 5%;
-            max-width: 1100px;
+            padding: 6rem 2%;
+            max-width: 1300px;
             margin: 0 auto;
         }
 
@@ -228,10 +231,11 @@
             align-items: center;
         }
 
-        .section h2 {
-            font-size: 2.5rem;
+        .section h2,
+        .partners-section h2 {
+            font-size: 1.8rem;
             font-weight: 800;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             color: var(--dark);
         }
 
@@ -243,7 +247,7 @@
 
         .featured-image {
             width: 100%;
-            border-radius: 2rem;
+            border-radius: 1rem;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
         }
 
@@ -268,9 +272,16 @@
         }
 
         .value-icon {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: var(--primary);
-            margin-bottom: 1.5rem;
+            margin: 0 auto 1.5rem;
+            width: 70px;
+            height: 70px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .value-card h3 {
@@ -278,52 +289,72 @@
             font-weight: 700;
         }
 
-        /* Team Section */
-        .team-section {
+
+
+        /* Partners Section */
+        .partners-section {
+            padding: 5rem 2%;
             background: var(--light);
-            padding: 6rem 5%;
             text-align: center;
         }
 
-        .team-grid {
+        .partners-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            max-width: 1000px;
-            margin: 4rem auto 0;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+            max-width: 1300px;
+            margin: 3rem auto 0;
         }
 
-        .team-member {
+        .partner-card {
             background: var(--white);
-            padding: 2rem;
+            padding: 2.5rem;
             border-radius: 1.5rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
         }
 
-        .member-avatar {
-            width: 100px;
-            height: 100px;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
+        .partner-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .partner-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            width: 70px;
+            height: 70px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 1.25rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
-            font-weight: 800;
             margin: 0 auto 1.5rem;
         }
 
-        .team-member h4 {
+        .partner-card h3 {
             font-size: 1.25rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
         }
 
-        .team-member p {
-            color: var(--primary);
-            font-weight: 600;
-            font-size: 0.9rem;
+        .partner-card p {
+            font-size: 1rem;
+            color: var(--gray);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        @media (max-width: 992px) {
+            .partners-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .partners-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Premium Footer Redesign */
@@ -568,33 +599,44 @@
                 <p>Utilisation de capteurs IoT autonomes et précis pour une surveillance continue.</p>
             </div>
             <div class="value-card">
-                <div class="value-icon"><i class="fas fa-eye"></i></div>
+                <div class="value-icon"><i class="fas fa-magnifying-glass-chart"></i></div>
                 <h3>Transparence</h3>
                 <p>Des données ouvertes à tous pour encourager la prise de conscience collective.</p>
             </div>
             <div class="value-card">
-                <div class="value-icon"><i class="fas fa-heartbeat"></i></div>
+                <div class="value-icon"><i class="fas fa-lungs"></i></div>
                 <h3>Santé</h3>
                 <p>Une priorité absolue : prévenir les maladies respiratoires par l'information.</p>
             </div>
         </div>
     </section>
 
-    <section class="team-section">
-        <div class="section">
-            <h2>L'Équipe</h2>
-            <p>Un groupe passionné d'ingénieurs et de développeurs engagés pour un avenir plus vert.</p>
-            <div class="team-grid">
-                <div class="team-member">
-                    <div class="member-avatar">E</div>
-                    <h4>Équipe Projet</h4>
-                    <p>Développement & IoT</p>
-                </div>
-                <div class="team-member">
-                    <div class="member-avatar">G</div>
-                    <h4>Groupe 4</h4>
-                    <p>Conception & Analyse</p>
-                </div>
+
+
+    <section class="partners-section">
+        <div class="section-header" style="max-width: 800px; margin: 0 auto;">
+            <h2>Équipe et partenaires</h2>
+            <p>Une synergie d'experts et de collaborations stratégiques pour un impact environnemental durable.</p>
+        </div>
+
+        <div class="partners-grid">
+            <div class="partner-card">
+                <div class="partner-icon"><i class="fas fa-users-gear"></i></div>
+                <h3>Notre Équipe</h3>
+                <p>Un collectif dynamique de développeurs, scientifiques et ingénieurs environnementaux unis par la
+                    technologie.</p>
+            </div>
+            <div class="partner-card">
+                <div class="partner-icon"><i class="fas fa-handshake-angle"></i></div>
+                <h3>Partenaires et soutiens</h3>
+                <p>Nous collaborons avec des ONG, des universités, des startups tech et les autorités locales pour un
+                    réseau robuste.</p>
+            </div>
+            <div class="partner-card">
+                <div class="partner-icon"><i class="fas fa-award"></i></div>
+                <h3>Expertise</h3>
+                <p>Notre crédibilité repose sur une approche data-driven et une maîtrise prouvée du cycle de vie des
+                    projets IoT.</p>
             </div>
         </div>
     </section>
@@ -630,7 +672,6 @@
                 <h4>ÉcoSystème</h4>
                 <ul>
                     <li><a href="/about/">À Propos</a></li>
-                    <li><a href="#">Équipe Projet</a></li>
                     <li><a href="/contact/">Devenir Partenaire</a></li>
                     <li><a href="#">FAQ</a></li>
                 </ul>
