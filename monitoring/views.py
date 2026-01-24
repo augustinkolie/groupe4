@@ -18,9 +18,16 @@ def contact(request):
 def about(request):
     return render(request, 'monitoring/about.html')
 
+from django.core.paginator import Paginator
+
 def stations_list(request):
-    stations = Station.objects.all()
-    return render(request, 'monitoring/stations.html', {'stations': stations})
+    stations_list = Station.objects.all().order_by('-created_at')
+    paginator = Paginator(stations_list, 6) # Show 6 stations per page
+    
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'monitoring/stations.html', {'page_obj': page_obj})
 
 def alerts_view(request):
     return render(request, 'monitoring/alerts.html')

@@ -7,90 +7,248 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'monitoring/css/dashboard.css' %}">
 <style>
-    .station-card {
-        display: flex;
+    /* --- GRID VIEW STYLES (default) --- */
+    .stations-container.grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
         gap: 1.5rem;
-        align-items: start;
     }
 
-    .station-image {
-        width: 120px;
+    .grid-3 .station-card {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .grid-3 .station-header {
+        margin-bottom: 0.1rem;
+    }
+
+    .grid-3 .station-image-wrapper {
+        width: 100%;
         height: 120px;
-        border-radius: 0.75rem;
-        object-fit: cover;
+        margin-bottom: 0.3rem;
+    }
+
+    .grid-3 .station-name {
+        font-size: 0.9rem;
+    }
+
+    .grid-3 .station-location {
+        font-size: 0.7rem;
+    }
+
+    .grid-3 .station-description {
+        margin-bottom: 0.4rem;
+        height: 1rem;
+        line-height: 1rem;
+        font-size: 0.75rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .grid-3 .station-meta {
+        background: var(--light);
+        padding: 0.3rem 0.5rem;
+        border-radius: 0.4rem;
+        margin-bottom: 0.6rem;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .grid-3 .station-actions {
+        display: flex;
+        gap: 0.4rem;
+    }
+
+    /* --- LIST VIEW STYLES --- */
+    .stations-container.list-view {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .list-view .card {
+        padding: 0.75rem 1.25rem !important;
+    }
+
+    .list-view .station-card {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .list-view .station-image-wrapper {
+        width: 60px;
+        height: 60px;
         flex-shrink: 0;
     }
 
-    .station-content {
+    .list-view .station-header {
+        width: 180px;
+        flex-shrink: 0;
+        margin-bottom: 0;
+    }
+
+    .list-view .station-description {
         flex: 1;
+        margin-bottom: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
-    .station-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: start;
-        margin-bottom: 0.75rem;
-    }
-
-    .station-name {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--dark);
-        margin-bottom: 0.25rem;
-    }
-
-    .station-location {
-        font-size: 0.85rem;
-        color: var(--gray);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .station-description {
-        color: var(--gray);
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
-        line-height: 1.6;
-    }
-
-    .station-meta {
-        display: flex;
+    .list-view .station-meta {
+        margin-bottom: 0;
+        background: transparent;
+        padding: 0;
         gap: 1.5rem;
-        flex-wrap: wrap;
+        display: flex;
     }
 
-    .meta-item {
+    .list-view .station-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    /* Pagination Styles */
+    .pagination-container {
+        margin-top: 3rem;
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .page-link {
+        width: 40px;
+        height: 40px;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        font-size: 0.85rem;
-        color: var(--gray);
+        justify-content: center;
+        border-radius: 0.5rem;
+        background: var(--white);
+        color: var(--dark);
+        text-decoration: none;
+        border: 1px solid var(--gray-light);
+        transition: all 0.2s;
+        font-weight: 600;
     }
 
-    .meta-item i {
+    .page-link:hover {
+        border-color: var(--primary);
         color: var(--primary);
     }
 
-    .station-actions {
+    .page-link.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .page-link.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* List View Specific Styles */
+    .stations-container.list-view {
         display: flex;
-        gap: 0.5rem;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .list-view .card {
+        padding: 0.75rem 1rem !important;
+    }
+
+    .list-view .station-card {
+        flex-direction: row;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .list-view .station-image-wrapper {
+        width: 100px !important;
+        height: 100px !important;
+        flex-shrink: 0;
+    }
+
+    .list-view .station-image {
+        height: 100% !important;
+    }
+
+    .list-view .station-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+    }
+
+    .list-view .station-header {
+        width: 250px;
+        margin-bottom: 0;
+    }
+
+    .list-view .station-description {
+        margin-bottom: 0;
+        height: auto;
+        -webkit-line-clamp: 1;
+        flex: 1;
+    }
+
+    .list-view .station-meta {
+        margin-bottom: 0;
+        background: transparent;
+        padding: 0;
+        gap: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .list-view .station-actions {
+        border-top: none !important;
+        padding-top: 0 !important;
+        flex-shrink: 0;
+    }
+
+    .view-toggle-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 0.5rem;
+        border: 1.5px solid var(--gray-light);
+        background: var(--white);
+        color: var(--gray);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+    .view-toggle-btn.active {
+        background: var(--primary-light);
+        color: var(--primary);
+        border-color: var(--primary);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Page Header -->
-<div class="flex-between mb-4">
-    <div>
-        <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem;">Stations de Surveillance</h1>
-        <p style="color: var(--gray);">Gérez et surveillez toutes vos stations de mesure de la qualité de l'air</p>
+    <div class="flex-between mb-4">
+        <div>
+            <h1 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.25rem; letter-spacing: -0.5px;">Stations de Surveillance</h1>
+            <p style="color: var(--gray); font-size: 0.9rem;">Gérez et surveillez vos unités de mesure en temps réel.</p>
+        </div>
+        <button class="btn btn-primary">
+            <i class="fas fa-plus"></i>
+            Ajouter une Station
+        </button>
     </div>
-    <button class="btn btn-primary">
-        <i class="fas fa-plus"></i>
-        Ajouter une Station
-    </button>
-</div>
 
 <!-- Stats Overview -->
 <div class="grid-4 mb-4">
@@ -98,14 +256,14 @@
         <div class="stat-icon">
             <i class="fas fa-map-marker-alt"></i>
         </div>
-        <div class="stat-value" id="total-stations">{{ stations|length }}</div>
+        <div class="stat-value" id="total-stations">{{ page_obj.paginator.count }}</div>
         <div class="stat-label">Total Stations</div>
     </div>
     <div class="stat-card">
         <div class="stat-icon" style="background: #d1fae5; color: #059669;">
             <i class="fas fa-check-circle"></i>
         </div>
-        <div class="stat-value" style="color: #059669;">{{ stations|length }}</div>
+        <div class="stat-value" style="color: #059669;">{{ page_obj.paginator.count }}</div>
         <div class="stat-label">Actives</div>
     </div>
     <div class="stat-card">
@@ -126,84 +284,84 @@
 
 <!-- Filters -->
 <div class="card mb-4">
-    <div class="card-body">
+    <div class="card-body" style="padding: 0.75rem 1rem;">
         <div class="flex gap-2">
             <div class="form-group" style="flex: 1; margin: 0;">
-                <input type="text" class="form-control" placeholder="Rechercher une station...">
+                <input type="text" class="premium-control" style="padding: 0.5rem 1rem; border-radius: 0.5rem;" placeholder="Rechercher une station...">
             </div>
-            <select class="form-control form-select" style="width: 200px;">
-                <option>Toutes les stations</option>
-                <option>Actives</option>
-                <option>Inactives</option>
-                <option>En maintenance</option>
+            <select class="premium-control form-select" style="width: 180px; padding: 0.5rem 1rem; border-radius: 0.5rem;">
+                <option>Statut : Tous</option>
+                <option>Actif</option>
+                <option>Inactif</option>
             </select>
-            <select class="form-control form-select" style="width: 200px;">
-                <option>Toutes les villes</option>
+            <select class="premium-control form-select" style="width: 180px; padding: 0.5rem 1rem; border-radius: 0.5rem;">
+                <option>Ville : Toutes</option>
                 <option>Conakry</option>
                 <option>Kindia</option>
-                <option>Boké</option>
-                <option>Labé</option>
             </select>
+            <div class="flex" style="background: var(--white); padding: 3px; border-radius: 0.5rem; border: 1px solid var(--gray-light);">
+                <button class="view-toggle-btn active" id="gridToggle" title="Vue Grille">
+                    <i class="fas fa-th-large"></i>
+                </button>
+                <button class="view-toggle-btn" id="listToggle" title="Vue Liste" style="margin-left: 2px;">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Stations List -->
-<div class="grid-2">
-    {% for station in stations %}
-    <div class="card">
+<div class="grid-3 animate-fade-in stations-container" id="stationsContainer">
+    {% for station in page_obj %}
+    <div class="card" style="padding: 0.75rem;">
         <div class="station-card">
-            <img src="{{ station.image_url|default:'https://images.unsplash.com/photo-1518173946687-a4c8a9ba332f?auto=format&fit=crop&w=800&q=80' }}" 
-                 alt="{{ station.name }}" 
-                 class="station-image">
-            <div class="station-content">
-                <div class="station-header">
-                    <div>
-                        <h3 class="station-name">{{ station.name }}</h3>
-                        <div class="station-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            {{ station.latitude }}, {{ station.longitude }}
-                        </div>
-                    </div>
-                    <span class="badge badge-success">Active</span>
+            <div class="station-image-wrapper">
+                <img src="{{ station.image_url|default:'https://images.unsplash.com/photo-1518173946687-a4c8a9ba332f?auto=format&fit=crop&w=800&q=80' }}" 
+                     alt="{{ station.name }}" 
+                     class="station-image"
+                     style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; border-radius: 0.5rem;">
+            </div>
+
+            <div class="station-header">
+                <h3 class="station-name" title="{{ station.name }}">{{ station.name }}</h3>
+                <div class="station-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    {{ station.latitude|floatformat:1 }}, {{ station.longitude|floatformat:1 }}
                 </div>
-                
-                <p class="station-description">
-                    {{ station.location_description|default:"Aucune description disponible" }}
-                </p>
-                
-                <div class="station-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-calendar"></i>
-                        Créée le {{ station.created_at|date:"d/m/Y" }}
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-chart-line"></i>
-                        {{ station.readings.count }} relevés
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-wind"></i>
-                        {% if station.readings.first %}
-                            IQA: {{ station.readings.first.iqa }}
-                        {% else %}
-                            Aucune donnée
-                        {% endif %}
-                    </div>
+            </div>
+            
+            <p class="station-description">
+                {{ station.location_description|default:"Station de surveillance environnementale EcoWatch." }}
+            </p>
+            
+            <div class="station-meta">
+                <div class="meta-item" title="Nombre de relevés">
+                    <i class="fas fa-database" style="color: var(--secondary);"></i>
+                    <strong>{{ station.readings.count }}</strong>
                 </div>
-                
-                <div class="station-actions mt-2">
-                    <a href="/dashboard/" class="btn btn-primary btn-sm">
-                        <i class="fas fa-eye"></i> Voir Détails
-                    </a>
-                    <a href="/admin/monitoring/station/{{ station.id }}/change/" class="btn btn-outline btn-sm">
-                        <i class="fas fa-edit"></i> Modifier
-                    </a>
+                <div class="meta-item" title="Indice de Qualité de l'Air">
+                    <i class="fas fa-wind" style="color: var(--primary);"></i>
+                    {% if station.readings.first %}
+                        IQA: <strong style="color: var(--primary);">{{ station.readings.first.iqa }}</strong>
+                    {% else %}
+                        --
+                    {% endif %}
                 </div>
+            </div>
+            
+            <div class="station-actions">
+                <a href="{% url 'dashboard' %}" class="btn btn-primary btn-sm" style="flex: 1; justify-content: center; padding: 0.5rem 1rem;">
+                    Détails
+                </a>
+                <a href="/admin/monitoring/station/{{ station.id }}/change/" class="btn btn-outline btn-sm" style="padding: 0.5rem; width: 38px; height: 38px; justify-content: center;">
+                    <i class="fas fa-edit"></i>
+                </a>
             </div>
         </div>
     </div>
     {% empty %}
-    <div class="empty-state" style="grid-column: span 2;">
+    <div class="empty-state" style="grid-column: 1 / -1;">
         <div class="empty-state-icon">
             <i class="fas fa-map-marker-alt"></i>
         </div>
@@ -216,4 +374,57 @@
     </div>
     {% endfor %}
 </div>
+
+<!-- Pagination -->
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="pagination-container">
+    {% if page_obj.has_previous %}
+        <a href="?page=1" class="page-link"><i class="fas fa-angle-double-left"></i></a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="page-link"><i class="fas fa-angle-left"></i></a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <span class="page-link active">{{ num }}</span>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="page-link"><i class="fas fa-angle-right"></i></a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="page-link"><i class="fas fa-angle-double-right"></i></a>
+    {% endif %}
+</div>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('stationsContainer');
+        const gridBtn = document.getElementById('gridToggle');
+        const listBtn = document.getElementById('listToggle');
+
+        gridBtn.addEventListener('click', () => {
+            container.classList.remove('list-view');
+            container.classList.add('grid-3');
+            gridBtn.classList.add('active');
+            listBtn.classList.remove('active');
+            localStorage.setItem('stationView', 'grid');
+        });
+
+        listBtn.addEventListener('click', () => {
+            container.classList.add('list-view');
+            container.classList.remove('grid-3');
+            listBtn.classList.add('active');
+            gridBtn.classList.remove('active');
+            localStorage.setItem('stationView', 'list');
+        });
+
+        // Load preference
+        const savedView = localStorage.getItem('stationView');
+        if (savedView === 'list') {
+            listBtn.click();
+        }
+    });
+</script>
 {% endblock %}
