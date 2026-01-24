@@ -18,6 +18,17 @@ def contact(request):
 def about(request):
     return render(request, 'monitoring/about.html')
 
+def stations_list(request):
+    stations = Station.objects.all()
+    return render(request, 'monitoring/stations.html', {'stations': stations})
+
+def alerts_view(request):
+    return render(request, 'monitoring/alerts.html')
+
+def reports_view(request):
+    stations = Station.objects.all()
+    return render(request, 'monitoring/reports.html', {'stations': stations})
+
 def signup(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
