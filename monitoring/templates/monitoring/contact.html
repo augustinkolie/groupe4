@@ -20,7 +20,7 @@
             --light: #f9fafb;
             --white: #ffffff;
             --gray: #6b7280;
-            --border: #e5e7eb;
+            --border: #e2e8f0;
         }
 
         /* User Profile Dropdown */
@@ -136,12 +136,9 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--light);
+            background-color: var(--white);
             color: var(--dark);
             line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
 
         /* Navigation */
@@ -194,302 +191,320 @@
             color: var(--primary);
         }
 
-        /* Contact Section */
-        .contact-section {
-            flex: 1;
-            padding: 4rem 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1.1fr;
-            gap: 4rem;
-            align-items: start;
-        }
-
-        .contact-info h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            letter-spacing: -1px;
-        }
-
-        .contact-info p {
-            font-size: 1.1rem;
-            color: var(--gray);
-            margin-bottom: 3rem;
-        }
-
-        .info-cards {
-            display: grid;
-            gap: 1.5rem;
-        }
-
-        .info-card {
-            background: var(--white);
-            padding: 1.5rem;
-            border-radius: 1rem;
+        /* HERO SECTION */
+        .contact-hero {
+            height: 400px;
+            background: linear-gradient(rgba(16, 185, 129, 0.4), rgba(5, 150, 105, 0.5)),
+                url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1920&q=80");
+            background-size: cover;
+            background-position: center;
             display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-            border: 1px solid var(--border);
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding-left: 8%;
+            color: white;
         }
 
-        .info-card i {
-            font-size: 1.5rem;
+        .contact-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .contact-hero p {
+            font-size: 1.25rem;
+            font-weight: 500;
+            opacity: 0.95;
+        }
+
+        /* INFO STRIP */
+        .info-strip-container {
+            max-width: 1200px;
+            margin: -60px auto 0;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .info-strip {
+            background: var(--white);
+            border-radius: 1rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            padding: 2.5rem;
+            gap: 2rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+
+        .info-item .icon-box {
+            font-size: 2rem;
             color: var(--primary);
-            background: rgba(16, 185, 129, 0.1);
-            width: 50px;
-            height: 50px;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+
+        .info-item .content h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .info-item .content p {
+            font-size: 0.95rem;
+            color: var(--gray);
+            line-height: 1.4;
+        }
+
+        .info-item .content a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+
+        /* MAIN GRID */
+        .contact-main-section {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.5fr;
+            gap: 2.5rem;
+        }
+
+        .panel-card {
+            background: #f8fafc;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            border: 1px solid #edf2f7;
+        }
+
+        .panel-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+
+        .panel-card p {
+            font-size: 0.95rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn-outline {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            background: #fff;
+            border: 2px solid #e2e8f0;
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: #f0fdf4;
+        }
+
+        .social-circles {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .social-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--dark);
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 0.75rem;
+            text-decoration: none;
+            transition: transform 0.2s, background 0.2s;
         }
 
-        .info-card div h4 {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
+        .social-circle:hover {
+            background: var(--primary);
+            transform: scale(1.1);
         }
 
-        .info-card div p {
-            font-size: 0.9rem;
-            color: var(--gray);
-            margin-bottom: 0;
-        }
-
-        /* Form Styling */
-        .contact-form-container {
+        /* FORM */
+        .form-panel {
             background: var(--white);
-            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            border: 1px solid #edf2f7;
+            padding: 2.5rem;
             border-radius: 1rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border);
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .form-group input,
         .form-group textarea {
             width: 100%;
-            padding: 0.875rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 0.75rem;
-            font-size: 1rem;
+            padding: 0.85rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
             font-family: inherit;
-            transition: all 0.3s;
+            font-size: 0.95rem;
+            background: #fcfcfc;
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            background: #fff;
         }
 
-        .btn-send {
+        .btn-submit {
             width: 100%;
-            padding: 1rem;
             background: var(--primary);
             color: white;
+            padding: 0.85rem;
             border: none;
-            border-radius: 0.75rem;
-            font-size: 1rem;
+            border-radius: 0.5rem;
             font-weight: 700;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
+            transition: background 0.2s;
+            margin-top: 1rem;
         }
 
-        .btn-send:hover {
+        .btn-submit:hover {
             background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
         }
 
-        /* Premium Footer Redesign */
-        footer {
-            background: #0f172a;
-            color: #f1f5f9;
-            padding: 5rem 5% 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: left;
-            margin-top: auto;
-        }
-
-        .footer-content-premium {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1fr;
-            gap: 4rem;
-            margin-bottom: 4rem;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .footer-brand .footer-logo {
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0;
-            text-decoration: none;
-        }
-
-        .footer-brand .footer-logo .logo-text {
-            color: var(--white);
-            font-size: 1.4rem;
-            font-weight: 800;
-            margin-left: -5px;
-        }
-
-        .footer-brand .footer-logo img {
-            height: 70px;
-            width: auto;
-        }
-
-        .footer-brand p {
-            color: #94a3b8;
-            font-size: 1rem;
-            line-height: 1.7;
-            margin-bottom: 2rem;
-            max-width: 320px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .social-links a {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-        }
-
-        .social-links a:hover {
+        /* NEWSLETTER BAR */
+        .newsletter-bar {
             background: var(--primary);
-            border-color: var(--primary);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
-        }
-
-        .footer-links-group h4 {
             color: white;
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            position: relative;
-            display: inline-block;
-        }
-
-        .footer-links-group h4::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 30px;
-            height: 2px;
-            background: var(--primary);
-        }
-
-        .footer-links-group ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .footer-links-group li {
-            margin-bottom: 1rem;
-        }
-
-        .footer-links-group a {
-            text-decoration: none;
-            color: #94a3b8;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-            display: inline-block;
-        }
-
-        .footer-links-group a:hover {
-            color: var(--primary);
-            transform: translateX(5px);
-        }
-
-        .footer-bottom-premium {
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 3rem 8%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #64748b;
-            font-size: 0.9rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .footer-bottom-links {
-            display: flex;
             gap: 2rem;
+            margin-top: 4rem;
         }
 
-        .footer-bottom-links a {
-            color: #64748b;
-            text-decoration: none;
-            transition: color 0.2s;
+        .newsletter-text h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
         }
 
-        .footer-bottom-links a:hover {
+        .newsletter-text p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 0;
+            background: white;
+            border-radius: 0.5rem;
+            padding: 3px;
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .newsletter-form button {
+            background: var(--primary-dark);
             color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 0.4rem;
+            font-weight: 600;
+            cursor: pointer;
         }
 
+        /* RESPONSIVE */
         @media (max-width: 1024px) {
-            .footer-content-premium {
+            .contact-main-section {
                 grid-template-columns: 1fr 1fr;
-                gap: 3rem;
+            }
+
+            .form-panel {
+                grid-column: span 2;
+            }
+
+            .info-strip {
+                grid-template-columns: 1fr 1fr;
             }
         }
 
-        @media (max-width: 640px) {
-            .footer-content-premium {
+        @media (max-width: 768px) {
+            .contact-hero {
+                padding-left: 5%;
+                height: 300px;
+                text-align: center;
+                align-items: center;
+            }
+
+            .contact-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .contact-main-section {
                 grid-template-columns: 1fr;
             }
 
-            .footer-bottom-premium {
+            .form-panel {
+                grid-column: span 1;
+            }
+
+            .info-strip {
+                grid-template-columns: 1fr;
+            }
+
+            .newsletter-bar {
                 flex-direction: column;
-                gap: 1.5rem;
                 text-align: center;
             }
         }
 
-        @media (max-width: 992px) {
-            .contact-section {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
-
-            .contact-info h1 {
-                font-size: 2.5rem;
-            }
+        /* Footer styling adjustment */
+        footer {
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 3rem 8% 1.5rem;
+            text-align: center;
         }
     </style>
 </head>
@@ -501,14 +516,13 @@
             <span class="logo-text">EcoWatch</span>
         </a>
         <div class="nav-links">
-            <a href="/">Accueil</a>
             <a href="/dashboard/">Carte</a>
+            <a href="/about/">À Propos</a>
+            <a href="/contact/">Contact</a>
             {% if user.is_authenticated %}
             <div class="user-profile">
                 <div class="profile-trigger" id="profileTrigger">
-                    <div class="avatar-circle">
-                        <i class="fas fa-user"></i>
-                    </div>
+                    <div class="avatar-circle"><i class="fas fa-user"></i></div>
                     <span class="username">{{ user.username }}</span>
                     <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
                 </div>
@@ -529,112 +543,102 @@
         </div>
     </nav>
 
-    <main class="contact-section">
-        <div class="contact-info">
-            <h1>Parlons de notre air.</h1>
-            <p>Vous avez des questions sur nos capteurs, envie de collaborer ou besoin d'aide avec la plateforme ? Notre
-                équipe est là pour vous répondre.</p>
+    <header class="contact-hero">
+        <h1>Contactez-nous</h1>
+        <p>Nous sommes là pour répondre à vos questions.</p>
+    </header>
 
-            <div class="info-cards">
-                <div class="info-card">
-                    <i class="fas fa-envelope"></i>
-                    <div>
-                        <h4>Email</h4>
-                        <p>contact@ecowatch.gn</p>
-                    </div>
+    <div class="info-strip-container">
+        <div class="info-strip">
+            <div class="info-item">
+                <div class="icon-box"><i class="fas fa-location-dot"></i></div>
+                <div class="content">
+                    <h4>Adresse</h4>
+                    <p>Cité des Sciences, Conakry<br>République de Guinée</p>
                 </div>
-                <div class="info-card">
-                    <i class="fas fa-phone"></i>
-                    <div>
-                        <h4>Téléphone</h4>
-                        <p>+224 620 00 00 00</p>
-                    </div>
+            </div>
+            <div class="info-item">
+                <div class="icon-box"><i class="fas fa-envelope"></i></div>
+                <div class="content">
+                    <h4>Email</h4>
+                    <p>contact@ecowatch.gn</p>
+                    <a href="mailto:contact@ecowatch.gn">Nous écrire un email →</a>
                 </div>
-                <div class="info-card">
-                    <i class="fas fa-location-dot"></i>
-                    <div>
-                        <h4>Siège social</h4>
-                        <p>Conakry, République de Guinée</p>
-                    </div>
+            </div>
+            <div class="info-item">
+                <div class="icon-box"><i class="fas fa-phone"></i></div>
+                <div class="content">
+                    <h4>Téléphone</h4>
+                    <p>+224 620 00 00 00</p>
+                    <a href="tel:+224620000000">Appeler-nous →</a>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="contact-form-container">
+    <main class="contact-main-section">
+        <div class="panel-card">
+            <h3>Vous avez une question ?</h3>
+            <p>N'hésitez pas à nous contacter pour toute information sur la qualité de l'air, nos capteurs ou nos
+                initiatives !</p>
+            <div class="btn-group">
+                <a href="#" class="btn-outline">FAQ</a>
+                <a href="#" class="btn-outline">Support Technique</a>
+                <a href="#" class="btn-outline">Partenariats</a>
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <h3>Suivez-nous</h3>
+            <p>Retrouvez-nous sur les réseaux sociaux :</p>
+            <div class="social-circles">
+                <a href="#" class="social-circle"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-circle"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-circle"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="social-circle"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <div class="form-panel">
+            <h3>Envoyez-nous un message</h3>
             <form action="#" method="POST">
+                {% csrf_token %}
                 <div class="form-group">
-                    <label for="name">Nom complet</label>
-                    <input type="text" id="name" name="name" placeholder="Votre nom" required>
+                    <input type="text" name="name" placeholder="Nom" required>
                 </div>
                 <div class="form-group">
-                    <label for="email">Adresse Email</label>
-                    <input type="email" id="email" name="email" placeholder="votre@email.com" required>
+                    <input type="email" name="email" placeholder="Email" required>
                 </div>
                 <div class="form-group">
-                    <label for="subject">Sujet</label>
-                    <input type="text" id="subject" name="subject" placeholder="De quoi s'agit-il ?" required>
+                    <input type="text" name="subject" placeholder="Sujet" required>
                 </div>
                 <div class="form-group">
-                    <label for="message">Message</label>
-                    <textarea id="message" name="message" rows="5" placeholder="Votre message ici..."
-                        required></textarea>
+                    <textarea name="message" rows="5" placeholder="Votre message..." required></textarea>
                 </div>
-                <button type="submit" class="btn-send">
-                    Envoyer le message <i class="fas fa-paper-plane"></i>
-                </button>
+                <button type="submit" class="btn-submit">Envoyer</button>
             </form>
         </div>
     </main>
 
-    <footer>
-        <div class="footer-content-premium">
-            <div class="footer-brand">
-                <a href="/" class="footer-logo">
-                    <img src="{% static 'monitoring/images/logo.png' %}" alt="EcoWatch Logo">
-                    <span class="logo-text">EcoWatch</span>
-                </a>
-                <p>Le premier réseau intelligent de surveillance environnementale en Afrique de l'Ouest. Technologie IoT
-                    au service de votre santé.</p>
-                <div class="social-links">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-
-            <div class="footer-links-group">
-                <h4>Plateforme</h4>
-                <ul>
-                    <li><a href="/#zones">Zones à risque</a></li>
-                    <li><a href="/dashboard/">Tableau de bord</a></li>
-                    <li><a href="/#features">Technologie IoT</a></li>
-                    <li><a href="#">Analytique</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-links-group">
-                <h4>Légal</h4>
-                <ul>
-                    <li><a href="#">Confidentialité</a></li>
-                    <li><a href="#">Conditions</a></li>
-                    <li><a href="#">Cookies</a></li>
-                    <li><a href="#">Accessibilité</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-links-group">
-                <h4>Support</h4>
-                <ul>
-                    <li><a href="/contact/">Centre d'aide</a></li>
-                    <li><a href="#">Status</a></li>
-                    <li><a href="#">Contact direct</a></li>
-                </ul>
-            </div>
+    <div class="newsletter-bar">
+        <div class="newsletter-text">
+            <h2>Restons en contact</h2>
+            <p>Inscrivez-vous à notre newsletter pour recevoir les dernières mises à jour sur la qualité de l'air.</p>
         </div>
+        <form class="newsletter-form">
+            <input type="email" placeholder="Votre email..." required>
+            <button type="submit">S'inscrire</button>
+        </form>
+    </div>
 
-        <div class="footer-bottom-premium">
-            <p>&copy; 2026 EcoWatch Platform - Groupe 4. Tous droits réservés.</p>
+    <footer>
+        <div
+            style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; font-size: 0.9rem;">
+            <p>© 2026 EcoWatch | Protection des données | Mentions légales</p>
+            <div style="display: flex; gap: 1.5rem;">
+                <a href="#" style="color: inherit; text-decoration: none;">Sitemap</a>
+                <a href="#" style="color: inherit; text-decoration: none;">Support</a>
+            </div>
         </div>
     </footer>
 
