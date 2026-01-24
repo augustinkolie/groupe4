@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from .forms import CustomUserCreationForm
+from django.contrib import messages
+from .forms import CustomUserCreationForm, ContactForm, NewsletterForm
 from rest_framework import viewsets
 from .models import Station, Reading
 from .serializers import StationSerializer, ReadingSerializer
@@ -13,7 +14,32 @@ def dashboard(request):
     return render(request, 'monitoring/dashboard.html')
 
 def contact(request):
-    return render(request, 'monitoring/contact.html')
+    contact_form = ContactForm()
+    newsletter_form = NewsletterForm()
+
+    if request.method == 'POST':
+        if 'submit_contact' in request.POST:
+            contact_form = ContactForm(request.POST)
+            if contact_form.is_valid():
+                contact_form.save()
+                messages.success(request, 'Votre message a été envoyé avec succès! Nous vous répondrons dans les plus brefs délais.')
+                return redirect('contact')
+            else:
+                messages.error(request, 'Une erreur s\'est produite avec le formulaire de contact. Vérifiez les champs.')
+        
+        elif 'submit_newsletter' in request.POST:
+            newsletter_form = NewsletterForm(request.POST)
+            if newsletter_form.is_valid():
+                newsletter_form.save()
+                messages.success(request, 'Inscription à la newsletter confirmée !')
+                return redirect('contact')
+            else:
+                messages.error(request, 'Cet email est peut-être déjà inscrit ou invalide.')
+    
+    return render(request, 'monitoring/contact.html', {
+        'form': contact_form,
+        'newsletter_form': newsletter_form
+    })
 
 def about(request):
     return render(request, 'monitoring/about.html')
