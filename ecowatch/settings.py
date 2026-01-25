@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'monitoring',
+    'core',
+    'ingestion',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -81,8 +84,23 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'OPTIONS': {
+            'timeout': 20, # Higher timeout for SQLite concurrency
+        },
     }
 }
+
+# SQLite WAL Mode Configuration
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
+from django.db import connection
+
+@receiver(post_migrate)
+def set_sqlite_wal_mode(sender, **kwargs):
+    if connection.vendor == 'sqlite':
+        with connection.cursor() as cursor:
+            cursor.execute('PRAGMA journal_mode=WAL;')
+            cursor.execute('PRAGMA synchronous=NORMAL;')
 
 
 # Password validation
@@ -134,3 +152,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+# Phase 2: OpenWeather Configuration
+# Get your FREE key at https://openweathermap.org/api
+OPENWEATHER_API_KEY = '1dce26d4d292e782b2a1167826b10f35'
+

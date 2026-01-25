@@ -1469,14 +1469,19 @@
                 {% for station in stations %}
                 <div class="zone-card"
                     onclick="openPollutionModal('{{ station.name|addslashes }}', '{{ station.pollution_causes|addslashes|default:'Données en cours de collecte...' }}')">
-                    <div class="zone-badge">Risque Élevé</div>
+                    {% with latest=station.readings.first %}
+                    <div class="zone-badge" 
+                         style="background: {% if latest.iqa <= 50 %}#10b981{% elif latest.iqa <= 100 %}#f59e0b{% else %}#ef4444{% endif %};">
+                        IQA: {{ latest.iqa|default:"--" }}
+                    </div>
                     <img src="{{ station.image_url|default:'https://images.unsplash.com/photo-1518173946687-a4c8a9ba332f?auto=format&fit=crop&w=800&q=80' }}"
                         alt="{{ station.name }}" class="zone-img"
                         onerror="this.src='https://images.unsplash.com/photo-1518173946687-a4c8a9ba332f?auto=format&fit=crop&w=800&q=80'; this.onerror=null;">
                     <div class="zone-overlay">
                         <h3 class="zone-title">{{ station.name }}</h3>
-                        <p class="zone-desc">{{ station.location_description|truncatewords:15 }}</p>
+                        <p class="zone-desc">Dernier relevé à {{ latest.timestamp|date:"H:i" }}<br>{{ station.location_description|truncatewords:10 }}</p>
                     </div>
+                    {% endwith %}
                 </div>
                 {% endfor %}
             </div>
