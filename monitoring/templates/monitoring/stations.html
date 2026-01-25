@@ -199,6 +199,7 @@
         margin-bottom: 0;
         height: auto;
         -webkit-line-clamp: 1;
+        line-clamp: 1;
         flex: 1;
     }
 
@@ -287,7 +288,7 @@
     <div class="card-body" style="padding: 0.75rem 1rem;">
         <div class="flex gap-2">
             <div class="form-group" style="flex: 1; margin: 0;">
-                <input type="text" class="premium-control" style="padding: 0.5rem 1rem; border-radius: 0.5rem;" placeholder="Rechercher une station...">
+                <input type="text" id="stationLocalSearch" class="premium-control" style="padding: 0.5rem 1rem; border-radius: 0.5rem;" placeholder="Rechercher une station dans la liste...">
             </div>
             <select class="premium-control form-select" style="width: 180px; padding: 0.5rem 1rem; border-radius: 0.5rem;">
                 <option>Statut : Tous</option>
@@ -420,10 +421,23 @@
             localStorage.setItem('stationView', 'list');
         });
 
-        // Load preference
-        const savedView = localStorage.getItem('stationView');
-        if (savedView === 'list') {
-            listBtn.click();
+        // Local Search Filtering
+        const localSearch = document.getElementById('stationLocalSearch');
+        const stationCards = document.querySelectorAll('#stationsContainer > .card');
+
+        if (localSearch) {
+            localSearch.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                stationCards.forEach(card => {
+                    const name = card.querySelector('.station-name').innerText.toLowerCase();
+                    const loc = card.querySelector('.station-location').innerText.toLowerCase();
+                    if (name.includes(term) || loc.includes(term)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
         }
     });
 </script>

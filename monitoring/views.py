@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import CustomUserCreationForm
+from datetime import timedelta
 from rest_framework import viewsets
+from django.utils import timezone
 from .models import Station, Reading
 from .serializers import StationSerializer, ReadingSerializer
 
@@ -30,11 +32,26 @@ def stations_list(request):
     return render(request, 'monitoring/stations.html', {'page_obj': page_obj})
 
 def alerts_view(request):
-    return render(request, 'monitoring/alerts.html')
+    time_threshold = timezone.now() - timedelta(hours=24)
+    # Count readings with IQA > 100 as "alerts" for demonstration
+    alerts_count = Reading.objects.filter(iqa__gt=100, timestamp__gte=time_threshold).count()
+    context = {
+        'alerts_total': alerts_count,
+        'alerts_today': alerts_count, # Simplified
+        'rules_count': 4, # Mock count
+    }
+    return render(request, 'monitoring/alerts.html', context)
 
 def reports_view(request):
     stations = Station.objects.all()
-    return render(request, 'monitoring/reports.html', {'stations': stations})
+    total_readings = Reading.objects.all().count()
+    context = {
+        'stations': stations,
+        'total_reports': 12, # Mock count
+        'total_exports': 45, # Mock count
+        'total_readings': total_readings,
+    }
+    return render(request, 'monitoring/reports.html', context)
 
 def signup(request):
     if request.method == 'POST':

@@ -16,6 +16,8 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 
     {% block extra_css %}{% endblock %}
 
@@ -507,7 +509,8 @@
           <!-- Search Bar -->
           <div class="search-bar">
             <i class="fas fa-search"></i>
-            <input type="text" placeholder="Rechercher..." />
+            <input type="text" id="globalSearch" placeholder="Rechercher une station..." autocomplete="off"/>
+            <div id="global-search-results" style="position: absolute; top: 100%; left: 0; width: 100%; background: white; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--gray-light); margin-top: 5px; max-height: 250px; overflow-y: auto; display: none; z-index: 2000;"></div>
           </div>
 
           <!-- Notifications -->

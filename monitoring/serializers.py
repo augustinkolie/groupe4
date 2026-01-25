@@ -7,13 +7,10 @@ class StationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ReadingSerializer(serializers.ModelSerializer):
-    class NameSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Station
-            fields = ['name']
-    
-    station_name = serializers.CharField(source='station.name', read_only=True)
-
     class Meta:
         model = Reading
-        fields = '__all__'
+        fields = [
+            'id', 'timestamp', 'pm25', 'pm10', 'co', 'no2', 'so2', 'o3', 
+            'humidity', 'temperature', 'iqa', 'source_type', 'source_id'
+        ]
+

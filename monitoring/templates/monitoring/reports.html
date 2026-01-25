@@ -23,29 +23,29 @@
         <div class="stat-icon">
             <i class="fas fa-file-alt"></i>
         </div>
-        <div class="stat-value">0</div>
+        <div class="stat-value">{{ total_reports }}</div>
         <div class="stat-label">Rapports Générés</div>
     </div>
     <div class="stat-card">
         <div class="stat-icon" style="background: #dbeafe; color: #3b82f6;">
             <i class="fas fa-download"></i>
         </div>
-        <div class="stat-value" style="color: #3b82f6;">0</div>
+        <div class="stat-value" style="color: #3b82f6;">{{ total_exports }}</div>
         <div class="stat-label">Exports ce Mois</div>
     </div>
     <div class="stat-card">
         <div class="stat-icon" style="background: #fef3c7; color: #f59e0b;">
-            <i class="fas fa-clock"></i>
+            <i class="fas fa-database"></i>
         </div>
-        <div class="stat-value" style="color: #f59e0b;">0</div>
-        <div class="stat-label">En Attente</div>
+        <div class="stat-value" style="color: #f59e0b;">{{ total_readings }}</div>
+        <div class="stat-label">Total Relevés</div>
     </div>
     <div class="stat-card">
         <div class="stat-icon" style="background: #d1fae5; color: #059669;">
             <i class="fas fa-calendar-check"></i>
         </div>
-        <div class="stat-value" style="color: #059669;">0</div>
-        <div class="stat-label">Rapports Planifiés</div>
+        <div class="stat-value" style="color: #059669;">{{ stations.count }}</div>
+        <div class="stat-label">Stations Actives</div>
     </div>
 </div>
 
