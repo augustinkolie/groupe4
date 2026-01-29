@@ -1490,9 +1490,9 @@
             <img src="{% static 'monitoring/images/action_bg.png' %}" alt="Communauté EcoWatch" class="action-bg-image">
             <div class="action-overlay">
                 <div class="action-buttons">
-                    <a href="#" class="btn-action btn-green">Signaler un Problème</a>
-                    <a href="#" class="btn-action btn-orange">S'inscrire aux Alertes</a>
-                    <a href="#" class="btn-action btn-teal">Participer à la Communauté</a>
+                    <a href="{% url 'contact' %}" class="btn-action btn-green">Signaler un Problème</a>
+                    <a href="{% url 'alerts' %}" class="btn-action btn-orange">S'inscrire aux Alertes</a>
+                    <a href="{% url 'about' %}" class="btn-action btn-teal">Participer à la Communauté</a>
                 </div>
             </div>
         </div>
