@@ -632,7 +632,7 @@
         .zone-card {
             flex: 0 0 350px;
             height: 450px;
-            border-radius: 2rem;
+            border-radius: 1rem;
             overflow: hidden;
             position: relative;
             cursor: pointer;
@@ -659,7 +659,7 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding: 2.5rem;
+            padding: 1.5rem;
             color: white;
             transition: all 0.5s ease;
         }
@@ -673,7 +673,7 @@
             font-size: 1.8rem;
             font-weight: 800;
             margin-bottom: 0.5rem;
-            transform: translateY(0);
+            transform: translateY(30px);
             transition: all 0.5s ease;
         }
 
@@ -683,17 +683,17 @@
             transform: translateY(20px);
             opacity: 0;
             transition: all 0.5s ease;
-            text-align: center;
+            text-align: left;
         }
 
         .zone-card:hover .zone-desc {
-            transform: translateY(-100px);
+            transform: translateY(0);
             opacity: 1;
         }
 
         .zone-card:hover .zone-title {
-            transform: translateY(-110px);
-            text-align: center;
+            transform: translateY(-10px);
+            text-align: left;
             width: 100%;
         }
 
@@ -827,7 +827,7 @@
 
         /* Agissez Avec Nous Section */
         .action-section {
-            padding: 4rem 5%;
+            padding: 4rem 0;
             background: var(--white);
             text-align: center;
         }
@@ -836,28 +836,15 @@
             max-width: 900px;
             margin: 0 auto 3rem;
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1.5rem;
-        }
-
-        .action-header::before,
-        .action-header::after {
-            content: '';
-            height: 1px;
-            flex: 1;
-            background: #cbd5e1;
+            text-align: center;
         }
 
         .action-title {
             font-size: 2.2rem;
             font-weight: 800;
             color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            white-space: nowrap;
+            text-align: center;
+            width: 100%;
         }
 
         .action-title i {
@@ -869,11 +856,10 @@
 
         .action-content-wrapper {
             position: relative;
-            border-radius: 1.5rem;
+            border-radius: 0;
             overflow: hidden;
             height: 450px;
-            max-width: 1200px;
-            margin: 0 auto;
+            width: 100%;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
@@ -910,7 +896,7 @@
 
         .btn-action {
             padding: 1rem 2rem;
-            border-radius: 0.5rem;
+            border-radius: 50px;
             font-weight: 700;
             font-size: 1.1rem;
             color: white;
@@ -920,27 +906,29 @@
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             display: inline-block;
             min-width: 250px;
+            border: 2px solid transparent;
+            backdrop-filter: blur(5px);
         }
 
         .btn-action:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            filter: brightness(1.1);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .btn-green {
-            background: linear-gradient(180deg, #46a040 0%, #388e3c 100%);
-            border-bottom: 4px solid #2e7d32;
+            background: transparent;
+            border-color: #46a040;
         }
 
         .btn-orange {
-            background: linear-gradient(180deg, #d84315 0%, #bf360c 100%);
-            border-bottom: 4px solid #870000;
+            background: transparent;
+            border-color: #d84315;
         }
 
         .btn-teal {
-            background: linear-gradient(180deg, #264653 0%, #1a333d 100%);
-            border-bottom: 4px solid #10232a;
+            background: transparent;
+            border-color: #264653;
         }
 
         /* Environmental Issues Section */
@@ -1094,9 +1082,9 @@
         }
 
         .service-icon-wrapper {
-            width: 90px;
-            height: 80px;
-            margin-bottom: 1.25rem;
+            width: 60px;
+            height: 50px;
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1148,11 +1136,7 @@
         /* Impact Section */
         .impact-section {
             position: relative;
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-            url("{% static 'monitoring/images/impact_bg.jpg' %}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             padding: 5rem 5%;
             color: white;
             text-align: center;
@@ -1312,14 +1296,36 @@
 
 
 
+
+    <div class="separator-container" style="margin-top: 4rem; margin-bottom: 2rem;">
+        <h2 class="separator-title" style="color: var(--dark); text-shadow: none;">Nos Impact en Chiffres</h2>
+    </div>
+
+    <!-- Impact Statistics Section -->
+    <section class="impact-section">
+        <div class="impact-content">
+
+            <div class="impact-stats-grid">
+                <div class="impact-stat">
+                    <div class="impact-number">+<span class="stat-counter" data-target="12000">0</span></div>
+                    <div class="impact-label">Citoyens Sensibilisés</div>
+                </div>
+                <div class="impact-stat">
+                    <div class="impact-number">+<span class="stat-counter" data-target="350">0</span></div>
+                    <div class="impact-label">Rapports Publiés</div>
+                </div>
+                <div class="impact-stat">
+                    <div class="impact-number"><span class="stat-counter" data-target="15">0</span></div>
+                    <div class="impact-label">Partenaires & ONG</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Environmental Issues Section -->
     <section class="issues-section" style="padding: 3rem 5% 6rem; background: #fdfdfd;">
         <div class="separator-container">
-            <div class="separator-line"></div>
-            <div class="separator-diamond"></div>
             <h2 class="separator-title">Les Enjeux Environnementaux</h2>
-            <div class="separator-diamond"></div>
-            <div class="separator-line"></div>
         </div>
 
         <div class="issues-grid">
@@ -1368,11 +1374,7 @@
     <!-- Services Section -->
     <section class="services-section" style="padding: 4rem 5% 6rem;">
         <div class="separator-container">
-            <div class="separator-line"></div>
-            <div class="separator-diamond"></div>
             <h2 class="separator-title">Nos Services</h2>
-            <div class="separator-diamond"></div>
-            <div class="separator-line"></div>
         </div>
 
         <div class="issues-grid"> <!-- Reusing existing grid for consistency -->
@@ -1430,35 +1432,9 @@
         </div>
     </section>
 
-    <!-- Impact Statistics Section -->
-    <section class="impact-section">
-        <div class="impact-content">
-            <div class="separator-container">
-                <div class="separator-line"></div>
-                <div class="separator-diamond"></div>
-                <h2 class="separator-title">Nos Impact en Chiffres</h2>
-                <div class="separator-diamond"></div>
-                <div class="separator-line"></div>
-            </div>
 
-            <div class="impact-stats-grid">
-                <div class="impact-stat">
-                    <div class="impact-number">+12,000</div>
-                    <div class="impact-label">Citoyens Sensibilisés</div>
-                </div>
-                <div class="impact-stat">
-                    <div class="impact-number">+350</div>
-                    <div class="impact-label">Rapports Publiés</div>
-                </div>
-                <div class="impact-stat">
-                    <div class="impact-number">15</div>
-                    <div class="impact-label">Partenaires & ONG</div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section id="zones" style="background: white; padding-left: 5%; padding-right: 5%;">
+    <section id="zones" style="background: white; padding: 4rem 5% 2rem 5%;">
         <div class="section-header">
             <h2>Zones Surveillées à Risque</h2>
             <p>Découvrez les zones nécessitant une attention particulière et les causes de leur pollution.</p>
@@ -1470,8 +1446,8 @@
                 <div class="zone-card"
                     onclick="openPollutionModal('{{ station.name|addslashes }}', '{{ station.pollution_causes|addslashes|default:'Données en cours de collecte...' }}')">
                     {% with latest=station.readings.first %}
-                    <div class="zone-badge" 
-                         style="background: {% if latest.iqa <= 50 %}#10b981{% elif latest.iqa <= 100 %}#f59e0b{% else %}#ef4444{% endif %};">
+                    <div class="zone-badge"
+                        style="background: {% if latest.iqa <= 50 %}#10b981{% elif latest.iqa <= 100 %}#f59e0b{% else %}#ef4444{% endif %};">
                         IQA: {{ latest.iqa|default:"--" }}
                     </div>
                     <img src="{{ station.image_url|default:'https://images.unsplash.com/photo-1518173946687-a4c8a9ba332f?auto=format&fit=crop&w=800&q=80' }}"
@@ -1479,7 +1455,8 @@
                         onerror="this.src='https://images.unsplash.com/photo-1518173946687-a4c8a9ba332f?auto=format&fit=crop&w=800&q=80'; this.onerror=null;">
                     <div class="zone-overlay">
                         <h3 class="zone-title">{{ station.name }}</h3>
-                        <p class="zone-desc">Dernier relevé à {{ latest.timestamp|date:"H:i" }}<br>{{ station.location_description|truncatewords:10 }}</p>
+                        <p class="zone-desc">Dernier relevé à {{ latest.timestamp|date:"H:i" }}<br>{{
+                            station.location_description|truncatewords:10 }}</p>
                     </div>
                     {% endwith %}
                 </div>
@@ -1504,16 +1481,13 @@
     <section class="action-section">
         <div class="action-header">
             <div class="action-title">
-                <i class="fas fa-square-full"></i>
                 Agissez Avec Nous!
-                <i class="fas fa-square-full"></i>
             </div>
         </div>
 
         <div class="action-content-wrapper">
             <!-- Using a high quality image of community planting/nature work -->
-            <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1800&q=80"
-                alt="Communauté EcoWatch" class="action-bg-image">
+            <img src="{% static 'monitoring/images/action_bg.png' %}" alt="Communauté EcoWatch" class="action-bg-image">
             <div class="action-overlay">
                 <div class="action-buttons">
                     <a href="#" class="btn-action btn-green">Signaler un Problème</a>
@@ -1568,7 +1542,7 @@
                     <li style="color: #94a3b8;"><i class="fas fa-envelope"
                             style="margin-right: 10px; color: var(--primary);"></i> support@ecowatch.gn</li>
                     <li style="color: #94a3b8;"><i class="fas fa-phone"
-                            style="margin-right: 10px; color: var(--primary);"></i> +224 6XX XX XX XX</li>
+                            style="margin-right: 10px; color: var(--primary);"></i> +224 610 85 00 29</li>
                     <li style="color: #94a3b8;"><i class="fas fa-map-marker-alt"
                             style="margin-right: 10px; color: var(--primary);"></i> Conakry, Guinée</li>
                 </ul>
@@ -1672,6 +1646,47 @@
                 scrollIndicator.style.opacity = '1';
             }
         });
+
+        // Statistics Animation
+        const stats = document.querySelectorAll('.stat-counter');
+        const countUp = (element) => {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2000; // 2 seconds
+            const startTime = performance.now();
+
+            const update = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing function (easeOutExpo)
+                const easedProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+
+                const current = Math.floor(easedProgress * target);
+                element.innerText = current.toLocaleString();
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    element.innerText = target.toLocaleString();
+                }
+            };
+            requestAnimationFrame(update);
+        };
+
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    countUp(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        stats.forEach(stat => observer.observe(stat));
     </script>
 </body>
 
