@@ -1219,7 +1219,7 @@
             <span class="logo-text">EcoWatch</span>
         </a>
         <div class="nav-links">
-            <a href="#features">Fonctionnalités</a>
+            <a href="{% url 'features' %}">Fonctionnalités</a>
             <a href="/about/">À Propos</a>
             <a href="/contact/">Contact</a>
             {% if user.is_authenticated %}
@@ -1521,7 +1521,7 @@
                 <ul>
                     <li><a href="#zones">Zones à risque</a></li>
                     <li><a href="/dashboard/">Tableau de bord</a></li>
-                    <li><a href="#features">Technologie IoT</a></li>
+                    <li><a href="{% url 'features' %}">Technologie IoT</a></li>
                     <li><a href="#">API Développeurs</a></li>
                 </ul>
             </div>

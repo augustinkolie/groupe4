@@ -12,6 +12,9 @@ def index(request):
     stations = Station.objects.all()
     return render(request, 'monitoring/index.html', {'stations': stations})
 
+def features(request):
+    return render(request, 'monitoring/features.html')
+
 def dashboard(request):
     return render(request, 'monitoring/dashboard.html')
 
