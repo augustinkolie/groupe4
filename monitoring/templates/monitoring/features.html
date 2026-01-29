@@ -1,0 +1,512 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fonctionnalités | EcoWatch</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #3b82f6;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --white: #ffffff;
+            --gray: #6b7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--white);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Navigation (Reused) */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.3rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 0;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -1px;
+            margin-left: -17px;
+        }
+
+        .logo img {
+            height: 75px;
+            width: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white !important;
+            padding: 0.65rem 1.25rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+         /* User Profile Dropdown */
+         .user-profile {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-trigger {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 1rem;
+            transition: all 0.3s;
+            color: var(--dark);
+        }
+
+        .profile-trigger:hover {
+            background: var(--light);
+        }
+
+        .avatar-circle {
+            width: 35px;
+            height: 35px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: var(--white);
+            min-width: 200px;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem;
+            display: none;
+            flex-direction: column;
+            z-index: 1001;
+            border: 1px solid #eee;
+        }
+
+        .profile-dropdown.show {
+            display: flex;
+        }
+
+        .profile-dropdown a,
+        .profile-dropdown button {
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            color: var(--dark);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .profile-dropdown a:hover,
+        .profile-dropdown button:hover {
+            background: var(--light);
+            color: var(--primary);
+        }
+        
+        .profile-dropdown .divider {
+            height: 1px;
+            background: #eee;
+            margin: 0.5rem 0;
+        }
+
+        /* Hero Features */
+        .hero-features {
+            padding: 6rem 5% 4rem;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+        }
+
+        .hero-features h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-features p {
+            font-size: 1.25rem;
+            color: var(--gray);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Features List */
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 5% 8rem;
+        }
+
+        .feature-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+            margin-bottom: 8rem;
+        }
+
+        .feature-row.reverse {
+            direction: rtl;
+        }
+
+        .feature-row.reverse .feature-text {
+            direction: ltr;
+        }
+
+        .feature-visual {
+            position: relative;
+        }
+
+        .feature-visual img {
+            width: 100%;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.5s ease;
+        }
+
+        .feature-visual:hover img {
+            transform: scale(1.02);
+        }
+
+        .feature-text h2 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .feature-text p {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .feature-list i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        /* CTA */
+        .cta-box {
+            background: var(--dark);
+            color: white;
+            border-radius: 2rem;
+            padding: 5rem 2rem;
+            text-align: center;
+            margin: 0 5% 6rem;
+        }
+
+        .cta-box h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-box p {
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            opacity: 0.9;
+        }
+
+        /* Footer (Reused styles from index) */
+        footer {
+            background: #0f172a;
+            color: #f1f5f9;
+            padding: 5rem 5% 2rem;
+        }
+
+        .footer-content-premium {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+        
+        .footer-brand .footer-logo {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            text-decoration: none;
+        }
+
+        .footer-brand .footer-logo .logo-text {
+            color: var(--white);
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-left: -17px;
+        }
+
+        .footer-brand .footer-logo img {
+            height: 70px;
+            width: auto;
+        }
+        
+        .footer-bottom-premium {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 992px) {
+            .feature-row {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                margin-bottom: 5rem;
+            }
+
+            .feature-row.reverse {
+                direction: ltr;
+            }
+            
+            .footer-content-premium {
+                 grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="/" class="logo">
+            <img src="{% static 'monitoring/images/logo.png' %}" alt="EcoWatch Logo">
+            <span class="logo-text">EcoWatch</span>
+        </a>
+        <div class="nav-links">
+            <a href="{% url 'features' %}" class="active">Fonctionnalités</a>
+            <a href="{% url 'about' %}">À Propos</a>
+            <a href="{% url 'contact' %}">Contact</a>
+            {% if user.is_authenticated %}
+            <div class="user-profile">
+                <div class="profile-trigger" id="profileTrigger">
+                    <div class="avatar-circle">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span class="username">{{ user.username }}</span>
+                    <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="{% url 'dashboard' %}"><i class="fas fa-chart-line"></i> Tableau de bord</a>
+                    <a href="/admin/"><i class="fas fa-cog"></i> Paramètres</a>
+                    <div class="divider"></div>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" style="color: #ef4444;"><i class="fas fa-sign-out-alt"></i>
+                            Déconnexion</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}">Connexion</a>
+            <a href="{% url 'signup' %}" class="btn-primary">S'inscrire</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="hero-features">
+        <h1>Une Technologie au Service de la Vie</h1>
+        <p>Découvrez comment EcoWatch transforme la surveillance environnementale grâce à une suite complète d'outils intelligents et connectés.</p>
+    </div>
+
+    <div class="features-container">
+        
+        <!-- Feature 1 -->
+        <div class="feature-row">
+            <div class="feature-text">
+                <div style="color: var(--primary); font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.9rem;">Temps Réel</div>
+                <h2>Surveillance Continue et Précise</h2>
+                <p>Accédez aux données de qualité de l'air instantanément, où que vous soyez. Nos capteurs déploient un maillage intelligent pour ne rien manquer.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Actualisation toutes les 5 minutes</li>
+                    <li><i class="fas fa-check-circle"></i> Mesure des PM2.5, PM10, NO2 et CO2</li>
+                    <li><i class="fas fa-check-circle"></i> Historique complet accessible</li>
+                </ul>
+            </div>
+            <div class="feature-visual">
+                <img src="{% static 'monitoring/images/slide1.png' %}" alt="Surveillance Temps Réel">
+            </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature-row reverse">
+            <div class="feature-text">
+                 <div style="color: var(--secondary); font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.9rem;">Intelligence</div>
+                <h2>Tableau de Bord Analytique</h2>
+                <p>Visualisez les tendances et comprenez les sources de pollution grâce à nos outils de dataviz avancés.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Graphiques interactifs dynamiques</li>
+                    <li><i class="fas fa-check-circle"></i> Cartographie thermique des zones à risque</li>
+                    <li><i class="fas fa-check-circle"></i> Comparaison entre stations</li>
+                </ul>
+            </div>
+            <div class="feature-visual">
+                <img src="{% static 'monitoring/images/slide2.png' %}" alt="Tableau de Bord">
+            </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature-row">
+            <div class="feature-text">
+                 <div style="color: #ef4444; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.9rem;">Protection</div>
+                <h2>Système d'Alertes Préventives</h2>
+                <p>Soyez averti avant que l'air ne devienne dangereux. Protégez votre santé et celle de vos proches.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Notifications SMS et Email</li>
+                    <li><i class="fas fa-check-circle"></i> Seuils personnalisables</li>
+                    <li><i class="fas fa-check-circle"></i> Recommandations sanitaires automatiques</li>
+                </ul>
+            </div>
+            <div class="feature-visual">
+                <img src="{% static 'monitoring/images/slide3.png' %}" alt="Alertes">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="cta-box">
+        <h2>Prêt à respirer un air meilleur ?</h2>
+        <p>Rejoignez le réseau EcoWatch aujourd'hui et contribuez à un avenir plus sain.</p>
+        <a href="{% url 'signup' %}" class="btn-primary" style="background: white; color: var(--dark) !important;">Créer un compte gratuit</a>
+    </div>
+
+    <footer>
+        <div class="footer-content-premium">
+            <div class="footer-brand">
+                <a href="/" class="footer-logo">
+                    <img src="{% static 'monitoring/images/logo.png' %}" alt="EcoWatch Logo">
+                    <span class="logo-text">EcoWatch</span>
+                </a>
+                <p>Le premier réseau intelligent de surveillance environnementale en Afrique de l'Ouest.</p>
+            </div>
+             <!-- ... shorter footer for brevity ... -->
+             <div class="footer-links-group">
+                <h4 style="color:white; font-weight:700; margin-bottom:1.5rem;">Liens Rapides</h4>
+                <ul style="list-style:none; padding:0;">
+                    <li style="margin-bottom:0.8rem;"><a href="{% url 'dashboard' %}" style="text-decoration:none; color:#94a3b8;">Tableau de bord</a></li>
+                    <li style="margin-bottom:0.8rem;"><a href="{% url 'features' %}" style="text-decoration:none; color:#94a3b8;">Fonctionnalités</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom-premium">
+            <p>&copy; 2026 EcoWatch Platform. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Profile Dropdown Toggle
+        const profileTrigger = document.getElementById('profileTrigger');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        if (profileTrigger) {
+            profileTrigger.addEventListener('click', function (e) {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('show');
+            });
+
+            document.addEventListener('click', function () {
+                profileDropdown.classList.remove('show');
+            });
+        }
+    </script>
+</body>
+
+</html>
