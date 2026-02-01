@@ -2,6 +2,7 @@ import requests
 from datetime import datetime
 from typing import List, Optional
 from django.conf import settings
+from django.utils import timezone
 from ingestion.adapters.base import BaseAdapter, UnifiedPayload, UnifiedLocation, UnifiedMeasurement
 
 class OpenWeatherAdapter(BaseAdapter):
@@ -48,7 +49,7 @@ class OpenWeatherAdapter(BaseAdapter):
                 ),
                 source_type="API",
                 source_id="openweather",
-                captured_at=datetime.fromtimestamp(item.get('dt'))
+                captured_at=timezone.make_aware(datetime.fromtimestamp(item.get('dt')))
             ))
             
         return payloads

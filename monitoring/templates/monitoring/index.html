@@ -809,11 +809,76 @@
     <div id="pollutionModal" class="modal" onclick="if(event.target == this) closePollutionModal()">
         <div class="modal-content">
             <span class="close-modal" onclick="closePollutionModal()">&times;</span>
-            <h2 id="modalTitle" style="margin-bottom: 1.5rem; color: var(--primary);"></h2>
-            <h4 style="margin-bottom: 1rem; color: var(--dark);">Causes de la pollution :</h4>
-            <p id="modalCauses" style="line-height: 1.8; color: var(--gray); font-size: 1.1rem;"></p>
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--primary);"></i>
+                <h2 id="modalTitle" style="margin: 0; color: var(--dark);"></h2>
+            </div>
+            <h4 style="margin-bottom: 1.5rem; color: var(--dark); font-size: 1.1rem; border-bottom: 2px solid var(--primary); padding-bottom: 0.5rem;">Analyse de la qualité de l'air</h4>
+            <div id="modalCauses"></div>
         </div>
     </div>
+    
+    <style>
+        .pollution-analysis {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .analysis-header {
+            background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
+            padding: 1rem 1.25rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            font-size: 0.95rem;
+            color: var(--dark);
+        }
+        
+        .pollution-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .pollution-list li {
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            background: #f9fafb;
+            border-radius: 0.75rem;
+            border-left: 4px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .pollution-list li:hover {
+            background: #f3f4f6;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .pollutant-badge {
+            display: inline-block;
+            color: white;
+            padding: 0.35rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-right: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .pollution-list strong {
+            color: var(--dark);
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+        
+        .pollution-list small {
+            display: block;
+            color: var(--gray);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+    </style>
 
     <section id="about" style="background: var(--light);">
         <div class="section-header">
@@ -926,7 +991,7 @@
         // Modal Logic
         function openPollutionModal(title, causes) {
             document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalCauses').innerText = causes;
+            document.getElementById('modalCauses').innerHTML = causes;
             document.getElementById('pollutionModal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }

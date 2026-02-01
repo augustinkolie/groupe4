@@ -1,6 +1,7 @@
 import random
 from datetime import datetime
 from typing import List
+from django.utils import timezone
 from ingestion.adapters.base import BaseAdapter, UnifiedPayload, UnifiedLocation, UnifiedMeasurement
 
 class MockSensorAdapter(BaseAdapter):
@@ -26,6 +27,6 @@ class MockSensorAdapter(BaseAdapter):
             ),
             source_type="SENSOR",
             source_id="mock_labe_01",
-            captured_at=datetime.now()
+            captured_at=timezone.now()
         )
         return [payload]
