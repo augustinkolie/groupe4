@@ -80,6 +80,18 @@ def reports_view(request):
     }
     return render(request, 'monitoring/reports.html', context)
 
+def exports_view(request):
+    # Mock data for exports
+    exports = [
+        {'id': 'EXP-2024-001', 'date': timezone.now() - timedelta(days=1), 'format': 'CSV', 'status': 'Completed', 'size': '2.4 MB'},
+        {'id': 'EXP-2024-002', 'date': timezone.now() - timedelta(days=3), 'format': 'PDF', 'status': 'Completed', 'size': '1.1 MB'},
+        {'id': 'EXP-2024-003', 'date': timezone.now() - timedelta(days=5), 'format': 'Excel', 'status': 'Failed', 'size': '-'},
+    ]
+    return render(request, 'monitoring/exports.html', {'exports': exports})
+
+def analyses_view(request):
+    return render(request, 'monitoring/analyses.html')
+
 def signup(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)

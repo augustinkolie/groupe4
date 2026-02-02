@@ -1,1693 +1,2245 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EcoWatch | Surveillance de la Qualité de l'Air</title>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <style>
-        :root {
-            --primary: #10b981;
-            --primary-dark: #059669;
-            --secondary: #3b82f6;
-            --dark: #1f2937;
-            --light: #f9fafb;
-            --white: #ffffff;
-            --gray: #6b7280;
+      :root {
+        --primary: #10b981;
+        --primary-dark: #059669;
+        --secondary: #3b82f6;
+        --dark: #1f2937;
+        --light: #f9fafb;
+        --white: #ffffff;
+        --gray: #6b7280;
+
+        /* Theme Variables */
+        --bg-color: var(--white);
+        --text-color: var(--dark);
+        --card-bg: var(--white);
+        --nav-bg: transparent;
+        --nav-scrolled-bg: rgba(255, 255, 255, 0.98);
+        --nav-text: var(--white);
+        --footer-bg: #1e293b;
+        --footer-text: #94a3b8;
+        --border-color: #eee;
+        --section-bg-light: #f8fafc;
+        --section-bg-darker: #f1f5f9;
+      }
+
+      [data-theme="dark"] {
+        --bg-color: #0f172a;
+        --text-color: #f1f5f9;
+        --card-bg: #1e293b;
+        --nav-scrolled-bg: rgba(15, 23, 42, 0.95);
+        --border-color: #334155;
+        --section-bg-light: #1e293b;
+        --section-bg-darker: #0f172a;
+        --light: #1e293b;
+      }
+
+      /* Removed faulty filter that made icons invisible in dark mode */
+      /* 
+      [data-theme="dark"] .service-icon-img {
+        filter: brightness(0) invert(1);
+      } 
+      */
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      /* Navigation */
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.3rem 5%;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        background: transparent;
+        transition: all 0.4s ease;
+      }
+
+      nav.scrolled {
+        background: var(--nav-scrolled-bg);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        padding: 0.3rem 5%;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        gap: 0;
+        transition: all 0.3s;
+      }
+
+      .logo-text {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--white);
+        letter-spacing: -1px;
+        margin-left: -17px;
+        transition: all 0.3s;
+      }
+
+      nav.scrolled .logo-text {
+        color: var(--primary);
+      }
+
+      .logo img {
+        height: 75px;
+        width: auto;
+        transition: all 0.3s;
+      }
+
+      nav.scrolled .logo img {
+        height: 55px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .nav-links a:not(.btn-nav-custom) {
+        text-decoration: none;
+        color: var(--white);
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+        position: relative; /* For pseudo-element absolute positioning */
+      }
+
+      /* Moving underline effect */
+      .nav-links a:not(.btn-nav-custom)::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--primary);
+        transition: width 0.3s ease;
+      }
+
+      .nav-links a:not(.btn-nav-custom):hover::after,
+      .nav-links a:not(.btn-nav-custom).active::after {
+        width: 100%;
+      }
+
+      nav.scrolled .nav-links a:not(.btn-nav-custom) {
+        color: var(--text-color);
+      }
+
+      .nav-links a:hover {
+        color: var(--primary) !important;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: white !important;
+        padding: 0.65rem 1.25rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+        text-decoration: none;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+      }
+
+      /* Custom Nav Button (Ghost Pill Style) */
+      .btn-nav-custom {
+        background-color: transparent;
+        color: var(--white);
+        padding: 0.65rem 1.5rem;
+        border-radius: 50px; /* Pill shape */
+        border: 2px solid var(--primary);
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+        text-decoration: none;
+      }
+
+      .nav-links .btn-nav-custom:hover {
+        background-color: var(--primary);
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+      }
+
+      /* Scrolled state overrides */
+      nav.scrolled .btn-nav-custom {
+        color: var(--primary);
+        border-color: var(--primary);
+      }
+
+      nav.scrolled .btn-nav-custom:hover {
+        color: white !important;
+      }
+
+      /* User Profile Dropdown */
+      .user-profile {
+        position: relative;
+        cursor: pointer;
+      }
+
+      .profile-trigger {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 1rem;
+        transition: all 0.3s;
+        color: var(--white);
+      }
+
+      nav.scrolled .profile-trigger {
+        color: var(--text-color);
+      }
+
+      .profile-trigger:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      nav.scrolled .profile-trigger:hover {
+        background: var(--light);
+      }
+
+      .avatar-circle {
+        width: 35px;
+        height: 35px;
+        background: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.9rem;
+      }
+
+      .username {
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      .profile-dropdown {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        background: var(--card-bg);
+        min-width: 200px;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        padding: 0.5rem;
+        display: none;
+        flex-direction: column;
+        z-index: 1001;
+        border: 1px solid var(--border-color);
+        animation: fadeIn 0.2s ease-out;
+      }
+
+      .theme-toggle {
+        background: none;
+        border: none;
+        color: var(--white);
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 50%;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      nav.scrolled .theme-toggle {
+        color: var(--text-color);
+      }
+
+      .theme-toggle:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(15deg);
+      }
+
+      nav.scrolled .theme-toggle:hover {
+        background: var(--light);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .profile-dropdown.show {
+        display: flex;
+      }
+
+      .profile-dropdown a,
+      .profile-dropdown button {
+        padding: 0.75rem 1rem;
+        text-decoration: none;
+        color: var(--text-color);
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: none;
+        font-family: inherit;
+        cursor: pointer;
+      }
+
+      .profile-dropdown a:hover,
+      .profile-dropdown button:hover {
+        background: var(--light);
+        color: var(--primary);
+      }
+
+      .profile-dropdown form {
+        margin: 0;
+      }
+
+      /* Force Dark Mode Override for Profile Dropdown */
+      [data-theme="dark"] .profile-trigger,
+      [data-theme="dark"] .username {
+        color: var(--text-color);
+      }
+
+      [data-theme="dark"] .profile-dropdown {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+      }
+      
+      [data-theme="dark"] .profile-dropdown a,
+      [data-theme="dark"] .profile-dropdown button {
+        color: var(--text-color);
+      }
+      
+      [data-theme="dark"] .profile-dropdown a:hover,
+      [data-theme="dark"] .profile-dropdown button:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .profile-dropdown .divider {
+        height: 1px;
+        background: var(--border-color);
+        margin: 0.5rem 0;
+      }
+
+      /* Carousel */
+      .hero-carousel {
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+        margin-top: 0;
+      }
+
+      .carousel-inner {
+        height: 100%;
+        width: 300%;
+        display: flex;
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .carousel-item {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+
+      .carousel-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.7);
+      }
+
+      .carousel-caption {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: white;
+        width: 90%;
+        max-width: 1200px;
+      }
+
+      .carousel-caption h1 {
+        font-size: 4.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        line-height: 1.1;
+        text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .carousel-caption p {
+        font-size: 1.6rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.95;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .btn-carousel {
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 50px; /* Pill shape */
+        background: transparent;
+        color: white !important;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+        border: 2px solid var(--primary);
+      }
+
+      .btn-carousel:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 15px 35px rgba(16, 185, 129, 0.5);
+        background: var(--primary);
+        filter: brightness(1.1);
+        border-color: var(--primary);
+      }
+
+      .carousel-controls {
+        position: absolute;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 1rem;
+        z-index: 10;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .dot.active {
+        background: var(--white);
+        width: 24px;
+        border-radius: 4px;
+      }
+
+      /* Carousel Arrows */
+      .carousel-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 20;
+        transition: all 0.3s;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .carousel-arrow:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      .carousel-arrow.prev {
+        left: 30px;
+      }
+
+      .carousel-arrow.next {
+        right: 30px;
+      }
+
+      /* Scroll Indicator */
+      .scroll-indicator {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        z-index: 10;
+        animation: bounce 2s infinite;
+        transition: opacity 0.3s;
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateX(-50%) translateY(0);
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--white);
-            color: var(--dark);
-            line-height: 1.6;
+        40% {
+          transform: translateX(-50%) translateY(-10px);
         }
 
-        /* Navigation */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.3rem 5%;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            background: transparent;
-            transition: all 0.4s ease;
+        60% {
+          transform: translateX(-50%) translateY(-5px);
         }
+      }
 
-        nav.scrolled {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-            padding: 0.3rem 5%;
+      /* Professional Carousel Animations */
+      @keyframes fadeInUpPremium {
+        from {
+          opacity: 0;
+          transform: translate3d(0, 40px, 0);
         }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            gap: 0;
-            transition: all 0.3s;
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
         }
+      }
 
-        .logo-text {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--white);
-            letter-spacing: -1px;
-            margin-left: -17px;
-            transition: all 0.3s;
+      @keyframes fadeInDownPremium {
+        from {
+          opacity: 0;
+          transform: translate3d(0, -40px, 0);
         }
-
-        nav.scrolled .logo-text {
-            color: var(--primary);
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
         }
+      }
 
-        .logo img {
-            height: 75px;
-            width: auto;
-            transition: all 0.3s;
+      @keyframes zoomInPremium {
+        from {
+          opacity: 0;
+          transform: scale3d(0.9, 0.9, 0.9);
         }
-
-        nav.scrolled .logo img {
-            height: 55px;
+        to {
+          opacity: 1;
+          transform: scale3d(1, 1, 1);
         }
+      }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
+      /* Initial states - hidden */
+      .carousel-item .carousel-caption h1,
+      .carousel-item .carousel-caption p,
+      .carousel-item .carousel-caption .btn-carousel {
+        opacity: 0;
+        /* Hardware acceleration for smoother text rendering */
+        backface-visibility: hidden;
+      }
 
-        .nav-links a {
-            text-decoration: none;
-            color: var(--white);
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-        }
+      /* Active states - triggering animations */
+      .carousel-item.active .carousel-caption h1 {
+        animation: fadeInDownPremium 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        animation-delay: 0.2s;
+      }
 
-        nav.scrolled .nav-links a {
-            color: var(--dark);
-        }
+      .carousel-item.active .carousel-caption p {
+        animation: fadeInUpPremium 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        animation-delay: 0.5s;
+      }
 
-        .nav-links a:hover {
-            color: var(--primary) !important;
-        }
+      .carousel-item.active .carousel-caption .btn-carousel {
+        animation: zoomInPremium 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        animation-delay: 0.9s;
+      }
 
-        .btn-primary {
-            background-color: var(--primary);
-            color: white !important;
-            padding: 0.65rem 1.25rem;
-            border-radius: 0.75rem;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
+      /* Features Section */
+      section {
+        padding: 8rem 10%;
+      }
 
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-        }
+      .section-header {
+        text-align: center;
+        margin-bottom: 5rem;
+      }
 
-        /* User Profile Dropdown */
-        .user-profile {
-            position: relative;
-            cursor: pointer;
-        }
+      .section-header h2 {
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+        font-weight: 800;
+      }
 
-        .profile-trigger {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem 0.75rem;
-            border-radius: 1rem;
-            transition: all 0.3s;
-            color: var(--white);
-        }
+      .section-header p {
+        color: var(--gray);
+        max-width: 600px;
+        margin: 0 auto;
+      }
 
-        nav.scrolled .profile-trigger {
-            color: var(--dark);
-        }
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 3rem;
+      }
 
-        .profile-trigger:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
+      .feature-card {
+        padding: 3rem;
+        background: var(--light);
+        border-radius: 2rem;
+        transition: all 0.3s;
+        border: 1px solid transparent;
+      }
 
-        nav.scrolled .profile-trigger:hover {
-            background: var(--light);
-        }
+      .feature-card:hover {
+        background: var(--white);
+        border-color: #eee;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        transform: translateY(-10px);
+      }
 
-        .avatar-circle {
-            width: 35px;
-            height: 35px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.9rem;
-        }
+      .feature-icon {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+      }
 
-        .username {
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
+      .feature-card h3 {
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+      }
 
-        .profile-dropdown {
-            position: absolute;
-            top: calc(100% + 10px);
-            right: 0;
-            background: var(--white);
-            min-width: 200px;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            padding: 0.5rem;
-            display: none;
-            flex-direction: column;
-            z-index: 1001;
-            border: 1px solid #eee;
-            animation: fadeIn 0.2s ease-out;
-        }
+      /* CTA Section */
+      .cta-section {
+        background: var(--dark);
+        color: white;
+        border-radius: 3rem;
+        margin: 0 5% 8rem 5%;
+        text-align: center;
+        padding: 6rem 2rem;
+      }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
+      .cta-section h2 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+      }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+      /* Premium Footer Redesign */
+      footer {
+        background: #0f172a;
+        color: #f1f5f9;
+        padding: 5rem 5% 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
 
-        .profile-dropdown.show {
-            display: flex;
-        }
+      .footer-content-premium {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+        gap: 4rem;
+        margin-bottom: 4rem;
+      }
 
-        .profile-dropdown a,
-        .profile-dropdown button {
-            padding: 0.75rem 1rem;
-            text-decoration: none;
-            color: var(--dark);
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 0.5rem;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            width: 100%;
-            text-align: left;
-            background: none;
-            border: none;
-            font-family: inherit;
-            cursor: pointer;
-        }
+      .footer-brand .footer-logo {
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0;
+        text-decoration: none;
+      }
 
-        .profile-dropdown a:hover,
-        .profile-dropdown button:hover {
-            background: var(--light);
-            color: var(--primary);
-        }
+      .footer-brand .footer-logo .logo-text {
+        color: var(--white);
+        font-size: 1.4rem;
+        font-weight: 800;
+        margin-left: -17px;
+      }
 
-        .profile-dropdown form {
-            margin: 0;
-        }
+      .footer-brand .footer-logo img {
+        height: 70px;
+        width: auto;
+      }
 
-        .profile-dropdown .divider {
-            height: 1px;
-            background: #eee;
-            margin: 0.5rem 0;
-        }
+      .footer-brand p {
+        color: #94a3b8;
+        font-size: 1rem;
+        line-height: 1.7;
+        margin-bottom: 2rem;
+        max-width: 320px;
+      }
 
-        /* Carousel */
-        .hero-carousel {
-            height: 100vh;
-            position: relative;
-            overflow: hidden;
-            margin-top: 0;
-        }
+      .social-links {
+        display: flex;
+        gap: 1rem;
+      }
 
-        .carousel-inner {
-            height: 100%;
-            width: 300%;
-            display: flex;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+      .social-links a {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+      }
 
-        .carousel-item {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
+      .social-links a:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+      }
 
-        .carousel-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.7);
-        }
+      .footer-links-group h4 {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        position: relative;
+        display: inline-block;
+      }
 
-        .carousel-caption {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: white;
-            width: 80%;
-            max-width: 800px;
-        }
+      .footer-links-group h4::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 30px;
+        height: 2px;
+        background: var(--primary);
+      }
 
-        .carousel-caption h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1.25rem;
-            line-height: 1.1;
-        }
+      .footer-links-group ul {
+        list-style: none;
+      }
 
-        .carousel-caption p {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
+      .footer-links-group li {
+        margin-bottom: 1rem;
+      }
 
-        .carousel-controls {
-            position: absolute;
-            bottom: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 1rem;
-            z-index: 10;
-        }
+      .footer-links-group a {
+        text-decoration: none;
+        color: #94a3b8;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        display: inline-block;
+      }
 
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+      .footer-links-group a:hover {
+        color: var(--primary);
+        transform: translateX(5px);
+      }
 
-        .dot.active {
-            background: var(--white);
-            width: 24px;
-            border-radius: 4px;
-        }
+      .footer-bottom-premium {
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #64748b;
+        font-size: 0.9rem;
+      }
 
-        /* Carousel Arrows */
-        .carousel-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 48px;
-            height: 48px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 20;
-            transition: all 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+      .footer-bottom-links {
+        display: flex;
+        gap: 2rem;
+      }
 
-        .carousel-arrow:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            transform: translateY(-50%) scale(1.1);
-        }
+      .footer-bottom-links a {
+        color: #64748b;
+        text-decoration: none;
+        transition: color 0.2s;
+      }
 
-        .carousel-arrow.prev {
-            left: 30px;
-        }
+      .footer-bottom-links a:hover {
+        color: white;
+      }
 
-        .carousel-arrow.next {
-            right: 30px;
-        }
-
-        /* Scroll Indicator */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            z-index: 10;
-            animation: bounce 2s infinite;
-            transition: opacity 0.3s;
-        }
-
-        @keyframes bounce {
-
-            0%,
-            20%,
-            50%,
-            80%,
-            100% {
-                transform: translateX(-50%) translateY(0);
-            }
-
-            40% {
-                transform: translateX(-50%) translateY(-10px);
-            }
-
-            60% {
-                transform: translateX(-50%) translateY(-5px);
-            }
-        }
-
-        /* Features Section */
-        section {
-            padding: 8rem 10%;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 5rem;
-        }
-
-        .section-header h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .section-header p {
-            color: var(--gray);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
-        }
-
-        .feature-card {
-            padding: 3rem;
-            background: var(--light);
-            border-radius: 2rem;
-            transition: all 0.3s;
-            border: 1px solid transparent;
-        }
-
-        .feature-card:hover {
-            background: var(--white);
-            border-color: #eee;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-            transform: translateY(-10px);
-        }
-
-        .feature-icon {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-card h3 {
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            background: var(--dark);
-            color: white;
-            border-radius: 3rem;
-            margin: 0 5% 8rem 5%;
-            text-align: center;
-            padding: 6rem 2rem;
-        }
-
-        .cta-section h2 {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Premium Footer Redesign */
-        footer {
-            background: #0f172a;
-            color: #f1f5f9;
-            padding: 5rem 5% 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
+      @media (max-width: 1024px) {
         .footer-content-premium {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1fr;
-            gap: 4rem;
-            margin-bottom: 4rem;
+          grid-template-columns: 1fr 1fr;
+          gap: 3rem;
         }
+      }
 
-        .footer-brand .footer-logo {
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0;
-            text-decoration: none;
-        }
-
-        .footer-brand .footer-logo .logo-text {
-            color: var(--white);
-            font-size: 1.4rem;
-            font-weight: 800;
-            margin-left: -17px;
-        }
-
-        .footer-brand .footer-logo img {
-            height: 70px;
-            width: auto;
-        }
-
-        .footer-brand p {
-            color: #94a3b8;
-            font-size: 1rem;
-            line-height: 1.7;
-            margin-bottom: 2rem;
-            max-width: 320px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .social-links a {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-        }
-
-        .social-links a:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
-        }
-
-        .footer-links-group h4 {
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            position: relative;
-            display: inline-block;
-        }
-
-        .footer-links-group h4::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 30px;
-            height: 2px;
-            background: var(--primary);
-        }
-
-        .footer-links-group ul {
-            list-style: none;
-        }
-
-        .footer-links-group li {
-            margin-bottom: 1rem;
-        }
-
-        .footer-links-group a {
-            text-decoration: none;
-            color: #94a3b8;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-            display: inline-block;
-        }
-
-        .footer-links-group a:hover {
-            color: var(--primary);
-            transform: translateX(5px);
+      @media (max-width: 640px) {
+        .footer-content-premium {
+          grid-template-columns: 1fr;
         }
 
         .footer-bottom-premium {
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #64748b;
-            font-size: 0.9rem;
+          flex-direction: column;
+          gap: 1.5rem;
+          text-align: center;
+        }
+      }
+
+      /* Pollution Zones Slider */
+      .zones-container {
+        position: relative;
+        padding: 0 20px;
+        margin-top: 2rem;
+      }
+
+      .zones-grid {
+        display: flex;
+        gap: 2.5rem;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        padding: 1.5rem 0.5rem;
+        scrollbar-width: none;
+        /* Firefox */
+        -ms-overflow-style: none;
+        /* IE 10+ */
+      }
+
+      .zones-grid::-webkit-scrollbar {
+        display: none;
+        /* Chrome, Safari, Opera */
+      }
+
+      .zone-card {
+        flex: 0 0 350px;
+        height: 450px;
+        border-radius: 1rem;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .zone-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+      }
+
+      .zone-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: all 0.5s ease;
+      }
+
+      .zone-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.8) 0%,
+          rgba(0, 0, 0, 0.2) 60%,
+          transparent 100%
+        );
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 1.5rem;
+        color: white;
+        transition: all 0.5s ease;
+      }
+
+      .zone-card:hover .zone-img {
+        transform: scale(1.1);
+        filter: brightness(0.6);
+      }
+
+      .zone-card .zone-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        transform: translateY(30px);
+        transition: all 0.5s ease;
+      }
+
+      .zone-card .zone-desc {
+        font-size: 1rem;
+        opacity: 0.9;
+        transform: translateY(20px);
+        opacity: 0;
+        transition: all 0.5s ease;
+        text-align: left;
+      }
+
+      .zone-card:hover .zone-desc {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .zone-card:hover .zone-title {
+        transform: translateY(-10px);
+        text-align: left;
+        width: 100%;
+      }
+
+      .zone-badge {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: var(--primary);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 700;
+        font-size: 0.8rem;
+        z-index: 5;
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(8px);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      .modal-content {
+        background: var(--card-bg);
+        max-width: 600px;
+        width: 100%;
+        border-radius: 2rem;
+        padding: 3rem;
+        position: relative;
+        animation: modalIn 0.4s ease-out;
+      }
+
+      @keyframes modalIn {
+        from {
+          transform: translateY(30px);
+          opacity: 0;
         }
 
-        .footer-bottom-links {
-            display: flex;
-            gap: 2rem;
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .close-modal {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--text-color);
+        transition: color 0.3s;
+      }
+
+      .close-modal:hover {
+        color: var(--primary);
+      }
+
+      .slider-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50px;
+        height: 50px;
+        background: var(--card-bg);
+        color: var(--primary);
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 100;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .slider-arrow:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      .slider-arrow.left {
+        left: 0;
+      }
+
+      .slider-arrow.right {
+        right: 0;
+      }
+
+      @media (max-width: 768px) {
+        .carousel-caption h1 {
+          font-size: 2.5rem;
         }
 
-        .footer-bottom-links a {
-            color: #64748b;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer-bottom-links a:hover {
-            color: white;
-        }
-
-        @media (max-width: 1024px) {
-            .footer-content-premium {
-                grid-template-columns: 1fr 1fr;
-                gap: 3rem;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .footer-content-premium {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-bottom-premium {
-                flex-direction: column;
-                gap: 1.5rem;
-                text-align: center;
-            }
-        }
-
-        /* Pollution Zones Slider */
-        .zones-container {
-            position: relative;
-            padding: 0 20px;
-            margin-top: 2rem;
-        }
-
-        .zones-grid {
-            display: flex;
-            gap: 2.5rem;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            padding: 1.5rem 0.5rem;
-            scrollbar-width: none;
-            /* Firefox */
-            -ms-overflow-style: none;
-            /* IE 10+ */
-        }
-
-        .zones-grid::-webkit-scrollbar {
-            display: none;
-            /* Chrome, Safari, Opera */
-        }
-
-        .zone-card {
-            flex: 0 0 350px;
-            height: 450px;
-            border-radius: 1rem;
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .zone-card:hover {
-            transform: scale(1.02);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-        }
-
-        .zone-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: all 0.5s ease;
-        }
-
-        .zone-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 60%, transparent 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 1.5rem;
-            color: white;
-            transition: all 0.5s ease;
-        }
-
-        .zone-card:hover .zone-img {
-            transform: scale(1.1);
-            filter: brightness(0.6);
-        }
-
-        .zone-card .zone-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            transform: translateY(30px);
-            transition: all 0.5s ease;
-        }
-
-        .zone-card .zone-desc {
-            font-size: 1rem;
-            opacity: 0.9;
-            transform: translateY(20px);
-            opacity: 0;
-            transition: all 0.5s ease;
-            text-align: left;
-        }
-
-        .zone-card:hover .zone-desc {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .zone-card:hover .zone-title {
-            transform: translateY(-10px);
-            text-align: left;
-            width: 100%;
-        }
-
-        .zone-badge {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            background: var(--primary);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 700;
-            font-size: 0.8rem;
-            z-index: 5;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
-        .modal-content {
-            background: var(--white);
-            max-width: 600px;
-            width: 100%;
-            border-radius: 2rem;
-            padding: 3rem;
-            position: relative;
-            animation: modalIn 0.4s ease-out;
-        }
-
-        @keyframes modalIn {
-            from {
-                transform: translateY(30px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--gray);
-            transition: color 0.3s;
-        }
-
-        .close-modal:hover {
-            color: var(--dark);
-        }
-
-        .slider-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 50px;
-            height: 50px;
-            background: var(--white);
-            color: var(--primary);
-            border: 1px solid #eee;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 100;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .slider-arrow:hover {
-            background: var(--primary);
-            color: var(--white);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .slider-arrow.left {
-            left: 0;
-        }
-
-        .slider-arrow.right {
-            right: 0;
-        }
-
-        @media (max-width: 768px) {
-            .carousel-caption h1 {
-                font-size: 2.5rem;
-            }
-
-            .carousel-caption p {
-                font-size: 1rem;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-                padding: 1rem;
-            }
-
-            .btn-action {
-                width: 100%;
-                text-align: center;
-            }
-
-            .action-content-wrapper {
-                height: auto;
-                min-height: 400px;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .nav-links {
-                display: none;
-            }
-        }
-
-        /* Agissez Avec Nous Section */
-        .action-section {
-            padding: 4rem 0;
-            background: var(--white);
-            text-align: center;
-        }
-
-        .action-header {
-            max-width: 900px;
-            margin: 0 auto 3rem;
-            position: relative;
-            text-align: center;
-        }
-
-        .action-title {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: var(--dark);
-            text-align: center;
-            width: 100%;
-        }
-
-        .action-title i {
-            color: #8bbc48;
-            /* Green diamond color */
-            font-size: 0.8rem;
-            transform: rotate(45deg);
-        }
-
-        .action-content-wrapper {
-            position: relative;
-            border-radius: 0;
-            overflow: hidden;
-            height: 450px;
-            width: 100%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        .action-bg-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s ease;
-        }
-
-        .action-content-wrapper:hover .action-bg-image {
-            transform: scale(1.03);
-        }
-
-        .action-overlay {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.1);
-            /* Minimal overlay to keep it bright */
+        .carousel-caption p {
+          font-size: 1rem;
         }
 
         .action-buttons {
-            display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 2rem;
-            z-index: 10;
-            width: 100%;
+          flex-direction: column;
+          padding: 1rem;
         }
 
         .btn-action {
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: white;
-            text-decoration: none;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
-            transition: all 0.3s ease;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            display: inline-block;
-            min-width: 250px;
-            border: 2px solid transparent;
-            backdrop-filter: blur(5px);
+          width: 100%;
+          text-align: center;
         }
 
-        .btn-action:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            background: rgba(255, 255, 255, 0.1);
+        .action-content-wrapper {
+          height: auto;
+          min-height: 400px;
         }
 
-        .btn-green {
-            background: transparent;
-            border-color: #46a040;
+        .footer-grid {
+          grid-template-columns: 1fr;
         }
 
-        .btn-orange {
-            background: transparent;
-            border-color: #d84315;
+        .nav-links {
+          display: none;
         }
+      }
 
-        .btn-teal {
-            background: transparent;
-            border-color: #264653;
-        }
+      /* Agissez Avec Nous Section */
+      .action-section {
+        padding: 4rem 0;
+        background: var(--bg-color);
+        text-align: center;
+      }
 
-        /* Environmental Issues Section */
-        .separator-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 4rem;
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+      .action-header {
+        max-width: 900px;
+        margin: 0 auto 3rem;
+        position: relative;
+        text-align: center;
+      }
 
-        .separator-line {
-            flex: 1;
-            height: 1px;
-            background-color: #cbd5e1;
-        }
+      .action-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--text-color);
+        text-align: center;
+        width: 100%;
+      }
 
-        .separator-diamond {
-            width: 12px;
-            height: 12px;
-            background-color: #a3e635;
-            /* Light green */
-            transform: rotate(45deg);
-        }
+      .action-title i {
+        color: #8bbc48;
+        /* Green diamond color */
+        font-size: 0.8rem;
+        transform: rotate(45deg);
+      }
 
-        .separator-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--dark);
-            margin: 0;
-            white-space: nowrap;
-        }
+      .action-content-wrapper {
+        position: relative;
+        border-radius: 0;
+        overflow: hidden;
+        height: 450px;
+        width: 100%;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
 
+      .action-bg-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s ease;
+      }
+
+      .action-content-wrapper:hover .action-bg-image {
+        transform: scale(1.03);
+      }
+
+      .action-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.1);
+        /* Minimal overlay to keep it bright */
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 2rem;
+        z-index: 10;
+        width: 100%;
+      }
+
+      .btn-action {
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: white;
+        text-decoration: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+        transition: all 0.3s ease;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        display: inline-block;
+        min-width: 250px;
+        border: 2px solid transparent;
+        backdrop-filter: blur(5px);
+      }
+
+      .btn-action:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .btn-green {
+        background: transparent;
+        border-color: #46a040;
+      }
+
+      .btn-orange {
+        background: transparent;
+        border-color: #d84315;
+      }
+
+      .btn-teal {
+        background: transparent;
+        border-color: #264653;
+      }
+
+      /* Environmental Issues Section */
+      .separator-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-bottom: 4rem;
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .separator-line {
+        flex: 1;
+        height: 1px;
+        background-color: var(--border-color);
+      }
+
+      .separator-diamond {
+        width: 12px;
+        height: 12px;
+        background-color: #a3e635;
+        /* Light green */
+        transform: rotate(45deg);
+      }
+
+      .separator-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--text-color);
+        margin: 0;
+        white-space: nowrap;
+      }
+
+      .issues-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      .issue-card {
+        text-align: center;
+        background: var(--card-bg);
+        border-radius: 1rem;
+        padding: 0;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .issue-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 10px 20px -5px rgba(0, 0, 0, 0.04);
+        border-color: rgba(101, 163, 13, 0.2);
+      }
+
+      .issue-img-wrapper {
+        width: 100%;
+        aspect-ratio: 16/10;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .issue-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+      }
+
+      .issue-card:hover .issue-img {
+        transform: scale(1.1);
+      }
+
+      .issue-content {
+        padding: 2rem 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .issue-label {
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--text-color);
+        margin-bottom: 0.75rem;
+        transition: color 0.3s ease;
+      }
+
+      .issue-card:hover .issue-label {
+        color: var(--primary);
+      }
+
+      .issue-desc {
+        font-size: 0.95rem;
+        color: var(--gray);
+        line-height: 1.6;
+      }
+
+      @media (max-width: 992px) {
         .issues-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 576px) {
+        .issues-grid {
+          grid-template-columns: 1fr;
         }
 
-        .issue-card {
-            text-align: center;
-            background: white;
-            border: 1px solid #e2e8f0;
-            /* Light border */
-            border-radius: 0.5rem;
-            /* Small radius */
-            padding: 0;
-            /* REMOVE PADDING */
-            overflow: hidden;
-            /* CLIP IMAGE */
-            transition: all 0.3s ease;
+        .separator-container {
+          flex-direction: column;
+          gap: 1rem;
         }
 
-        .issue-card:hover {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border-color: #cbd5e1;
+        .separator-line,
+        .separator-diamond {
+          display: none;
         }
 
-        .issue-img-wrapper {
-            width: 100%;
-            aspect-ratio: 16/10;
-            overflow: hidden;
-            border-radius: 0;
-            /* REMOVE RADIUS */
-            margin-bottom: 0;
-            /* REMOVE MARGIN */
+        .separator-line,
+        .separator-diamond {
+          display: none;
         }
+      }
 
-        .issue-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
+      /* Services Section - Premium Redesign */
+      .services-section {
+        background: var(--bg-color);
+        position: relative;
+        z-index: 1;
+      }
+
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      .service-card {
+        background: var(--card-bg);
+        padding: 3rem 2rem;
+        border-radius: 1rem;
+        text-align: center;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .service-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--primary);
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+        transform-origin: left;
+      }
+
+      .service-card:hover {
+        transform: translateY(-12px);
+        box-shadow:
+          0 25px 50px -12px rgba(0, 0, 0, 0.12),
+          0 10px 20px -5px rgba(0, 0, 0, 0.04);
+        border-color: rgba(101, 163, 13, 0.2);
+      }
+
+      .service-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .service-icon-wrapper {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--light);
+        border-radius: 1rem;
+        transition: all 0.4s ease;
+        position: relative;
+      }
+
+      .service-card:hover .service-icon-wrapper {
+        transform: rotateY(180deg);
+        background: var(--primary);
+      }
+
+      .service-icon-img {
+        max-width: 45px;
+        max-height: 45px;
+        object-fit: contain;
+        transition: all 0.4s ease;
+      }
+
+      .service-card:hover .service-icon-img {
+        filter: brightness(0) invert(1);
+        transform: rotateY(-180deg);
+      }
+
+      .service-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--text-color);
+        margin-bottom: 1rem;
+        line-height: 1.4;
+        transition: color 0.3s ease;
+      }
+
+      .service-card:hover .service-title {
+        color: var(--primary);
+      }
+
+      .service-desc {
+        font-size: 0.95rem;
+        color: var(--gray);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+      }
+
+      .service-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--primary);
+        margin-top: auto;
+        text-decoration: none;
+        transition: gap 0.3s ease;
+      }
+
+      .service-card:hover .service-link {
+        gap: 0.8rem;
+      }
+
+      @media (max-width: 1024px) {
+        .services-grid {
+          grid-template-columns: repeat(2, 1fr);
         }
+      }
 
-        .issue-card:hover .issue-img {
-            transform: scale(1.05);
+      @media (max-width: 640px) {
+        .services-grid {
+          grid-template-columns: 1fr;
         }
+      }
 
-        .issue-content {
-            padding: 1rem;
-        }
+      /* Impact Section */
+      .impact-section {
+        position: relative;
+        background: var(--section-bg-light); /* Light gray to differentiate sections */
+        padding: 4rem 5%; /* Keep internal padding */
+        color: var(--text-color);
+        text-align: center;
+        margin-bottom: 2rem;
+        margin-left: 0; /* Full width */
+        margin-right: 0;
+        border-radius: 0; /* Remove rounded corners */
+      }
 
-        .issue-label {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #1e293b;
-            margin-bottom: 0.5rem;
-        }
+      /* Animated background circles removed */
 
-        .issue-desc {
-            font-size: 0.9rem;
-            color: #64748b;
-            line-height: 1.5;
-        }
+      .impact-content {
+        position: relative;
+        z-index: 2;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
 
-        @media (max-width: 992px) {
-            .issues-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
+      .impact-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3rem;
+        margin-top: 2rem; /* Reduced margin */
+        position: relative;
+      }
 
-        @media (max-width: 576px) {
-            .issues-grid {
-                grid-template-columns: 1fr;
-            }
+      .impact-stat {
+        padding: 1.5rem; /* Compact padding */
+        position: relative;
+        transition: transform 0.3s ease;
+        border-radius: 1rem;
+      }
 
-            .separator-container {
-                flex-direction: column;
-                gap: 1rem;
-            }
+      .impact-stat:hover {
+        transform: translateY(-5px);
+        background: var(--card-bg);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05); /* Subtle shadow on hover */
+      }
 
-            .separator-line,
-            .separator-diamond {
-                display: none;
-            }
+      .impact-stat:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 20%;
+        height: 60%;
+        width: 1px;
+        background: var(--border-color); /* Dark separator */
+      }
 
-            .separator-line,
-            .separator-diamond {
-                display: none;
-            }
-        }
+      .impact-icon {
+        font-size: 2.5rem; /* Slightly smaller */
+        margin-bottom: 1rem;
+        color: var(--primary); /* Primary color icons */
+        display: inline-block;
+        padding: 1rem;
+        background: rgba(16, 185, 129, 0.1); /* Light primary bg */
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+      }
 
-        /* Services Section */
-        .services-section {
-            background-color: #f8fafc;
-        }
+      .impact-number {
+        font-size: 2.5rem; /* Smaller number */
+        font-weight: 800;
+        margin-bottom: 0.25rem;
+        line-height: 1;
+        letter-spacing: -1px;
+        color: var(--text-color);
+      }
 
-        .service-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 0.75rem;
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100%;
-        }
+      .impact-label {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 0.5rem;
+      }
 
-        .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
+      /* Override separator for dark background */
+      .impact-section .separator-title {
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
 
-        .service-icon-wrapper {
-            width: 60px;
-            height: 50px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+      .impact-section .separator-line {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
 
-        .service-icon-img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        .service-title {
-            font-size: 0.95rem;
-            font-weight: 800;
-            color: #1e293b;
-            margin-bottom: 0.75rem;
-            white-space: nowrap;
-            width: 100%;
-        }
-
-        .service-divider {
-            width: 100%;
-            height: 1px;
-            background-color: #e2e8f0;
-            margin-bottom: 0.75rem;
-            margin-top: auto;
-            /* Pushes divider and subtitle to bottom */
-        }
-
-        .service-subtitle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* Centers content horizontally */
-            gap: 0.5rem;
-            color: #64748b;
-            font-size: 0.85rem;
-            font-weight: 500;
-            width: 100%;
-        }
-
-        .service-subtitle i {
-            color: #65a30d;
-            /* Brand green */
-            color: #65a30d;
-            /* Brand green */
-        }
-
-        /* Impact Section */
-        .impact-section {
-            position: relative;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            padding: 5rem 5%;
-            color: white;
-            text-align: center;
-            margin-bottom: 0;
-        }
-
-        .impact-content {
-            position: relative;
-            z-index: 2;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
+      @media (max-width: 768px) {
         .impact-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin-top: 3rem;
-            position: relative;
-        }
-
-        .impact-stat {
-            padding: 0 1rem;
-            position: relative;
+          grid-template-columns: 1fr;
+          gap: 3rem;
         }
 
         .impact-stat:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 20%;
-            height: 60%;
-            width: 1px;
-            background: rgba(255, 255, 255, 0.3);
+          display: none;
         }
+      }
+      /* Service Icons */
+  .service-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .service-card:hover .service-icon-wrapper {
+    transform: scale(1.1) rotate(5deg);
+  }
 
-        .impact-number {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            line-height: 1;
-            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
+  .service-icon-wrapper i {
+    font-size: 2rem;
+  }
+</style>
+  </head>
 
-        .impact-label {
-            font-size: 1.25rem;
-            font-weight: 500;
-            opacity: 0.9;
-            text-transform: capitalize;
-        }
-
-        /* Override separator for dark background */
-        .impact-section .separator-title {
-            color: white;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .impact-section .separator-line {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-
-        @media (max-width: 768px) {
-            .impact-stats-grid {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
-
-            .impact-stat:not(:last-child)::after {
-                display: none;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
+  <body>
     <nav>
-        <a href="/" class="logo">
-            <img src="{% static 'monitoring/images/logo.png' %}" alt="EcoWatch Logo">
-            <span class="logo-text">EcoWatch</span>
-        </a>
-        <div class="nav-links">
-            <a href="{% url 'features' %}">Fonctionnalités</a>
-            <a href="/about/">À Propos</a>
-            <a href="/contact/">Contact</a>
-            {% if user.is_authenticated %}
-            <div class="user-profile">
-                <div class="profile-trigger" id="profileTrigger">
-                    <div class="avatar-circle">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <span class="username">{{ user.username }}</span>
-                    <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
-                </div>
-                <div class="profile-dropdown" id="profileDropdown">
-                    <a href="/dashboard/"><i class="fas fa-chart-line"></i> Tableau de bord</a>
-                    <a href="/admin/"><i class="fas fa-cog"></i> Paramètres</a>
-                    <div class="divider"></div>
-                    <form action="{% url 'logout' %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" style="color: #ef4444;"><i class="fas fa-sign-out-alt"></i>
-                            Déconnexion</button>
-                    </form>
-                </div>
+      <a href="/" class="logo">
+        <img
+          src="{% static 'monitoring/images/logo.png' %}"
+          alt="EcoWatch Logo"
+        />
+        <span class="logo-text">EcoWatch</span>
+      </a>
+      <div class="nav-links">
+        <a href="{% url 'features' %}">Fonctionnalités</a>
+        <a href="/about/">À Propos</a>
+        <a href="/contact/">Contact</a>
+
+        <!-- Theme Toggle Button -->
+        <button id="themeToggle" class="theme-toggle" title="Changer de thème">
+          <i class="fas fa-moon"></i>
+        </button>
+
+        {% if user.is_authenticated %}
+        <div class="user-profile">
+          <div class="profile-trigger" id="profileTrigger">
+            <div class="avatar-circle">
+              <i class="fas fa-user"></i>
             </div>
-            {% else %}
-            <a href="/accounts/login/">Connexion</a>
-            <a href="/signup/" class="btn-primary">S'inscrire</a>
-            {% endif %}
+            <span class="username">{{ user.username }}</span>
+            <i class="fas fa-chevron-down" style="font-size: 0.8rem"></i>
+          </div>
+          <div class="profile-dropdown" id="profileDropdown">
+            <a href="/dashboard/"
+              ><i class="fas fa-chart-line"></i> Tableau de bord</a
+            >
+            <a href="/admin/"><i class="fas fa-cog"></i> Paramètres</a>
+            <div class="divider"></div>
+            <form action="{% url 'logout' %}" method="post">
+              {% csrf_token %}
+              <button type="submit" style="color: #ef4444">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+              </button>
+            </form>
+          </div>
         </div>
+        {% else %}
+        <a href="/accounts/login/">Connexion</a>
+        <a href="/signup/" class="btn-nav-custom">S'inscrire</a>
+        {% endif %}
+      </div>
     </nav>
 
     <div class="hero-carousel">
-        <div class="carousel-inner" id="carouselInner">
-            <div class="carousel-item">
-                <img src="{% static 'monitoring/images/slide1.png' %}" alt="Smart City">
-                <div class="carousel-caption">
-                    <h1>Respirez un air plus pur</h1>
-                    <p>Surveillez la qualité de l'air de votre ville en temps réel avec une précision inégalée.</p>
-                    <a href="/signup/" class="btn-primary" style="font-size: 1.1rem; padding: 0.85rem 2rem;">Commencer
-                        maintenant</a>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="{% static 'monitoring/images/slide2.png' %}" alt="Air Sensor">
-                <div class="carousel-caption">
-                    <h1>Technologie IoT de Pointe</h1>
-                    <p>Nos capteurs autonomes déploient un réseau intelligent pour protéger votre santé.</p>
-                    <a href="/signup/" class="btn-primary" style="font-size: 1.2rem; padding: 1rem 2.5rem;">Découvrir la
-                        solution</a>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="{% static 'monitoring/images/slide3.png' %}" alt="Happy Family">
-                <div class="carousel-caption">
-                    <h1>Un avenir durable</h1>
-                    <p>Ensemble, réduisons la pollution et créons un environnement sain pour les générations futures.
-                    </p>
-                    <a href="/signup/" class="btn-primary" style="font-size: 1.2rem; padding: 1rem 2.5rem;">Rejoindre le
-                        mouvement</a>
-                </div>
-            </div>
+      <div class="carousel-inner" id="carouselInner">
+        <div class="carousel-item">
+          <img
+            src="{% static 'monitoring/images/slide1.png' %}"
+            alt="Smart City"
+          />
+          <div class="carousel-caption">
+            <h1 data-aos="fade-down" data-aos-duration="1000">Respirez un air plus pur</h1>
+            <p data-aos="fade-up" data-aos-delay="200" data-aos-duration="1000">
+              Surveillez la qualité de l'air de votre ville en temps réel avec
+              une précision inégalée.
+            </p>
+            <a href="/signup/" class="btn-carousel" data-aos="zoom-in" data-aos-delay="400">
+              Commencer maintenant <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
         </div>
-        <div class="carousel-arrow prev" onclick="moveSlide(-1)"><i class="fas fa-chevron-left"></i></div>
-        <div class="carousel-arrow next" onclick="moveSlide(1)"><i class="fas fa-chevron-right"></i></div>
-
-        <div class="scroll-indicator" onclick="scrollToFeatures()">
-            <i class="fas fa-chevron-down"></i>
+        <div class="carousel-item">
+          <img
+            src="{% static 'monitoring/images/slide2.png' %}"
+            alt="Air Sensor"
+          />
+          <div class="carousel-caption">
+            <h1 data-aos="fade-down" data-aos-duration="1000">Technologie IoT de Pointe</h1>
+            <p data-aos="fade-up" data-aos-delay="200" data-aos-duration="1000">
+              Nos capteurs autonomes déploient un réseau intelligent pour
+              protéger votre santé.
+            </p>
+            <a href="/signup/" class="btn-carousel" data-aos="zoom-in" data-aos-delay="400">
+              Découvrir la solution <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
         </div>
-
-        <div class="carousel-controls">
-            <div class="dot active" onclick="setSlide(0)"></div>
-            <div class="dot" onclick="setSlide(1)"></div>
-            <div class="dot" onclick="setSlide(2)"></div>
+        <div class="carousel-item">
+          <img
+            src="{% static 'monitoring/images/slide3.png' %}"
+            alt="Happy Family"
+          />
+          <div class="carousel-caption">
+            <h1 data-aos="fade-down" data-aos-duration="1000">Un avenir durable</h1>
+            <p data-aos="fade-up" data-aos-delay="200" data-aos-duration="1000">
+              Ensemble, réduisons la pollution et créons un environnement sain
+              pour les générations futures.
+            </p>
+            <a href="/signup/" class="btn-carousel" data-aos="zoom-in" data-aos-delay="400">
+              Rejoindre le mouvement <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
         </div>
-    </div>
+      </div>
+      <div class="carousel-arrow prev" onclick="moveSlide(-1)">
+        <i class="fas fa-chevron-left"></i>
+      </div>
+      <div class="carousel-arrow next" onclick="moveSlide(1)">
+        <i class="fas fa-chevron-right"></i>
+      </div>
 
+      <div class="scroll-indicator" onclick="scrollToFeatures()">
+        <i class="fas fa-chevron-down"></i>
+      </div>
 
-
-
-    <div class="separator-container" style="margin-top: 4rem; margin-bottom: 2rem;">
-        <h2 class="separator-title" style="color: var(--dark); text-shadow: none;">Nos Impact en Chiffres</h2>
+      <div class="carousel-controls">
+        <div class="dot active" onclick="setSlide(0)"></div>
+        <div class="dot" onclick="setSlide(1)"></div>
+        <div class="dot" onclick="setSlide(2)"></div>
+      </div>
     </div>
 
     <!-- Impact Statistics Section -->
     <section class="impact-section">
-        <div class="impact-content">
-
-            <div class="impact-stats-grid">
-                <div class="impact-stat">
-                    <div class="impact-number">+<span class="stat-counter" data-target="12000">0</span></div>
-                    <div class="impact-label">Citoyens Sensibilisés</div>
-                </div>
-                <div class="impact-stat">
-                    <div class="impact-number">+<span class="stat-counter" data-target="350">0</span></div>
-                    <div class="impact-label">Rapports Publiés</div>
-                </div>
-                <div class="impact-stat">
-                    <div class="impact-number"><span class="stat-counter" data-target="15">0</span></div>
-                    <div class="impact-label">Partenaires & ONG</div>
-                </div>
+      <div class="section-header">
+        <h2>Nos Impact en Chiffres</h2>
+      </div>
+      <div class="impact-content">
+        <div class="impact-stats-grid">
+          <div class="impact-stat" data-aos="fade-up" data-aos-delay="0">
+            <div class="impact-icon">
+              <i class="fas fa-users"></i>
             </div>
+            <div class="impact-number">
+              +<span class="stat-counter" data-target="12000">0</span>
+            </div>
+            <div class="impact-label">Citoyens Sensibilisés</div>
+          </div>
+          <div class="impact-stat" data-aos="fade-up" data-aos-delay="100">
+            <div class="impact-icon">
+              <i class="fas fa-file-alt"></i>
+            </div>
+            <div class="impact-number">
+              +<span class="stat-counter" data-target="350">0</span>
+            </div>
+            <div class="impact-label">Rapports Publiés</div>
+          </div>
+          <div class="impact-stat" data-aos="fade-up" data-aos-delay="200">
+            <div class="impact-icon">
+              <i class="fas fa-handshake"></i>
+            </div>
+            <div class="impact-number">
+              <span class="stat-counter" data-target="15">0</span>
+            </div>
+            <div class="impact-label">Partenaires & ONG</div>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- Environmental Issues Section -->
-    <section class="issues-section" style="padding: 3rem 5% 6rem; background: #fdfdfd;">
-        <div class="separator-container">
-            <h2 class="separator-title">Les Enjeux Environnementaux</h2>
-        </div>
+    <section
+      class="issues-section"
+      style="padding: 3rem 5% 6rem; background: var(--bg-color)"
+    >
+      <div class="section-header">
+        <h2>Défis Environnementaux</h2>
+      </div>
 
-        <div class="issues-grid">
-            <div class="issue-card">
-                <div class="issue-img-wrapper">
-                    <img src="{% static 'monitoring/images/pollution.png' %}" alt="Pollution de l'air"
-                        class="issue-img">
-                </div>
-                <div class="issue-content">
-                    <h4 class="issue-label">Pollution de l'air</h4>
-                    <p class="issue-desc">Impact sur la santé respiratoire et le climat urbain.</p>
-                </div>
-            </div>
-            <div class="issue-card">
-                <div class="issue-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=600&q=80"
-                        alt="Déforestation" class="issue-img">
-                </div>
-                <div class="issue-content">
-                    <h4 class="issue-label">Déforestation</h4>
-                    <p class="issue-desc">Perte de biodiversité et déséquilibre des écosystèmes.</p>
-                </div>
-            </div>
-            <div class="issue-card">
-                <div class="issue-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=600&q=80"
-                        alt="Gestion des Déchets" class="issue-img">
-                </div>
-                <div class="issue-content">
-                    <h4 class="issue-label">Gestion des Déchets</h4>
-                    <p class="issue-desc">Défis de collecte et de traitement en zone urbaine.</p>
-                </div>
-            </div>
-            <div class="issue-card">
-                <div class="issue-img-wrapper">
-                    <img src="{% static 'monitoring/images/inodation.png' %}" alt="Inondations" class="issue-img">
-                </div>
-                <div class="issue-content">
-                    <h4 class="issue-label">Inondations</h4>
-                    <p class="issue-desc">Risques accrus liés aux changements climatiques locaux.</p>
-                </div>
-            </div>
+      <div class="issues-grid">
+        <div class="issue-card" data-aos="fade-up" data-aos-delay="0">
+          <div class="issue-img-wrapper">
+            <img
+              src="{% static 'monitoring/images/pollution.png' %}"
+              alt="Pollution de l'air"
+              class="issue-img"
+            />
+          </div>
+          <div class="issue-content">
+            <h4 class="issue-label">Pollution de l'air</h4>
+            <p class="issue-desc">
+              Impact sur la santé respiratoire et le climat urbain.
+            </p>
+          </div>
         </div>
+        <div class="issue-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="issue-img-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=600&q=80"
+              alt="Déforestation"
+              class="issue-img"
+            />
+          </div>
+          <div class="issue-content">
+            <h4 class="issue-label">Déforestation</h4>
+            <p class="issue-desc">
+              Perte de biodiversité et déséquilibre des écosystèmes.
+            </p>
+          </div>
+        </div>
+        <div class="issue-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="issue-img-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=600&q=80"
+              alt="Gestion des Déchets"
+              class="issue-img"
+            />
+          </div>
+          <div class="issue-content">
+            <h4 class="issue-label">Gestion des Déchets</h4>
+            <p class="issue-desc">
+              Défis de collecte et de traitement en zone urbaine.
+            </p>
+          </div>
+        </div>
+        <div class="issue-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="issue-img-wrapper">
+            <img
+              src="{% static 'monitoring/images/inodation.png' %}"
+              alt="Inondations"
+              class="issue-img"
+            />
+          </div>
+          <div class="issue-content">
+            <h4 class="issue-label">Inondations</h4>
+            <p class="issue-desc">
+              Risques accrus liés aux changements climatiques locaux.
+            </p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Services Section -->
-    <section class="services-section" style="padding: 4rem 5% 6rem;">
-        <div class="separator-container">
-            <h2 class="separator-title">Nos Services</h2>
+    <section class="services-section" style="padding: 4rem 5% 6rem; background: var(--section-bg-light)">
+      <div class="section-header">
+        <h2>Nos Services</h2>
+      </div>
+
+      <div class="services-grid">
+        <!-- Service 1 -->
+        <div class="service-card" data-aos="fade-up" data-aos-delay="0">
+          <div class="service-icon-wrapper" style="background: #ecfdf5; color: #10b981;">
+            <i class="fas fa-chart-column"></i>
+          </div>
+          <h3 class="service-title">Données & Indicateurs</h3>
+          <p class="service-desc">
+            Accédez à des rapports détaillés et des graphiques précis sur la
+            qualité de l'air.
+          </p>
+          <a href="/dashboard/" class="service-link">
+            Voir les rapports <i class="fas fa-arrow-right"></i>
+          </a>
         </div>
 
-        <div class="issues-grid"> <!-- Reusing existing grid for consistency -->
-
-            <!-- Service 1 -->
-            <div class="service-card">
-                <div class="service-icon-wrapper">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2920/2920323.png" alt="Données"
-                        class="service-icon-img">
-                </div>
-                <h3 class="service-title">Données & Indicateurs</h3>
-                <div class="service-divider"></div>
-                <div class="service-subtitle">
-                    <i class="fas fa-chart-pie"></i> Qualité d'Air
-                </div>
-            </div>
-
-            <!-- Service 2 -->
-            <div class="service-card">
-                <div class="service-icon-wrapper">
-                    <img src="{% static 'monitoring/images/alertes.png' %}" alt="Alertes" class="service-icon-img">
-                </div>
-                <h3 class="service-title">Alertes en Temps Réel</h3>
-                <div class="service-divider"></div>
-                <div class="service-subtitle">
-                    <i class="fas fa-envelope"></i> Alertes Urgentes
-                </div>
-            </div>
-
-            <!-- Service 3 -->
-            <div class="service-card">
-                <div class="service-icon-wrapper">
-                    <img src="https://cdn-icons-png.flaticon.com/512/854/854878.png" alt="Carte"
-                        class="service-icon-img">
-                </div>
-                <h3 class="service-title">Carte Interactive</h3>
-                <div class="service-divider"></div>
-                <div class="service-subtitle">
-                    <i class="fas fa-map-marker-alt"></i> Carte Écologique
-                </div>
-            </div>
-
-            <!-- Service 4 -->
-            <div class="service-card">
-                <div class="service-icon-wrapper">
-                    <img src="{% static 'monitoring/images/education.png' %}" alt="Education" class="service-icon-img">
-                </div>
-                <h3 class="service-title">Sensibilisation & Conseils</h3>
-                <div class="service-divider"></div>
-                <div class="service-subtitle">
-                    <i class="fas fa-leaf"></i> Éducation Environnementale
-                </div>
-            </div>
-
+        <!-- Service 2 -->
+        <div class="service-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="service-icon-wrapper" style="background: #fef2f2; color: #ef4444;">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <h3 class="service-title">Alertes en Temps Réel</h3>
+          <p class="service-desc">
+            Soyez informé instantanément dès que les seuils de pollution sont
+            dépassés.
+          </p>
+          <a href="#" class="service-link" style="color: #ef4444">
+            Activer les alertes <i class="fas fa-arrow-right"></i>
+          </a>
         </div>
+
+        <!-- Service 3 -->
+        <div class="service-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="service-icon-wrapper" style="background: #ecfdf5; color: #10b981;">
+            <i class="fas fa-map-marked-alt"></i>
+          </div>
+          <h3 class="service-title">Carte Interactive</h3>
+          <p class="service-desc">
+            Explorez notre réseau de capteurs intelligent via une carte
+            dynamique 3D.
+          </p>
+          <a href="#zones" class="service-link" style="color: #10b981">
+            Explorer la carte <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <!-- Service 4 -->
+        <div class="service-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="service-icon-wrapper" style="background: #ecfdf5; color: #10b981;">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <h3 class="service-title">Sensibilisation & Conseils</h3>
+          <p class="service-desc">
+            Conseils pratiques et éducation pour un mode de vie plus sain et
+            durable.
+          </p>
+          <a href="#" class="service-link" style="color: #10b981">
+            En savoir plus <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
     </section>
 
-
-
-    <section id="zones" style="background: white; padding: 4rem 5% 2rem 5%;">
-        <div class="section-header">
-            <h2>Zones Surveillées à Risque</h2>
-            <p>Découvrez les zones nécessitant une attention particulière et les causes de leur pollution.</p>
+    <section id="zones" style="background: var(--bg-color); padding: 4rem 5% 4rem 5%" data-aos="fade-up">
+      <div class="section-header">
+        <h2>Zones Surveillées à Risque</h2>
+        <p>
+          Découvrez les zones nécessitant une attention particulière et les
+          causes de leur pollution.
+        </p>
+      </div>
+      <div class="zones-container">
+        <div class="slider-arrow left" onclick="scrollZones(-1)">
+          <i class="fas fa-chevron-left"></i>
         </div>
-        <div class="zones-container">
-            <div class="slider-arrow left" onclick="scrollZones(-1)"><i class="fas fa-chevron-left"></i></div>
-            <div class="zones-grid" id="zonesGrid">
-                {% for station in stations %}
-                <div class="zone-card"
-                    onclick="openPollutionModal('{{ station.name|addslashes }}', '{{ station.pollution_causes|addslashes|default:'Données en cours de collecte...' }}')">
-                    {% with latest=station.readings.first %}
-                    <div class="zone-badge"
-                        style="background: {% if latest.iqa <= 50 %}#10b981{% elif latest.iqa <= 100 %}#f59e0b{% else %}#ef4444{% endif %};">
-                        IQA: {{ latest.iqa|default:"--" }}
-                    </div>
-                    <img src="{{ station.image_url|default:'https://images.unsplash.com/photo-1518173946687-a4c8a9ba332f?auto=format&fit=crop&w=800&q=80' }}"
-                        alt="{{ station.name }}" class="zone-img"
-                        onerror="this.src='https://images.unsplash.com/photo-1518173946687-a4c8a9ba332f?auto=format&fit=crop&w=800&q=80'; this.onerror=null;">
-                    <div class="zone-overlay">
-                        <h3 class="zone-title">{{ station.name }}</h3>
-                        <p class="zone-desc">Dernier relevé à {{ latest.timestamp|date:"H:i" }}<br>{{
-                            station.location_description|truncatewords:10 }}</p>
-                    </div>
-                    {% endwith %}
-                </div>
-                {% endfor %}
+        <div class="zones-grid" id="zonesGrid">
+          {% for station in stations %}
+          <div
+            class="zone-card"
+            onclick='openPollutionModal("{{ station.name|addslashes }}", "{{ station.pollution_causes|addslashes|default:"Données en cours de collecte..." }}")'
+          >
+            {% with latest=station.readings.first %}
+            <div
+              class="zone-badge"
+              style="background: {% if latest.iqa <= 50 %}#10b981{% elif latest.iqa <= 100 %}#f59e0b{% else %}#ef4444{% endif %};"
+            >
+              IQA: {{ latest.iqa|default:"--" }}
             </div>
-            <div class="slider-arrow right" onclick="scrollZones(1)"><i class="fas fa-chevron-right"></i></div>
+            <img
+              src="{{ station.image_url|default:'https://images.unsplash.com/photo-1518173946687-a4c8a9ba332f?auto=format&fit=crop&w=800&q=80' }}"
+              alt="{{ station.name }}"
+              class="zone-img"
+              onerror="this.src='https://images.unsplash.com/photo-1518173946687-a4c8a9ba332f?auto=format&fit=crop&w=800&q=80'; this.onerror=null;"
+            />
+            <div class="zone-overlay">
+              <h3 class="zone-title">{{ station.name }}</h3>
+              <p class="zone-desc">
+                Dernier relevé à {{ latest.timestamp|date:"H:i" }}<br />{{
+                station.location_description|truncatewords:10 }}
+              </p>
+            </div>
+            {% endwith %}
+          </div>
+          {% endfor %}
         </div>
+        <div class="slider-arrow right" onclick="scrollZones(1)">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
     </section>
-
 
     <!-- Modal pour les causes de pollution -->
-    <div id="pollutionModal" class="modal" onclick="if(event.target == this) closePollutionModal()">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closePollutionModal()">&times;</span>
-            <h2 id="modalTitle" style="margin-bottom: 1.5rem; color: var(--primary);"></h2>
-            <h4 style="margin-bottom: 1rem; color: var(--dark);">Causes de la pollution :</h4>
-            <p id="modalCauses" style="line-height: 1.8; color: var(--gray); font-size: 1.1rem;"></p>
-        </div>
+    <div
+      id="pollutionModal"
+      class="modal"
+      onclick="if (event.target == this) closePollutionModal();"
+    >
+      <div class="modal-content">
+        <span class="close-modal" onclick="closePollutionModal()">&times;</span>
+        <h2
+          id="modalTitle"
+          style="margin-bottom: 1.5rem; color: var(--primary)"
+        ></h2>
+        <h4 style="margin-bottom: 1rem; color: var(--text-color)">
+          Causes de la pollution :
+        </h4>
+        <p
+          id="modalCauses"
+          style="line-height: 1.8; color: var(--text-color); font-size: 1.1rem"
+        ></p>
+      </div>
     </div>
 
+    <section class="action-section" style="background: var(--section-bg-light)">
+      <div class="action-header">
+        <div class="action-title" style="color: var(--text-color)">Agissez Avec Nous!</div>
+      </div>
 
-    <section class="action-section">
-        <div class="action-header">
-            <div class="action-title">
-                Agissez Avec Nous!
-            </div>
+      <div class="action-content-wrapper">
+        <!-- Using a high quality image of community planting/nature work -->
+        <img
+          src="{% static 'monitoring/images/action_bg.png' %}"
+          alt="Communauté EcoWatch"
+          class="action-bg-image"
+        />
+        <div class="action-overlay">
+          <div class="action-buttons">
+            <a href="#" class="btn-action btn-green" data-aos="zoom-in" data-aos-delay="0">Signaler un Problème</a>
+            <a href="#" class="btn-action btn-orange" data-aos="zoom-in" data-aos-delay="100">S'inscrire aux Alertes</a>
+            <a href="#" class="btn-action btn-teal" data-aos="zoom-in" data-aos-delay="200"
+              >Participer à la Communauté</a
+            >
+          </div>
         </div>
-
-        <div class="action-content-wrapper">
-            <!-- Using a high quality image of community planting/nature work -->
-            <img src="{% static 'monitoring/images/action_bg.png' %}" alt="Communauté EcoWatch" class="action-bg-image">
-            <div class="action-overlay">
-                <div class="action-buttons">
-                    <a href="#" class="btn-action btn-green">Signaler un Problème</a>
-                    <a href="#" class="btn-action btn-orange">S'inscrire aux Alertes</a>
-                    <a href="#" class="btn-action btn-teal">Participer à la Communauté</a>
-                </div>
-            </div>
-        </div>
+      </div>
     </section>
 
-
     <footer>
-        <div class="footer-content-premium">
-            <div class="footer-brand">
-                <a href="/" class="footer-logo">
-                    <img src="{% static 'monitoring/images/logo.png' %}" alt="EcoWatch Logo">
-                    <span class="logo-text">EcoWatch</span>
-                </a>
-                <p>Le premier réseau intelligent de surveillance environnementale en Afrique de l'Ouest. Technologie IoT
-                    au service de votre santé.</p>
-                <div class="social-links">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-
-            <div class="footer-links-group">
-                <h4>Plateforme</h4>
-                <ul>
-                    <li><a href="#zones">Zones à risque</a></li>
-                    <li><a href="/dashboard/">Tableau de bord</a></li>
-                    <li><a href="{% url 'features' %}">Technologie IoT</a></li>
-                    <li><a href="#">API Développeurs</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-links-group">
-                <h4>Légal & Support</h4>
-                <ul>
-                    <li><a href="#">Conditions d'utilisation</a></li>
-                    <li><a href="#">Confidentialité (RGPD)</a></li>
-                    <li><a href="/contact/">Support Technique</a></li>
-                    <li><a href="#">FAQ</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-links-group">
-                <h4>Contact</h4>
-                <ul>
-                    <li style="color: #94a3b8;"><i class="fas fa-envelope"
-                            style="margin-right: 10px; color: var(--primary);"></i> support@ecowatch.gn</li>
-                    <li style="color: #94a3b8;"><i class="fas fa-phone"
-                            style="margin-right: 10px; color: var(--primary);"></i> +224 610 85 00 29</li>
-                    <li style="color: #94a3b8;"><i class="fas fa-map-marker-alt"
-                            style="margin-right: 10px; color: var(--primary);"></i> Conakry, Guinée</li>
-                </ul>
-            </div>
+      <div class="footer-content-premium">
+        <div class="footer-brand">
+          <a href="/" class="footer-logo">
+            <img
+              src="{% static 'monitoring/images/logo.png' %}"
+              alt="EcoWatch Logo"
+            />
+            <span class="logo-text">EcoWatch</span>
+          </a>
+          <p>
+            Le premier réseau intelligent de surveillance environnementale en
+            Afrique de l'Ouest. Technologie IoT au service de votre santé.
+          </p>
+          <div class="social-links">
+            <a href="#" aria-label="Facebook"
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="LinkedIn"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <a href="#" aria-label="Instagram"
+              ><i class="fab fa-instagram"></i
+            ></a>
+          </div>
         </div>
 
-        <div class="footer-bottom-premium">
-            <p>&copy; 2026 EcoWatch Platform - Groupe 4. Tous droits réservés.</p>
-            <div class="footer-bottom-links">
-                <a href="#">Sitemap</a>
-                <a href="#">Cookies</a>
-                <a href="#">Accessibilité</a>
-            </div>
+        <div class="footer-links-group">
+          <h4>Plateforme</h4>
+          <ul>
+            <li><a href="#zones">Zones à risque</a></li>
+            <li><a href="/dashboard/">Tableau de bord</a></li>
+            <li><a href="{% url 'features' %}">Technologie IoT</a></li>
+            <li><a href="#">API Développeurs</a></li>
+          </ul>
         </div>
+
+        <div class="footer-links-group">
+          <h4>Légal & Support</h4>
+          <ul>
+            <li><a href="#">Conditions d'utilisation</a></li>
+            <li><a href="#">Confidentialité (RGPD)</a></li>
+            <li><a href="/contact/">Support Technique</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-group">
+          <h4>Contact</h4>
+          <ul>
+            <li style="color: #94a3b8">
+              <i
+                class="fas fa-envelope"
+                style="margin-right: 10px; color: var(--primary)"
+              ></i>
+              support@ecowatch.gn
+            </li>
+            <li style="color: #94a3b8">
+              <i
+                class="fas fa-phone"
+                style="margin-right: 10px; color: var(--primary)"
+              ></i>
+              +224 610 85 00 29
+            </li>
+            <li style="color: #94a3b8">
+              <i
+                class="fas fa-map-marker-alt"
+                style="margin-right: 10px; color: var(--primary)"
+              ></i>
+              Conakry, Guinée
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom-premium">
+        <p>&copy; 2026 EcoWatch Platform - Groupe 4. Tous droits réservés.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Sitemap</a>
+          <a href="#">Cookies</a>
+          <a href="#">Accessibilité</a>
+        </div>
+      </div>
     </footer>
 
     <script>
-        let currentSlide = 0;
-        const inner = document.getElementById('carouselInner');
-        const dots = document.querySelectorAll('.dot');
+      let currentSlide = 0;
+      const inner = document.getElementById("carouselInner");
+      const dots = document.querySelectorAll(".dot");
 
-        function setSlide(index) {
-            currentSlide = index;
-            inner.style.transform = `translateX(-${index * 33.333}%)`;
-            dots.forEach((dot, i) => {
-                dot.classList.toggle('active', i === index);
-            });
-        }
-
-        function moveSlide(direction) {
-            currentSlide = (currentSlide + direction + 3) % 3;
-            setSlide(currentSlide);
-            resetAutoSlide();
-        }
-
-        let autoSlide = setInterval(() => {
-            moveSlide(1);
-        }, 5000);
-
-        function resetAutoSlide() {
-            clearInterval(autoSlide);
-            autoSlide = setInterval(() => {
-                moveSlide(1);
-            }, 5000);
-        }
-
-        function scrollToFeatures() {
-            document.getElementById('features').scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-
-        // Navbar Scroll Effect
-        const nav = document.querySelector('nav');
-        const scrollIndicator = document.querySelector('.scroll-indicator');
-
-        // Slider Logic
-        function scrollZones(direction) {
-            const grid = document.getElementById('zonesGrid');
-            const scrollAmount = 380; // Card width + gap
-            grid.scrollBy({
-                left: direction * scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-
-        // Modal Logic
-        function openPollutionModal(title, causes) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalCauses').innerText = causes;
-            document.getElementById('pollutionModal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closePollutionModal() {
-            document.getElementById('pollutionModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        // Profile Dropdown Toggle
-        const profileTrigger = document.getElementById('profileTrigger');
-        const profileDropdown = document.getElementById('profileDropdown');
-
-        if (profileTrigger) {
-            profileTrigger.addEventListener('click', function (e) {
-                e.stopPropagation();
-                profileDropdown.classList.toggle('show');
-            });
-
-            document.addEventListener('click', function () {
-                profileDropdown.classList.remove('show');
-            });
-        }
-
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                nav.classList.add('scrolled');
-                scrollIndicator.style.opacity = '0';
-            } else {
-                nav.classList.remove('scrolled');
-                scrollIndicator.style.opacity = '1';
-            }
+      function setSlide(index) {
+        currentSlide = index;
+        inner.style.transform = `translateX(-${index * 33.333}%)`;
+        
+        // Update dots
+        dots.forEach((dot, i) => {
+          dot.classList.toggle("active", i === index);
         });
 
-        // Statistics Animation
-        const stats = document.querySelectorAll('.stat-counter');
-        const countUp = (element) => {
-            const target = parseInt(element.getAttribute('data-target'));
-            const duration = 2000; // 2 seconds
-            const startTime = performance.now();
+        // Update active class on carousel items for animations
+        const items = document.querySelectorAll('.carousel-item');
+        items.forEach((item, i) => {
+            if (i === index) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+      }
 
-            const update = (currentTime) => {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
+      // Initialize first slide as active
+      document.addEventListener('DOMContentLoaded', () => {
+          const items = document.querySelectorAll('.carousel-item');
+          if (items.length > 0) {
+              items[0].classList.add('active');
+          }
+      });
 
-                // Easing function (easeOutExpo)
-                const easedProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      function moveSlide(direction) {
+        currentSlide = (currentSlide + direction + 3) % 3;
+        setSlide(currentSlide);
+        resetAutoSlide();
+      }
 
-                const current = Math.floor(easedProgress * target);
-                element.innerText = current.toLocaleString();
+      let autoSlide = setInterval(() => {
+        moveSlide(1);
+      }, 5000);
 
-                if (progress < 1) {
-                    requestAnimationFrame(update);
-                } else {
-                    element.innerText = target.toLocaleString();
-                }
-            };
+      function resetAutoSlide() {
+        clearInterval(autoSlide);
+        autoSlide = setInterval(() => {
+          moveSlide(1);
+        }, 5000);
+      }
+
+      function scrollToFeatures() {
+        document.getElementById("features").scrollIntoView({
+          behavior: "smooth",
+        });
+      }
+
+      // Navbar Scroll Effect
+      const nav = document.querySelector("nav");
+      const scrollIndicator = document.querySelector(".scroll-indicator");
+
+      // Slider Logic
+      function scrollZones(direction) {
+        const grid = document.getElementById("zonesGrid");
+        const scrollAmount = 380; // Card width + gap
+        grid.scrollBy({
+          left: direction * scrollAmount,
+          behavior: "smooth",
+        });
+      }
+
+      // Modal Logic
+      function openPollutionModal(title, causes) {
+        document.getElementById("modalTitle").innerText = title;
+        document.getElementById("modalCauses").innerText = causes;
+        document.getElementById("pollutionModal").style.display = "flex";
+        document.body.style.overflow = "hidden";
+      }
+
+      function closePollutionModal() {
+        document.getElementById("pollutionModal").style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+
+      // Profile Dropdown Toggle
+      const profileTrigger = document.getElementById("profileTrigger");
+      const profileDropdown = document.getElementById("profileDropdown");
+
+      if (profileTrigger) {
+        profileTrigger.addEventListener("click", function (e) {
+          e.stopPropagation();
+          profileDropdown.classList.toggle("show");
+        });
+
+        document.addEventListener("click", function () {
+          profileDropdown.classList.remove("show");
+        });
+      }
+
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 50) {
+          nav.classList.add("scrolled");
+          scrollIndicator.style.opacity = "0";
+        } else {
+          nav.classList.remove("scrolled");
+          scrollIndicator.style.opacity = "1";
+        }
+      });
+
+      // Statistics Animation
+      const stats = document.querySelectorAll(".stat-counter");
+      const countUp = (element) => {
+        const target = parseInt(element.getAttribute("data-target"));
+        const duration = 2000; // 2 seconds
+        const startTime = performance.now();
+
+        const update = (currentTime) => {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+
+          // Easing function (easeOutExpo)
+          const easedProgress =
+            progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+
+          const current = Math.floor(easedProgress * target);
+          element.innerText = current.toLocaleString();
+
+          if (progress < 1) {
             requestAnimationFrame(update);
+          } else {
+            element.innerText = target.toLocaleString();
+          }
         };
+        requestAnimationFrame(update);
+      };
 
-        const observerOptions = {
-            threshold: 0.5
-        };
+      const observerOptions = {
+        threshold: 0.5,
+      };
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    countUp(entry.target);
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            countUp(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
 
-        stats.forEach(stat => observer.observe(stat));
+      stats.forEach((stat) => observer.observe(stat));
+
+      // Theme Management
+      const themeToggle = document.getElementById("themeToggle");
+      const icon = themeToggle.querySelector("i");
+      
+      // Check for saved theme
+      const savedTheme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      updateIcon(savedTheme);
+
+      themeToggle.addEventListener("click", () => {
+        const currentTheme = document.documentElement.getAttribute("data-theme");
+        const newTheme = currentTheme === "light" ? "dark" : "light";
+        
+        document.documentElement.setAttribute("data-theme", newTheme);
+        localStorage.setItem("theme", newTheme);
+        updateIcon(newTheme);
+      });
+
+      function updateIcon(theme) {
+        if (theme === "dark") {
+          icon.classList.replace("fa-moon", "fa-sun");
+        } else {
+          icon.classList.replace("fa-sun", "fa-moon");
+        }
+      }
+
+      // Nav Links Active State Logic
+      document.addEventListener('DOMContentLoaded', () => {
+        const navLinks = document.querySelectorAll('.nav-links a:not(.btn-nav-custom)');
+        
+        navLinks.forEach(link => {
+          link.addEventListener('click', function() {
+            // Remove active class from all links
+            navLinks.forEach(l => l.classList.remove('active'));
+            // Add active class to clicked link
+            this.classList.add('active');
+          });
+
+          // Optional: Set active state based on current URL
+          if (link.href === window.location.href) {
+            link.classList.add('active');
+          }
+        });
+      });
     </script>
-</body>
-
+    <!-- AOS Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init({
+        duration: 1000,
+        once: true,
+        offset: 100
+      });
+    </script>
+  </body>
 </html>

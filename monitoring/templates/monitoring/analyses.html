@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Analyses - EcoWatch{% endblock %}
+{% block page_title %}Analyses Avancées{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'monitoring/css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-4">
+    <div>
+        <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-color);">Analyses Approfondies</h1>
+        <p style="color: var(--gray);">Outils d'analyse prédictive et de corrélation (Bientôt disponible)</p>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Tendances Mensuelles</h3>
+        </div>
+        <div class="card-body">
+             <div class="premium-empty">
+                <div class="premium-empty-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Analyse de Tendance</h3>
+                <p>Visualisez les tendances à long terme de la qualité de l'air.</p>
+                <button class="btn btn-secondary mt-3">Configurer</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Carte de Chaleur</h3>
+        </div>
+        <div class="card-body">
+             <div class="premium-empty">
+                <div class="premium-empty-icon">
+                    <i class="fas fa-map-marked"></i>
+                </div>
+                <h3>Distribution Spatiale</h3>
+                <p>Analysez la répartition géographique des polluants.</p>
+                <button class="btn btn-secondary mt-3">Explorer</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

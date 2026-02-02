@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Exports - EcoWatch{% endblock %}
+{% block page_title %}Centre d'Exports{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'monitoring/css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-4">
+    <div>
+        <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-color);">Exports de Données</h1>
+        <p style="color: var(--gray);">Téléchargez les historiques de données de qualité de l'air</p>
+    </div>
+    <button class="btn btn-primary">
+        <i class="fas fa-file-export"></i>
+        Nouvel Export
+    </button>
+</div>
+
+<!-- Recent Exports Table -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Exports Récents</h3>
+    </div>
+    <div class="card-body">
+        <div style="overflow-x: auto;">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Format</th>
+                        <th>Taille</th>
+                        <th>Statut</th>
+                        <th class="text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for export in exports %}
+                    <tr>
+                        <td style="font-weight: 600;">{{ export.id }}</td>
+                        <td>{{ export.date|date:"d M Y, H:i" }}</td>
+                        <td>
+                            <span class="badge badge-info">{{ export.format }}</span>
+                        </td>
+                        <td>{{ export.size }}</td>
+                        <td>
+                            {% if export.status == 'Completed' %}
+                            <span class="badge badge-success"><i class="fas fa-check-circle"></i> Terminé</span>
+                            {% elif export.status == 'Failed' %}
+                            <span class="badge badge-danger"><i class="fas fa-times-circle"></i> Échoué</span>
+                            {% else %}
+                            <span class="badge badge-warning"><i class="fas fa-spinner fa-spin"></i> En cours</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-right">
+                            {% if export.status == 'Completed' %}
+                            <button class="btn btn-sm btn-outline">
+                                <i class="fas fa-download"></i> Télécharger
+                            </button>
+                            {% else %}
+                            <button class="btn btn-sm btn-outline" disabled style="opacity: 0.5; cursor: not-allowed;">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center" style="padding: 2rem; color: var(--gray);">Aucun export récent trouvé.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

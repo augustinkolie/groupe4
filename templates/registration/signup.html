@@ -56,7 +56,7 @@
 
         .auth-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             padding: 8rem 0 4rem;
         }
 
@@ -113,10 +113,10 @@
 
         .form-group input {
             width: 100%;
-            padding: 0.875rem 1rem 0.875rem 2.75rem;
+            padding: 1rem 1rem 1rem 2.75rem; /* Increased padding */
             border: 1px solid var(--border);
             border-radius: 0.75rem;
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-family: inherit;
             transition: all 0.3s;
         }
@@ -154,12 +154,12 @@
 
         .btn-auth {
             width: 100%;
-            padding: 1rem;
+            padding: 1.125rem; /* Larger button */
             background: var(--primary);
             color: white;
             border: none;
             border-radius: 0.75rem;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
@@ -330,7 +330,7 @@
                 <div class="auth-footer">
                     Déjà un compte ? <a href="{% url 'login' %}">Connectez-vous</a>
                     <br><br>
-                    <a href="/" style="color: var(--gray); font-weight: 500;"><i class="fas fa-arrow-left"></i> Retour
+                    <a href="/" style="color: var(--gray); font-weight: 500;"><i class="fas fa-home"></i> Retour
                         au site</a>
                 </div>
             </div>

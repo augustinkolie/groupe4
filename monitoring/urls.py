@@ -12,6 +12,8 @@ urlpatterns = [
     path('stations/', views.stations_list, name='stations'),
     path('alerts/', views.alerts_view, name='alerts'),
     path('reports/', views.reports_view, name='reports'),
+    path('exports/', views.exports_view, name='exports'),
+    path('analyses/', views.analyses_view, name='analyses'),
     
     # HTMX Partials
     path('partials/stats-overview/', views_htmx.stats_overview, name='stats_overview'),

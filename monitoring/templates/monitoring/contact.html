@@ -21,6 +21,22 @@
             --white: #ffffff;
             --gray: #6b7280;
             --border: #e2e8f0;
+
+            /* Theme Variables */
+            --bg-color: var(--white);
+            --text-color: var(--dark);
+            --card-bg: var(--white);
+            --border-color: #eee;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --light: #2d3748;
+            --white: #1e293b;
+            --dark: #0f172a;
         }
 
         /* User Profile Dropdown */
@@ -122,6 +138,27 @@
             margin: 0;
         }
 
+      /* Force Dark Mode Override for Profile Dropdown & Trigger */
+      [data-theme="dark"] .profile-trigger,
+      [data-theme="dark"] .username {
+        color: var(--text-color);
+      }
+
+      [data-theme="dark"] .profile-dropdown {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+      }
+      
+      [data-theme="dark"] .profile-dropdown a,
+      [data-theme="dark"] .profile-dropdown button {
+        color: var(--text-color);
+      }
+      
+      [data-theme="dark"] .profile-dropdown a:hover,
+      [data-theme="dark"] .profile-dropdown button:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
         .profile-dropdown .divider {
             height: 1px;
             background: #eee;
@@ -136,10 +173,11 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--white);
-            color: var(--dark);
+            background-color: var(--bg-color);
+            color: var(--text-color);
             line-height: 1.6;
             font-size: 0.92rem;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         /* Navigation */
@@ -148,11 +186,12 @@
             justify-content: space-between;
             align-items: center;
             padding: 0.3rem 2rem;
-            background: var(--white);
+            background: var(--card-bg);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             position: sticky;
             top: 0;
             z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .logo {
@@ -183,7 +222,7 @@
 
         .nav-links a {
             text-decoration: none;
-            color: var(--dark);
+            color: var(--text-color);
             font-weight: 500;
             transition: color 0.3s;
         }
@@ -202,7 +241,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: flex-start;
-            padding-left: 8%;
+            padding-left: 5%;
             color: white;
             text-align: left;
         }
@@ -226,21 +265,22 @@
 
         /* INFO STRIP */
         .info-strip-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: -60px auto 0;
-            padding: 0 2rem;
+            padding: 0 4%;
             position: relative;
             z-index: 10;
         }
 
         .info-strip {
-            background: var(--white);
+            background: var(--card-bg);
             border-radius: 1rem;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             padding: 2.5rem;
             gap: 2rem;
+            border: 1px solid var(--border-color);
         }
 
         .info-item {
@@ -267,7 +307,7 @@
             font-size: 1.1rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
-            color: var(--dark);
+            color: var(--text-color);
         }
 
         .info-item .content p {
@@ -289,9 +329,9 @@
 
         /* MAIN GRID */
         .contact-main-section {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 3rem auto 2rem;
-            padding: 0 2rem;
+            padding: 0 4%;
             display: grid;
             grid-template-columns: 1fr 1fr 1.5fr;
             gap: 2.5rem;
@@ -299,10 +339,10 @@
         }
 
         .panel-card {
-            background: #f8fafc;
+            background: var(--card-bg);
             padding: 1.5rem;
             border-radius: 1rem;
-            border: 1px solid #edf2f7;
+            border: 1px solid var(--border-color);
             min-height: 220px;
             /* Equalizes the height of the two cards */
             display: flex;
@@ -313,8 +353,8 @@
             font-size: 1.25rem;
             font-weight: 800;
             margin-bottom: 1.5rem;
-            color: var(--dark);
-            border-bottom: 2px solid #f1f5f9;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--border-color);
             padding-bottom: 0.75rem;
         }
 
@@ -359,28 +399,30 @@
 
         .social-circle {
             width: 32px;
-            /* Reduced from 40px */
             height: 32px;
             border-radius: 50%;
-            background: var(--dark);
-            color: white;
+            background: var(--light);
+            color: var(--text-color);
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            transition: transform 0.2s, background 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border-color);
         }
 
         .social-circle:hover {
             background: var(--primary);
-            transform: scale(1.1);
+            color: white;
+            transform: translateY(-3px) scale(1.1);
+            border-color: var(--primary);
         }
 
         /* FORM */
         .form-panel {
-            background: var(--white);
+            background: var(--card-bg);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-            border: 1px solid #edf2f7;
+            border: 1px solid var(--border-color);
             padding: 1.5rem;
             border-radius: 1rem;
         }
@@ -389,7 +431,7 @@
             font-size: 1.25rem;
             font-weight: 800;
             margin-bottom: 2rem;
-            color: var(--dark);
+            color: var(--text-color);
         }
 
         .form-group {
@@ -408,6 +450,11 @@
             transition: color 0.3s;
         }
 
+        [data-theme="dark"] .form-group i.input-icon {
+            color: var(--text-color);
+            opacity: 0.6;
+        }
+
         .form-group textarea+i.input-icon {
             top: 1.2rem;
             transform: none;
@@ -418,11 +465,12 @@
             width: 100%;
             padding: 0.85rem 1rem 0.85rem 2.8rem;
             /* Added left padding */
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border-color);
             border-radius: 0.5rem;
             font-family: inherit;
             font-size: 0.95rem;
-            background: #fcfcfc;
+            background: var(--bg-color);
+            color: var(--text-color);
             transition: all 0.3s;
         }
 
@@ -435,8 +483,14 @@
         .form-group textarea:focus {
             outline: none;
             border-color: var(--primary);
-            background: #fff;
+            background: var(--bg-color);
             box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        [data-theme="dark"] .form-group input:focus,
+        [data-theme="dark"] .form-group textarea:focus {
+            background: var(--card-bg);
+            border-color: var(--primary);
         }
 
         .form-group input:focus+i.input-icon,
@@ -446,24 +500,38 @@
 
         .btn-submit {
             width: 100%;
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            padding: 0.85rem;
+            padding: 1rem;
             border: none;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.3s ease;
             margin-top: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.75rem;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
         }
 
         .btn-submit:hover {
-            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+            filter: brightness(1.1);
+        }
+
+        [data-theme="dark"] .btn-submit {
+            background: linear-gradient(135deg, #059669 0%, #064e3b 100%);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        [data-theme="dark"] .btn-submit:hover {
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.3);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         }
 
         /* Messages & Alerts */
@@ -501,12 +569,19 @@
         .newsletter-bar {
             background: var(--primary);
             color: white;
-            padding: 3rem 8%;
+            padding: 3rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 2rem;
             margin-top: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .newsletter-bar {
+            background: #0f172a;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .newsletter-text h2 {
@@ -522,7 +597,8 @@
         .newsletter-form {
             display: flex;
             gap: 0;
-            background: white;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 0.5rem;
             padding: 3px;
             max-width: 450px;
@@ -548,16 +624,28 @@
             border-radius: 0.5rem;
             font-family: inherit;
             outline: none;
+            background: transparent;
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .newsletter-form input {
+            color: white;
         }
 
         .newsletter-form button {
             background: var(--primary-dark);
             color: white;
             border: none;
-            padding: 0 1.5rem;
+            padding: 0.75rem 1.5rem;
             border-radius: 0.4rem;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-form button:hover {
+            background: var(--primary);
+            filter: brightness(1.1);
         }
 
         /* RESPONSIVE */
@@ -616,11 +704,11 @@
         footer {
             background: #1e293b;
             color: #94a3b8;
-            padding: 4rem 8% 2rem;
+            padding: 4rem 5% 2rem;
         }
 
         .footer-content {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -737,7 +825,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             font-size: 0.85rem;
         }
@@ -794,6 +882,12 @@
             <a href="/dashboard/">Carte</a>
             <a href="/about/">À Propos</a>
             <a href="/contact/">Contact</a>
+            
+            <!-- Theme Toggle -->
+            <button id="themeToggle" class="theme-toggle" style="background:none; border:none; color:var(--text-color); font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:5px;">
+                <i class="fas fa-moon"></i>
+            </button>
+
             {% if user.is_authenticated %}
             <div class="user-profile">
                 <div class="profile-trigger" id="profileTrigger">
@@ -1003,20 +1097,48 @@
     </footer>
 
     <script>
-        // Profile Dropdown Toggle
-        const profileTrigger = document.getElementById('profileTrigger');
-        const profileDropdown = document.getElementById('profileDropdown');
-
-        if (profileTrigger) {
-            profileTrigger.addEventListener('click', function (e) {
-                e.stopPropagation();
-                profileDropdown.classList.toggle('show');
-            });
-
-            document.addEventListener('click', function () {
-                profileDropdown.classList.remove('show');
-            });
+      // Theme Management
+      const themeToggle = document.getElementById("themeToggle");
+      const icon = themeToggle ? themeToggle.querySelector("i") : null;
+      
+      function updateIcon(theme) {
+        if (!icon) return;
+        if (theme === "dark") {
+          icon.classList.replace("fa-moon", "fa-sun");
+        } else {
+          icon.classList.replace("fa-sun", "fa-moon");
         }
+      }
+
+      const savedTheme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      updateIcon(savedTheme);
+
+      if (themeToggle) {
+        themeToggle.addEventListener("click", () => {
+          const currentTheme = document.documentElement.getAttribute("data-theme");
+          const newTheme = currentTheme === "light" ? "dark" : "light";
+          
+          document.documentElement.setAttribute("data-theme", newTheme);
+          localStorage.setItem("theme", newTheme);
+          updateIcon(newTheme);
+        });
+      }
+
+      // Profile Dropdown Toggle
+      const profileTrigger = document.getElementById("profileTrigger");
+      const profileDropdown = document.getElementById("profileDropdown");
+
+      if (profileTrigger) {
+        profileTrigger.addEventListener("click", function (e) {
+          e.stopPropagation();
+          profileDropdown.classList.toggle("show");
+        });
+
+        document.addEventListener("click", function () {
+          profileDropdown.classList.remove("show");
+        });
+      }
     </script>
 </body>
 
