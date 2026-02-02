@@ -318,8 +318,8 @@
         display: flex;
       }
 
-      .profile-dropdown a,
-      .profile-dropdown button {
+      .nav-links .profile-dropdown a,
+      .nav-links .profile-dropdown button {
         padding: 0.75rem 1rem;
         text-decoration: none;
         color: var(--text-color);
@@ -1941,9 +1941,9 @@
         />
         <div class="action-overlay">
           <div class="action-buttons">
-            <a href="#" class="btn-action btn-green" data-aos="zoom-in" data-aos-delay="0">Signaler un Problème</a>
-            <a href="#" class="btn-action btn-orange" data-aos="zoom-in" data-aos-delay="100">S'inscrire aux Alertes</a>
-            <a href="#" class="btn-action btn-teal" data-aos="zoom-in" data-aos-delay="200"
+            <a href="{% url 'contact' %}" class="btn-action btn-green" data-aos="zoom-in" data-aos-delay="0">Signaler un Problème</a>
+            <a href="{% url 'alerts' %}" class="btn-action btn-orange" data-aos="zoom-in" data-aos-delay="100">S'inscrire aux Alertes</a>
+            <a href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'signup' %}{% endif %}" class="btn-action btn-teal" data-aos="zoom-in" data-aos-delay="200"
               >Participer à la Communauté</a
             >
           </div>

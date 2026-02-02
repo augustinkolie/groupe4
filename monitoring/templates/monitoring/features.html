@@ -85,15 +85,15 @@
         }
 
         .logo-text {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 800;
             color: var(--primary);
-            letter-spacing: -1.2px;
-            margin-left: -18px;
+            letter-spacing: -0.5px;
+            margin-left: -12px;
         }
 
         .logo img {
-            height: 70px;
+            height: 50px;
             width: auto;
             filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.2));
         }
@@ -138,22 +138,26 @@
         }
 
         .btn-nav-primary {
-            background: var(--primary);
-            color: white !important;
+            background: transparent;
+            color: var(--primary) !important;
             padding: 0.7rem 1.5rem;
-            border-radius: 0.8rem;
+            border-radius: 50px;
+            border: 2px solid var(--primary);
             font-weight: 700;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+            box-shadow: none;
+            transition: all 0.3s;
         }
 
         .btn-nav-primary:hover {
+            background: var(--primary);
+            color: white !important;
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
         }
 
         /* --- Hero Section --- */
         .hero {
-            padding: 12rem 5% 8rem;
+            padding: 9rem 5% 6rem;
             text-align: center;
             position: relative;
             background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
@@ -194,7 +198,7 @@
         }
 
         .hero h1 {
-            font-size: 4rem;
+            font-size: 3.2rem;
             font-weight: 900;
             line-height: 1.1;
             margin-bottom: 1.5rem;
@@ -204,7 +208,7 @@
         }
 
         .hero p {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             color: rgba(255, 255, 255, 0.9);
             max-width: 850px;
             margin: 0 auto;
@@ -293,10 +297,10 @@
 
         .feature-visual img {
             width: 100%;
-            border-radius: 2rem;
+            border-radius: 1rem;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 8px solid var(--white);
+            border: none;
         }
 
         .feature-visual:hover img {
@@ -738,7 +742,7 @@
         <div class="feature-container">
             <div class="feature-visual" data-aos="fade-right">
                 <!-- Reports Preview -->
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80" alt="Reports EcoWatch">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80" alt="Reports EcoWatch" style="height: 580px; object-fit: cover;">
             </div>
             <div class="feature-text" data-aos="fade-left">
                 <div class="feature-icon-box" style="color: #8b5cf6;"><i class="fas fa-file-invoice"></i></div>
@@ -895,7 +899,7 @@
         window.addEventListener('scroll', function() {
             const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
-                nav.style.padding = '0.3rem 5%';
+                nav.style.padding = '0.5rem 5%';
                 nav.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
             } else {
                 nav.style.padding = '0.5rem 5%';
