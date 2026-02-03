@@ -46,7 +46,7 @@
 
     #station-info h4 {
         margin-bottom: 0.5rem;
-        color: var(--dark);
+        color: var(--text-color);
     }
 
     #station-info p {
@@ -155,21 +155,34 @@
                     <div class="stat-label">Humidité %</div>
                     <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Humidité relative de l'air</small>
                 </div>
-                <div class="stat-card" style="grid-column: span 2; font-size: 0.8rem; text-align: center; background: #f8fafc;">
-                    Source : <span id="val-source" style="font-weight: 600;">-</span> 
-                    (ID: <span id="val-source-id">-</span>)
+                <div class="stat-card" style="grid-column: span 2; font-size: 0.8rem; text-align: center; background: var(--light);">
+                    Source : <span id="val-source" style="font-weight: 600; color: var(--text-color);">-</span> 
+                    (ID: <span id="val-source-id" style="color: var(--text-color);">-</span>)
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Évolution Temporelle</h3>
+    <div class="charts-column" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Évolution Temporelle</h3>
+            </div>
+            <div class="card-body">
+                <div id="chart-container">
+                    <canvas id="airChart"></canvas>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <div id="chart-container">
-                <canvas id="airChart"></canvas>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Répartition des Polluants</h3>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px;">
+                    <canvas id="pollutantPieChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -199,6 +212,7 @@
     L.control.layers({ "Standard": standard, "Satellite": satellite }).addTo(map);
 
     let airChart;
+    let pollutantChart;
     let currentReadings = [];
 
     function getIQAColor(iqa) {
@@ -327,7 +341,71 @@
 
             // Show last 24 readings for a full daily curve
             updateChart(readings.slice(0, 24).reverse(), color);
+            // Update Pie Chart
+            updatePieChart(latest);
         }
+    }
+
+    function updatePieChart(latest) {
+        const ctx = document.getElementById('pollutantPieChart').getContext('2d');
+        if (pollutantChart) pollutantChart.destroy();
+        
+        const dataValues = [
+            latest.no2 || 0,
+            latest.so2 || 0,
+            latest.o3 || 0,
+            latest.pm25 || 0,
+            latest.co || 0
+        ];
+
+        pollutantChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['NO2', 'SO2', 'O3', 'PM2.5', 'CO'],
+                datasets: [{
+                    data: dataValues,
+                    backgroundColor: [
+                        '#3b82f6', // NO2 - Blue
+                        '#eab308', // SO2 - Yellow
+                        '#a855f7', // O3 - Purple
+                        '#ef4444', // PM2.5 - Red
+                        '#10b981'  // CO - Green
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            usePointStyle: true,
+                            font: {
+                                family: "'Inter', sans-serif",
+                                size: 11
+                            }
+                        }
+                    },
+                    tooltip: {
+                         callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     function updateChart(data, color) {
@@ -346,9 +424,10 @@
                     borderColor: color || '#10b981',
                     backgroundColor: (color || '#10b981') + '20', // Add transparency
                     fill: true,
-                    tension: 0.4,
-                    pointRadius: 3,
-                    pointHoverRadius: 6
+                    tension: 0.2,
+                    borderWidth: 1,
+                    pointRadius: 1,
+                    pointHoverRadius: 5
                 }]
             },
             options: {
@@ -405,9 +484,9 @@
             const matches = stations.filter(s => s.name.toLowerCase().includes(val));
             if (matches.length > 0) {
                 globalResults.innerHTML = matches.map(s => `
-                    <div class="search-item" data-id="${s.id}" style="padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #f1f5f9; background: white; transition: background 0.2s;">
-                        <div style="font-weight: 600; font-size: 0.9rem; color: var(--dark);">${s.name}</div>
-                        <div style="font-size: 0.75rem; color: #64748b;">Dernier IQA: ${s.latest_reading ? s.latest_reading.iqa : 'N/A'}</div>
+                    <div class="search-item" data-id="${s.id}" style="padding: 10px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color); background: var(--card-bg); transition: background 0.2s;">
+                        <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-color);">${s.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--gray);">Dernier IQA: ${s.latest_reading ? s.latest_reading.iqa : 'N/A'}</div>
                     </div>
                 `).join('');
                 globalResults.style.display = 'block';

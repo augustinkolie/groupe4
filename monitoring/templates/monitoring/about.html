@@ -21,6 +21,22 @@
             --white: #ffffff;
             --gray: #6b7280;
             --border: #e5e7eb;
+
+            /* Theme Variables */
+            --bg-color: var(--white);
+            --text-color: var(--dark);
+            --card-bg: var(--white);
+            --border-color: #eee;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --light: #1e293b;
+            --white: #1e293b;
+            --dark: #f1f5f9;
         }
 
         /* User Profile Dropdown */
@@ -136,10 +152,11 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--white);
-            color: var(--dark);
+            background-color: var(--bg-color);
+            color: var(--text-color);
             line-height: 1.6;
             margin: 0;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         /* Navigation */
@@ -147,19 +164,33 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 5%;
-            background: var(--white);
+            padding: 0.3rem 5%;
+            background: var(--card-bg);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             position: sticky;
             top: 0;
             z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .logo {
-            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 0;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
             font-weight: 800;
             color: var(--primary);
-            text-decoration: none;
+            letter-spacing: -1px;
+            margin-left: -17px;
+        }
+
+        .logo img {
+            height: 75px;
+            width: auto;
         }
 
         .nav-links {
@@ -170,7 +201,7 @@
 
         .nav-links a {
             text-decoration: none;
-            color: var(--dark);
+            color: var(--text-color);
             font-weight: 500;
             transition: color 0.3s;
         }
@@ -181,30 +212,38 @@
 
         /* Hero About */
         .hero-about {
-            padding: 8rem 5%;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            height: 350px;
+            padding: 0 8%;
+            background: linear-gradient(rgba(16, 185, 129, 0.5), rgba(5, 150, 105, 0.6)), url("https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?auto=format&fit=crop&w=1920&q=80");
+            background-size: cover;
+            background-position: center 25%;
+            background-attachment: fixed;
             color: white;
-            text-align: center;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
         }
 
         .hero-about h1 {
-            font-size: 4rem;
+            font-size: 2.5rem;
             font-weight: 800;
             margin-bottom: 1.5rem;
             letter-spacing: -1px;
         }
 
         .hero-about p {
-            font-size: 1.25rem;
-            max-width: 800px;
-            margin: 0 auto;
-            opacity: 0.9;
+            font-size: 1.05rem;
+            max-width: 700px;
+            margin: 0;
+            opacity: 0.95;
         }
 
         /* Content Sections */
         .section {
-            padding: 6rem 5%;
-            max-width: 1100px;
+            padding: 3rem 2% 6rem;
+            max-width: 1300px;
             margin: 0 auto;
         }
 
@@ -215,11 +254,12 @@
             align-items: center;
         }
 
-        .section h2 {
-            font-size: 2.5rem;
+        .section h2,
+        .partners-section h2 {
+            font-size: 1.8rem;
             font-weight: 800;
-            margin-bottom: 1.5rem;
-            color: var(--dark);
+            margin-bottom: 1rem;
+            color: var(--text-color);
         }
 
         .section p {
@@ -230,7 +270,7 @@
 
         .featured-image {
             width: 100%;
-            border-radius: 2rem;
+            border-radius: 1rem;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
         }
 
@@ -244,10 +284,11 @@
 
         .value-card {
             padding: 2.5rem;
-            background: var(--light);
+            background: var(--card-bg);
             border-radius: 1.5rem;
             text-align: center;
             transition: transform 0.3s;
+            border: 1px solid var(--border-color);
         }
 
         .value-card:hover {
@@ -255,9 +296,16 @@
         }
 
         .value-icon {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: var(--primary);
-            margin-bottom: 1.5rem;
+            margin: 0 auto 1.5rem;
+            width: 70px;
+            height: 70px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .value-card h3 {
@@ -265,79 +313,234 @@
             font-weight: 700;
         }
 
-        /* Team Section */
-        .team-section {
+
+
+        /* Partners Section */
+        .partners-section {
+            padding: 5rem 2%;
             background: var(--light);
-            padding: 6rem 5%;
             text-align: center;
         }
 
-        .team-grid {
+        .partners-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            max-width: 1000px;
-            margin: 4rem auto 0;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+            max-width: 1300px;
+            margin: 3rem auto 0;
         }
 
-        .team-member {
-            background: var(--white);
-            padding: 2rem;
+        .partner-card {
+            background: var(--card-bg);
+            padding: 2.5rem;
             border-radius: 1.5rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            border: 1px solid var(--border-color);
         }
 
-        .member-avatar {
-            width: 100px;
-            height: 100px;
-            background: var(--primary);
-            color: white;
+        .partner-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .partner-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            width: 70px;
+            height: 70px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .partner-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .partner-card p {
+            font-size: 1rem;
+            color: var(--gray);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        @media (max-width: 992px) {
+            .partners-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .partners-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Premium Footer Redesign */
+        footer {
+            background: #0f172a;
+            color: #f1f5f9;
+            padding: 5rem 5% 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: left;
+            /* Reset body text-align */
+        }
+
+        .footer-content-premium {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .footer-brand .footer-logo {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            text-decoration: none;
+        }
+
+        .footer-brand .footer-logo .logo-text {
+            color: var(--white);
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-left: -17px;
+        }
+
+        .footer-brand .footer-logo img {
+            height: 70px;
+            width: auto;
+        }
+
+        .footer-brand p {
+            color: #94a3b8;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            max-width: 320px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin: 0 auto 1.5rem;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
         }
 
-        .team-member h4 {
-            font-size: 1.25rem;
+        .social-links a:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .footer-links-group h4 {
+            color: white;
+            font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
         }
 
-        .team-member p {
+        .footer-links-group h4::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .footer-links-group ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links-group li {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links-group a {
+            text-decoration: none;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .footer-links-group a:hover {
             color: var(--primary);
-            font-weight: 600;
+            transform: translateX(5px);
+        }
+
+        .footer-bottom-premium {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #64748b;
             font-size: 0.9rem;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--white);
-            padding: 4rem 5%;
-            border-top: 1px solid var(--border);
-            text-align: center;
-        }
-
-        .footer-content {
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .footer-logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            display: block;
-            text-decoration: none;
+        .footer-bottom-links {
+            display: flex;
+            gap: 2rem;
         }
 
-        .copyright {
-            color: var(--gray);
-            font-size: 0.875rem;
+        .footer-bottom-links a {
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-bottom-links a:hover {
+            color: white;
+        }
+
+        @media (max-width: 1024px) {
+            .footer-content-premium {
+                grid-template-columns: 1fr 1fr;
+                gap: 3rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .footer-content-premium {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom-premium {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
         }
 
         @media (max-width: 768px) {
@@ -358,11 +561,20 @@
 
 <body>
     <nav>
-        <a href="/" class="logo">EcoWatch</a>
+        <a href="/" class="logo">
+            <img src="{% static 'monitoring/images/logo.png' %}" alt="EcoWatch Logo">
+            <span class="logo-text">EcoWatch</span>
+        </a>
         <div class="nav-links">
-            <a href="/">Accueil</a>
+
+            <a href="{% url 'features' %}">Fonctionnalités</a>
             <a href="/dashboard/">Carte</a>
             <a href="/contact/">Contact</a>
+            <!-- Theme Toggle -->
+            <button id="themeToggle" class="theme-toggle" style="background:none; border:none; color:var(--text-color); font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:5px;">
+                <i class="fas fa-moon"></i>
+            </button>
+
             {% if user.is_authenticated %}
             <div class="user-profile">
                 <div class="profile-trigger" id="profileTrigger">
@@ -418,59 +630,135 @@
                 <p>Utilisation de capteurs IoT autonomes et précis pour une surveillance continue.</p>
             </div>
             <div class="value-card">
-                <div class="value-icon"><i class="fas fa-eye"></i></div>
+                <div class="value-icon"><i class="fas fa-magnifying-glass-chart"></i></div>
                 <h3>Transparence</h3>
                 <p>Des données ouvertes à tous pour encourager la prise de conscience collective.</p>
             </div>
             <div class="value-card">
-                <div class="value-icon"><i class="fas fa-heartbeat"></i></div>
+                <div class="value-icon"><i class="fas fa-lungs"></i></div>
                 <h3>Santé</h3>
                 <p>Une priorité absolue : prévenir les maladies respiratoires par l'information.</p>
             </div>
         </div>
     </section>
 
-    <section class="team-section">
-        <div class="section">
-            <h2>L'Équipe</h2>
-            <p>Un groupe passionné d'ingénieurs et de développeurs engagés pour un avenir plus vert.</p>
-            <div class="team-grid">
-                <div class="team-member">
-                    <div class="member-avatar">E</div>
-                    <h4>Équipe Projet</h4>
-                    <p>Développement & IoT</p>
-                </div>
-                <div class="team-member">
-                    <div class="member-avatar">G</div>
-                    <h4>Groupe 4</h4>
-                    <p>Conception & Analyse</p>
-                </div>
+
+
+    <section class="partners-section">
+        <div class="section-header" style="max-width: 800px; margin: 0 auto;">
+            <h2>Équipe et partenaires</h2>
+            <p>Une synergie d'experts et de collaborations stratégiques pour un impact environnemental durable.</p>
+        </div>
+
+        <div class="partners-grid">
+            <div class="partner-card">
+                <div class="partner-icon"><i class="fas fa-users-gear"></i></div>
+                <h3>Notre Équipe</h3>
+                <p>Un collectif dynamique de développeurs, scientifiques et ingénieurs environnementaux unis par la
+                    technologie.</p>
+            </div>
+            <div class="partner-card">
+                <div class="partner-icon"><i class="fas fa-handshake-angle"></i></div>
+                <h3>Partenaires et soutiens</h3>
+                <p>Nous collaborons avec des ONG, des universités, des startups tech et les autorités locales pour un
+                    réseau robuste.</p>
+            </div>
+            <div class="partner-card">
+                <div class="partner-icon"><i class="fas fa-award"></i></div>
+                <h3>Expertise</h3>
+                <p>Notre crédibilité repose sur une approche data-driven et une maîtrise prouvée du cycle de vie des
+                    projets IoT.</p>
             </div>
         </div>
     </section>
 
     <footer>
-        <div class="footer-content">
-            <a href="/" class="footer-logo">EcoWatch</a>
-            <p class="copyright">&copy; 2026 EcoWatch - Concrétisation de la surveillance environnementale.</p>
+        <div class="footer-content-premium">
+            <div class="footer-brand">
+                <a href="/" class="footer-logo">
+                    <img src="{% static 'monitoring/images/logo.png' %}" alt="EcoWatch Logo">
+                    <span class="logo-text">EcoWatch</span>
+                </a>
+                <p>Le premier réseau intelligent de surveillance environnementale en Afrique de l'Ouest. Technologie IoT
+                    au service de votre santé.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links-group">
+                <h4>Plateforme</h4>
+                <ul>
+                    <li><a href="/#zones">Zones à risque</a></li>
+                    <li><a href="/dashboard/">Tableau de bord</a></li>
+                    <li><a href="{% url 'features' %}">Technologie IoT</a></li>
+                    <li><a href="#">Analytique</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-group">
+                <h4>ÉcoSystème</h4>
+                <ul>
+                    <li><a href="/about/">À Propos</a></li>
+                    <li><a href="/contact/">Devenir Partenaire</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-group">
+                <h4>Contact</h4>
+                <ul>
+                    <li style="color: #94a3b8;"><i class="fas fa-envelope"
+                            style="margin-right: 10px; color: var(--primary);"></i> support@ecowatch.gn</li>
+                    <li style="color: #94a3b8;"><i class="fas fa-phone"
+                            style="margin-right: 10px; color: var(--primary);"></i> +224 6XX XX XX XX</li>
+                    <li style="color: #94a3b8;"><i class="fas fa-map-marker-alt"
+                            style="margin-right: 10px; color: var(--primary);"></i> Conakry, Guinée</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom-premium">
+            <p>&copy; 2026 EcoWatch Platform - Groupe 4. Tous droits réservés.</p>
+            <div class="footer-bottom-links">
+                <a href="#">Confidentialité</a>
+                <a href="#">Conditions</a>
+                <a href="#">Cookies</a>
+            </div>
         </div>
     </footer>
 
     <script>
-        // Profile Dropdown Toggle
-        const profileTrigger = document.getElementById('profileTrigger');
-        const profileDropdown = document.getElementById('profileDropdown');
-
-        if (profileTrigger) {
-            profileTrigger.addEventListener('click', function (e) {
-                e.stopPropagation();
-                profileDropdown.classList.toggle('show');
-            });
-
-            document.addEventListener('click', function () {
-                profileDropdown.classList.remove('show');
-            });
+      // Theme Management
+      const themeToggle = document.getElementById("themeToggle");
+      const icon = themeToggle ? themeToggle.querySelector("i") : null;
+      
+      function updateIcon(theme) {
+        if (!icon) return;
+        if (theme === "dark") {
+          icon.classList.replace("fa-moon", "fa-sun");
+        } else {
+          icon.classList.replace("fa-sun", "fa-moon");
         }
+      }
+
+      const savedTheme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      updateIcon(savedTheme);
+
+      if (themeToggle) {
+        themeToggle.addEventListener("click", () => {
+          const currentTheme = document.documentElement.getAttribute("data-theme");
+          const newTheme = currentTheme === "light" ? "dark" : "light";
+          
+          document.documentElement.setAttribute("data-theme", newTheme);
+          localStorage.setItem("theme", newTheme);
+          updateIcon(newTheme);
+        });
+      }
     </script>
 </body>
 

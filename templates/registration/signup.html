@@ -21,7 +21,43 @@
             --white: #ffffff;
             --gray: #6b7280;
             --border: #e5e7eb;
+            --bg-color: #ffffff;
+            --text-color: var(--dark);
+            --input-bg: #ffffff;
+            --input-text: var(--dark);
         }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --border: #334155;
+            --white: #1e293b;
+            --dark: #f1f5f9;
+            --light: #1e293b;
+            --input-bg: #1e293b;
+            --input-text: #f1f5f9;
+            color-scheme: dark;
+        }
+
+        /* Autofill Overrides */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 50px var(--input-bg) inset !important;
+            -webkit-text-fill-color: var(--input-text) !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+    </style>
+
+    <script>
+        // Immediate theme application to prevent flash
+        const savedTheme = localStorage.getItem("theme") || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+    </script>
+
+    <style>
 
         * {
             margin: 0;
@@ -31,10 +67,11 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--white);
-            color: var(--dark);
+            background-color: var(--bg-color);
+            color: var(--text-color);
             height: 100vh;
             overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .split-screen {
@@ -50,13 +87,13 @@
             align-items: center;
             justify-content: center;
             padding: 2rem;
-            background: var(--white);
+            background: var(--bg-color);
             overflow-y: auto;
         }
 
         .auth-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             padding: 8rem 0 4rem;
         }
 
@@ -113,12 +150,19 @@
 
         .form-group input {
             width: 100%;
-            padding: 0.875rem 1rem 0.875rem 2.75rem;
+            padding: 1rem 1rem 1rem 2.75rem; /* Increased padding */
             border: 1px solid var(--border);
             border-radius: 0.75rem;
-            font-size: 1rem;
+            background-color: var(--input-bg) !important;
+            color: var(--input-text) !important;
+            font-size: 1.05rem;
             font-family: inherit;
             transition: all 0.3s;
+        }
+
+        [data-theme="dark"] .form-group input {
+            background-color: #1e293b !important;
+            color: #f1f5f9 !important;
         }
 
         .form-group input:focus {
@@ -154,12 +198,12 @@
 
         .btn-auth {
             width: 100%;
-            padding: 1rem;
+            padding: 1.125rem; /* Larger button */
             background: var(--primary);
             color: white;
             border: none;
             border-radius: 0.75rem;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
@@ -257,7 +301,12 @@
         <div class="auth-side">
             <div class="auth-container">
                 <div class="auth-header">
-                    <h1>Inscription</h1>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h1>Inscription</h1>
+                        <button id="themeToggle" type="button" style="background: var(--border); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--text-color); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </div>
                     <p>Rejoignez-nous pour protéger notre air.</p>
                 </div>
 
@@ -330,7 +379,7 @@
                 <div class="auth-footer">
                     Déjà un compte ? <a href="{% url 'login' %}">Connectez-vous</a>
                     <br><br>
-                    <a href="/" style="color: var(--gray); font-weight: 500;"><i class="fas fa-arrow-left"></i> Retour
+                    <a href="/" style="color: var(--gray); font-weight: 500;"><i class="fas fa-home"></i> Retour
                         au site</a>
                 </div>
             </div>
@@ -350,6 +399,29 @@
                 icon.classList.add('fa-eye');
             }
         }
+
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById("themeToggle");
+        const themeIcon = themeToggle.querySelector("i");
+        
+        function updateToggleIcon(theme) {
+            if (theme === "dark") {
+                themeIcon.classList.replace("fa-moon", "fa-sun");
+            } else {
+                themeIcon.classList.replace("fa-sun", "fa-moon");
+            }
+        }
+
+        updateToggleIcon(localStorage.getItem("theme") || "light");
+
+        themeToggle.addEventListener("click", () => {
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            const newTheme = currentTheme === "light" ? "dark" : "light";
+            
+            document.documentElement.setAttribute("data-theme", newTheme);
+            localStorage.setItem("theme", newTheme);
+            updateToggleIcon(newTheme);
+        });
     </script>
 </body>
 

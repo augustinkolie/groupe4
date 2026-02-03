@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from .forms import CustomUserCreationForm
+from django.contrib import messages
+from .forms import CustomUserCreationForm, ContactForm, NewsletterForm
 from datetime import timedelta
 from rest_framework import viewsets
 from django.utils import timezone
@@ -11,11 +12,37 @@ def index(request):
     stations = Station.objects.all()
     return render(request, 'monitoring/index.html', {'stations': stations})
 
+def features(request):
+    return render(request, 'monitoring/features.html')
+
 def dashboard(request):
     return render(request, 'monitoring/dashboard.html')
 
 def contact(request):
-    return render(request, 'monitoring/contact.html')
+    contact_form = ContactForm()
+    newsletter_form = NewsletterForm()
+
+    if request.method == 'POST':
+        if 'submit_contact' in request.POST:
+            contact_form = ContactForm(request.POST)
+            if contact_form.is_valid():
+                contact_form.save()
+                messages.success(request, 'Votre message a été envoyé avec succès !')
+                return redirect('contact')
+            else:
+                 messages.error(request, 'Une erreur est survenue, veuillez vérifier le formulaire.')
+        elif 'submit_newsletter' in request.POST:
+            newsletter_form = NewsletterForm(request.POST)
+            if newsletter_form.is_valid():
+                newsletter_form.save()
+                messages.success(request, 'Merci de votre inscription à la newsletter !')
+                return redirect('contact')
+
+    context = {
+        'form': contact_form,
+        'newsletter_form': newsletter_form
+    }
+    return render(request, 'monitoring/contact.html', context)
 
 def about(request):
     return render(request, 'monitoring/about.html')
@@ -52,6 +79,18 @@ def reports_view(request):
         'total_readings': total_readings,
     }
     return render(request, 'monitoring/reports.html', context)
+
+def exports_view(request):
+    # Mock data for exports
+    exports = [
+        {'id': 'EXP-2024-001', 'date': timezone.now() - timedelta(days=1), 'format': 'CSV', 'status': 'Completed', 'size': '2.4 MB'},
+        {'id': 'EXP-2024-002', 'date': timezone.now() - timedelta(days=3), 'format': 'PDF', 'status': 'Completed', 'size': '1.1 MB'},
+        {'id': 'EXP-2024-003', 'date': timezone.now() - timedelta(days=5), 'format': 'Excel', 'status': 'Failed', 'size': '-'},
+    ]
+    return render(request, 'monitoring/exports.html', {'exports': exports})
+
+def analyses_view(request):
+    return render(request, 'monitoring/analyses.html')
 
 def signup(request):
     if request.method == 'POST':

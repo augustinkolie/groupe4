@@ -7,10 +7,13 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('signup/', views.signup, name='signup'),
     path('contact/', views.contact, name='contact'),
+    path('features/', views.features, name='features'),
     path('about/', views.about, name='about'),
     path('stations/', views.stations_list, name='stations'),
     path('alerts/', views.alerts_view, name='alerts'),
     path('reports/', views.reports_view, name='reports'),
+    path('exports/', views.exports_view, name='exports'),
+    path('analyses/', views.analyses_view, name='analyses'),
     
     # HTMX Partials
     path('partials/stats-overview/', views_htmx.stats_overview, name='stats_overview'),

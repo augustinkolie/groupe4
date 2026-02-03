@@ -12,7 +12,7 @@
 <!-- Page Header -->
 <div class="flex-between mb-4">
     <div>
-        <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem;">Alertes de Qualité de l'Air</h1>
+        <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-color);">Alertes de Qualité de l'Air</h1>
         <p style="color: var(--gray);">Configurez et surveillez les alertes automatiques basées sur les seuils de pollution</p>
     </div>
     <button class="btn btn-primary">
@@ -65,7 +65,7 @@
 <!-- Tabs -->
 <div class="card mb-4">
     <div class="card-header" style="border-bottom: none;">
-        <div style="display: flex; gap: 1rem; border-bottom: 2px solid var(--gray-light); margin: -1.5rem -1.5rem 0;">
+        <div style="display: flex; gap: 1rem; border-bottom: 2px solid var(--border-color); margin: -1.5rem -1.5rem 0;">
             <button class="btn" style="border-radius: 0; border-bottom: 3px solid var(--primary); padding: 1rem 1.5rem; background: transparent; color: var(--primary);">
                 Alertes Actives
             </button>
@@ -97,11 +97,11 @@
 
 <!-- Alert Configuration -->
 <div class="grid-2">
-    <div class="card">
+    <div class="card" style="display: flex; flex-direction: column; height: 100%;">
         <div class="card-header">
             <h3 class="card-title">Seuils d'Alerte</h3>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="flex: 1;">
             <div class="form-group">
                 <label class="form-label">IQA Maximum</label>
                 <input type="number" class="form-control" placeholder="100" value="100">
@@ -127,11 +127,11 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card" style="display: flex; flex-direction: column; height: 100%;">
         <div class="card-header">
             <h3 class="card-title">Notifications</h3>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="flex: 1;">
             <div class="form-group">
                 <label class="form-label">Email de Notification</label>
                 <input type="email" class="form-control" placeholder="admin@ecowatch.com">
@@ -142,18 +142,22 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Fréquence des Notifications</label>
-                <select class="form-control form-select">
+                <select class="form-control form-select" style="background: var(--bg-color); color: var(--text-color); border-color: var(--border-color);">
                     <option>Immédiate</option>
                     <option>Toutes les heures</option>
                     <option>Toutes les 6 heures</option>
                     <option>Une fois par jour</option>
                 </select>
             </div>
-            <div class="form-group" style="margin-bottom: 0;">
+            <div class="form-group" style="margin-bottom: 1.5rem;">
                 <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                     <input type="checkbox" style="width: 18px; height: 18px;">
-                    <span class="form-label" style="margin: 0;">Activer les notifications SMS</span>
+                    <span class="form-label" style="margin: 0; color: var(--text-color);">Activer les notifications SMS</span>
                 </label>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Webhook URL (Slack/Discord)</label>
+                <input type="url" class="form-control" placeholder="https://hooks.slack.com/services/...">
             </div>
         </div>
         <div class="card-footer">

@@ -35,6 +35,29 @@
         --gray-light: #e5e7eb;
         --sidebar-width: 260px;
         --header-height: 70px;
+
+        /* Theme Variables */
+        --bg-color: #f0f2f5;
+        --card-bg: var(--white);
+        --header-bg: var(--white);
+        --text-color: var(--dark);
+        --border-color: var(--gray-light);
+        --sidebar-bg: var(--dark);
+        --sidebar-text: rgba(255, 255, 255, 0.65);
+        --sidebar-collapsed-width: 80px;
+      }
+
+      [data-theme="dark"] {
+        --bg-color: #0f172a;
+        --card-bg: #1e293b;
+        --header-bg: #1e293b;
+        --text-color: #f1f5f9;
+        --border-color: #334155;
+        --dark: #f1f5f9;
+        --light: #1e293b;
+        --white: #1e293b;
+        --gray-light: #334155;
+        --sidebar-bg: #1f2937; /* Keep sidebar dark in dark mode */
       }
 
       * {
@@ -45,9 +68,10 @@
 
       body {
         font-family: "Inter", sans-serif;
-        background-color: var(--light);
-        color: var(--dark);
+        background-color: var(--bg-color);
+        color: var(--text-color);
         line-height: 1.6;
+        transition: background-color 0.3s, color 0.3s;
       }
 
       /* Sidebar */
@@ -57,10 +81,16 @@
         top: 0;
         width: var(--sidebar-width);
         height: 100vh;
-        background: var(--dark);
+        background: var(--sidebar-bg);
         padding: 1.5rem 0;
         z-index: 1000;
-        transition: all 0.3s ease;
+        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+      }
+
+      body.sidebar-collapsed .sidebar {
+        width: var(--sidebar-collapsed-width);
       }
 
       .sidebar-logo {
@@ -76,6 +106,16 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      body.sidebar-collapsed .sidebar-logo h1 span:not(.logo-icon) {
+        display: none;
+      }
+
+      body.sidebar-collapsed .sidebar-logo h1 {
+        justify-content: center;
+        gap: 0;
       }
 
       .sidebar-logo .logo-icon {
@@ -114,6 +154,14 @@
         padding: 0 0.5rem;
         margin-bottom: 0.5rem;
         font-weight: 600;
+        transition: opacity 0.3s ease;
+      }
+
+      body.sidebar-collapsed .nav-section-title {
+        opacity: 0;
+        pointer-events: none;
+        height: 0;
+        margin: 0;
       }
 
       .nav-item {
@@ -134,14 +182,42 @@
         overflow: hidden;
       }
 
+      body.sidebar-collapsed .sidebar-nav {
+        padding: 0;
+      }
+
+      body.sidebar-collapsed .nav-item {
+        justify-content: center;
+        padding: 0.65rem 0;
+        margin: 0;
+        width: 100%;
+        border-radius: 0;
+      }
+
+      body.sidebar-collapsed .nav-item.active::before {
+        border-radius: 0;
+      }
+
+      body.sidebar-collapsed .nav-item span {
+        display: none;
+      }
+
+      body.sidebar-collapsed .nav-item svg,
+      body.sidebar-collapsed .nav-item i {
+        margin-right: 0 !important;
+        font-size: 1.6rem;
+        width: 30px !important;
+        height: 30px !important;
+      }
+
       .nav-item:hover {
         background: rgba(255, 255, 255, 0.08);
-        color: var(--white);
+        color: #ffffff;
         transform: translateX(4px);
       }
 
       .nav-item.active {
-        color: var(--white);
+        color: #ffffff; /* Always white, even in dark mode */
         font-weight: 600;
         position: relative;
         background: transparent; /* Animation will handle the background */
@@ -181,11 +257,16 @@
       .main-wrapper {
         margin-left: var(--sidebar-width);
         min-height: 100vh;
+        transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      body.sidebar-collapsed .main-wrapper {
+        margin-left: var(--sidebar-collapsed-width);
       }
 
       /* Header */
       .header {
-        background: var(--white);
+        background: var(--header-bg);
         height: var(--header-height);
         padding: 0 2rem;
         display: flex;
@@ -195,6 +276,11 @@
         position: sticky;
         top: 0;
         z-index: 100;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .header-left h2 {
+        color: var(--text-color);
       }
 
       .header-left h2 {
@@ -251,6 +337,7 @@
         padding: 0.5rem 0.75rem;
         border-radius: 0.75rem;
         transition: all 0.3s;
+        color: var(--text-color);
       }
 
       .profile-trigger:hover {
@@ -277,7 +364,7 @@
       .profile-name {
         font-weight: 600;
         font-size: 0.9rem;
-        color: var(--dark);
+        color: var(--text-color);
       }
 
       .profile-role {
@@ -289,14 +376,14 @@
         position: absolute;
         top: calc(100% + 10px);
         right: 0;
-        background: var(--white);
+        background: var(--card-bg);
         min-width: 200px;
         border-radius: 0.75rem;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         padding: 0.5rem;
         display: none;
         flex-direction: column;
-        border: 1px solid var(--gray-light);
+        border: 1px solid var(--border-color);
         animation: fadeIn 0.2s ease-out;
       }
 
@@ -341,6 +428,25 @@
         color: var(--primary);
       }
 
+      .theme-toggle-btn {
+        background: var(--light);
+        width: 40px;
+        height: 40px;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gray);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid var(--border-color);
+      }
+
+      .theme-toggle-btn:hover {
+        background: var(--gray-light);
+        color: var(--primary);
+      }
+
       .profile-dropdown .divider {
         height: 1px;
         background: var(--gray-light);
@@ -350,7 +456,7 @@
       /* Content Area */
       .content {
         padding: 2rem;
-        background-color: #f0f2f5; /* Use a distinct background color */
+        background-color: var(--bg-color); /* Use theme variable instead of hardcoded color */
         min-height: calc(100vh - var(--header-height));
         animation: fadeInUp 0.5s ease-out;
       }
@@ -426,6 +532,72 @@
         border: 2px solid var(--white);
         font-weight: 700;
       }
+
+      /* Sidebar Toggle */
+      .sidebar-toggle {
+        width: 28px;
+        height: 28px;
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: absolute;
+        right: 0.5rem; /* Precise edge position */
+      }
+
+      .sidebar-toggle:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+      }
+
+      .nav-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        position: relative; /* Context for absolute toggle */
+      }
+
+      body.sidebar-collapsed .nav-section-header {
+        justify-content: center;
+        padding: 0;
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+
+      body.sidebar-collapsed .sidebar-toggle {
+        transform: rotate(180deg);
+        margin: 0 auto;
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative; /* Reset to relative for centering */
+        right: 0;
+        left: 0;
+      }
+
+      body.sidebar-collapsed .sidebar-toggle i {
+        font-size: 1rem;
+      }
+
+      body.sidebar-collapsed .nav-section-title {
+        display: none;
+      }
+
+      body.sidebar-collapsed .sidebar-logo .logo-icon {
+        margin: 0 auto;
+      }
     </style>
   </head>
 
@@ -437,19 +609,24 @@
           <span class="logo-icon">
             <i class="fas fa-leaf"></i>
           </span>
-          EcoWatch
+          <span>EcoWatch</span>
         </h1>
       </div>
 
       <nav class="sidebar-nav">
         <div>
           <div class="nav-section">
-            <div class="nav-section-title">Principal</div>
+            <div class="nav-section-header">
+              <div class="nav-section-title">Principal</div>
+              <div class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-chevron-left"></i>
+              </div>
+            </div>
             <a
               href="{% url 'dashboard' %}"
               class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
             >
-              <i class="fas fa-chart-line"></i>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.75rem;"><path d="M3 12h3l3-9 6 18 3-9h3"></path></svg>
               <span>Tableau de bord</span>
             </a>
           </div>
@@ -460,26 +637,26 @@
                       <span>Stations</span>
                   </a>
                   <a href="{% url 'dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                      <i class="fas fa-wind"></i>
+                      <i class="fas fa-wind" style="margin-right: 0.75rem;"></i>
                       <span>Qualité de l'air</span>
                   </a>
                   <a href="{% url 'alerts' %}" class="nav-item {% if request.resolver_match.url_name == 'alerts' %}active{% endif %}">
-                      <i class="fas fa-bell"></i>
+                      <i class="fas fa-bell" style="margin-right: 0.75rem;"></i>
                       <span>Alertes</span>
                   </a>
               </div>
 
               <div class="nav-section">
                   <a href="{% url 'reports' %}" class="nav-item {% if request.resolver_match.url_name == 'reports' %}active{% endif %}">
-                      <i class="fas fa-file-alt"></i>
+                      <i class="fas fa-file-alt" style="margin-right: 0.75rem;"></i>
                       <span>Rapports</span>
                   </a>
-                  <a href="#" class="nav-item">
-                      <i class="fas fa-download"></i>
+                  <a href="{% url 'exports' %}" class="nav-item {% if request.resolver_match.url_name == 'exports' %}active{% endif %}">
+                      <i class="fas fa-download" style="margin-right: 0.75rem;"></i>
                       <span>Exports</span>
                   </a>
-                  <a href="#" class="nav-item">
-                      <i class="fas fa-chart-bar"></i>
+                  <a href="{% url 'analyses' %}" class="nav-item {% if request.resolver_match.url_name == 'analyses' %}active{% endif %}">
+                      <i class="fas fa-chart-bar" style="margin-right: 0.75rem;"></i>
                       <span>Analyses</span>
                   </a>
               </div>
@@ -490,7 +667,7 @@
             href="{% url 'index' %}"
             class="nav-item {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
           >
-            <i class="fas fa-home"></i>
+            <i class="fas fa-home" style="margin-right: 0.75rem;"></i>
             <span>Accueil</span>
           </a>
         </div>
@@ -510,7 +687,12 @@
           <div class="search-bar">
             <i class="fas fa-search"></i>
             <input type="text" id="globalSearch" placeholder="Rechercher une station..." autocomplete="off"/>
-            <div id="global-search-results" style="position: absolute; top: 100%; left: 0; width: 100%; background: white; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--gray-light); margin-top: 5px; max-height: 250px; overflow-y: auto; display: none; z-index: 2000;"></div>
+            <div id="global-search-results" style="position: absolute; top: 100%; left: 0; width: 100%; background: var(--card-bg); border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--border-color); margin-top: 5px; max-height: 250px; overflow-y: auto; display: none; z-index: 2000;"></div>
+          </div>
+
+          <!-- Theme Toggle -->
+          <div id="themeToggle" class="theme-toggle-btn" title="Changer de thème">
+            <i class="fas fa-moon"></i>
           </div>
 
           <!-- Notifications -->
@@ -534,13 +716,20 @@
               ></i>
             </div>
             <div class="profile-dropdown" id="profileDropdown">
-              <a href="/admin/"><i class="fas fa-user"></i> Mon profil</a>
-              <a href="#"><i class="fas fa-cog"></i> Paramètres</a>
+              <a href="{% url 'dashboard' %}" style="color: var(--primary)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l3-9 6 18 3-9h3"></path></svg>
+                Tableau de bord
+              </a>
+              <a href="#">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.72V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                Paramètres
+              </a>
               <div class="divider"></div>
               <form action="{% url 'logout' %}" method="post" style="margin: 0">
                 {% csrf_token %}
                 <button type="submit" style="color: #ef4444">
-                  <i class="fas fa-sign-out-alt"></i> Déconnexion
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                  Déconnexion
                 </button>
               </form>
             </div>
@@ -565,10 +754,6 @@
     </div>
 
     <script>
-      // Profile Dropdown Toggle
-      const profileTrigger = document.getElementById("profileTrigger");
-      const profileDropdown = document.getElementById("profileDropdown");
-
       if (profileTrigger) {
         profileTrigger.addEventListener("click", function (e) {
           e.stopPropagation();
@@ -577,6 +762,49 @@
 
         document.addEventListener("click", function () {
           profileDropdown.classList.remove("show");
+        });
+      }
+
+      // Theme Management
+      const themeToggle = document.getElementById("themeToggle");
+      const icon = themeToggle ? themeToggle.querySelector("i") : null;
+      
+      function updateIcon(theme) {
+        if (!icon) return;
+        if (theme === "dark") {
+          icon.classList.replace("fa-moon", "fa-sun");
+        } else {
+          icon.classList.replace("fa-sun", "fa-moon");
+        }
+      }
+
+      const savedTheme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      updateIcon(savedTheme);
+
+      if (themeToggle) {
+        themeToggle.addEventListener("click", () => {
+          const currentTheme = document.documentElement.getAttribute("data-theme");
+          const newTheme = currentTheme === "light" ? "dark" : "light";
+          
+          document.documentElement.setAttribute("data-theme", newTheme);
+          localStorage.setItem("theme", newTheme);
+          updateIcon(newTheme);
+        });
+      }
+
+      // Sidebar Toggle Logic
+      const sidebarToggle = document.getElementById("sidebarToggle");
+      const isCollapsed = localStorage.getItem("sidebarCollapsed") === "true";
+
+      if (isCollapsed) {
+        document.body.classList.add("sidebar-collapsed");
+      }
+
+      if (sidebarToggle) {
+        sidebarToggle.addEventListener("click", () => {
+          document.body.classList.toggle("sidebar-collapsed");
+          localStorage.setItem("sidebarCollapsed", document.body.classList.contains("sidebar-collapsed"));
         });
       }
     </script>

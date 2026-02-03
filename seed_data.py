@@ -14,37 +14,51 @@ def seed_data():
         {
             "name": "Conakry - Kaloum", 
             "lat": 9.5092, "lon": -13.7122, 
-            "desc": "Centre-ville, zone administrative fortement urbanisée.",
-            "img": "/brain/61fa76ee-0668-474a-afa2-9c490f0dadb7/pollution_conakry_kaloum_1769074460145.png",
-            "causes": "Trafic intense, émissions de véhicules anciens, et proximité du port autonome."
+            "desc": "Centre-ville, zone administrative et portuaire.",
+            "img": "https://images.unsplash.com/photo-1596416608554-73479cecc40d?auto=format&fit=crop&w=800&q=80",
+            "causes": "Trafic intense, émissions de véhicules anciens, et poussière portuaire."
         },
         {
             "name": "Conakry - Ratoma", 
             "lat": 9.5847, "lon": -13.6234, 
-            "desc": "Zone résidentielle et commerciale en pleine expansion.",
+            "desc": "Zone résidentielle et commerciale dense.",
             "img": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80",
-            "causes": "Déchets ménagers incinérés et forte densité de population."
+            "causes": "Gestion des déchets, feux domestiques et forte densité de population."
         },
         {
-            "name": "Kindia - Centre", 
-            "lat": 10.05, "lon": -12.86, 
-            "desc": "Ville carrefour majeure entre la côte et l'intérieur du pays.",
-            "img": "https://images.unsplash.com/photo-1506466010722-395ee2be5c17?auto=format&fit=crop&w=800&q=80",
-            "causes": "Poussière des routes non bitumées et fumées de camions de transport."
+            "name": "Kankan - Centre", 
+            "lat": 10.3854, "lon": -9.3057, 
+            "desc": "Deuxième plus grande ville, climat soudano-sahélien.",
+            "img": "https://images.unsplash.com/photo-1516733962228-fabda232ec5b?auto=format&fit=crop&w=800&q=80",
+            "causes": "Harmattan (vent de sable), poussière des routes et pollution urbaine."
         },
         {
-            "name": "Boké - Zone Industrielle", 
-            "lat": 10.93, "lon": -14.29, 
-            "desc": "Zone minière stratégique avec des activités d'extraction bauxite.",
-            "img": "https://images.unsplash.com/photo-1581094288338-2314dddb7bc3?auto=format&fit=crop&w=800&q=80",
-            "causes": "Activités minières, poussière de bauxite et camions de transport minier."
+            "name": "Nzérékoré - Centre", 
+            "lat": 7.7562, "lon": -8.8179, 
+            "desc": "Capitale de la Guinée forestière.",
+            "img": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=800&q=80",
+            "causes": "Déforestation, feux de brousse et activités agricoles intenses."
         },
         {
             "name": "Labé - Centre", 
             "lat": 11.31, "lon": -12.28, 
-            "desc": "Capitale du Fouta Djallon avec un climat plus tempéré.",
+            "desc": "Ville d'altitude du Fouta Djallon.",
             "img": "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80",
-            "causes": "Feux de brousse saisonniers et fumée de charbon de bois domestique."
+            "causes": "Charbon de bois, relief montagneux piégeant les fumées matinales."
+        },
+        {
+            "name": "Kindia - Centre", 
+            "lat": 10.05, "lon": -12.86, 
+            "desc": "Zone de transit majeure et cité des agrumes.",
+            "img": "https://images.unsplash.com/photo-1506466010722-395ee2be5c17?auto=format&fit=crop&w=800&q=80",
+            "causes": "Trafic de poids lourds et poussière routière."
+        },
+        {
+            "name": "Boké - Zone Minière", 
+            "lat": 10.93, "lon": -14.29, 
+            "desc": "Zone d'extraction intensive de bauxite.",
+            "img": "https://images.unsplash.com/photo-1581094288338-2314dddb7bc3?auto=format&fit=crop&w=800&q=80",
+            "causes": "Poussière rouge de bauxite, engins lourds et impacts industriels."
         },
     ]
 

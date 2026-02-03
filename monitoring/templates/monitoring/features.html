@@ -1,0 +1,912 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fonctionnalités | EcoWatch Premium</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS for scroll animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-light: #d1fae5;
+            --primary-dark: #059669;
+            --secondary: #3b82f6;
+            --secondary-light: #dbeafe;
+            --accent: #f59e0b;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.8);
+            --border: #e2e8f0;
+            --section-bg-light: #f1f5f9;
+        }
+
+        [data-theme="dark"] {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #60a5fa;
+            --dark: #f8fafc;
+            --dark-light: #f1f5f9;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --bg-light: #0f172a;
+            --white: #1e293b;
+            --glass: rgba(30, 41, 59, 0.8);
+            --border: #334155;
+            --section-bg-light: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 5%;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 2000;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 0;
+        }
+
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+            margin-left: -12px;
+        }
+
+        .logo img {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.2));
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .btn-nav-primary {
+            background: transparent;
+            color: var(--primary) !important;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid var(--primary);
+            font-weight: 700;
+            box-shadow: none;
+            transition: all 0.3s;
+        }
+
+        .btn-nav-primary:hover {
+            background: var(--primary);
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            padding: 9rem 5% 6rem;
+            text-align: center;
+            position: relative;
+            background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            color: white;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(16, 185, 129, 0.4) 100%);
+            z-index: 1;
+        }
+
+        .hero > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--primary);
+            backdrop-filter: blur(8px);
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 850px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* --- Feature Sections --- */
+        .feature-item {
+            padding: 100px 5%;
+            overflow: hidden;
+        }
+
+        .feature-item:nth-child(even) {
+            background-color: var(--section-bg-light);
+        }
+
+        .feature-container {
+            max-width: 1250px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8rem;
+            align-items: center;
+        }
+
+        .feature-text {
+            position: relative;
+        }
+
+        .feature-icon-box {
+            width: 70px;
+            height: 70px;
+            background: var(--white);
+            border-radius: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .feature-text h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        .feature-text p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+        }
+
+        .feature-highlights {
+            list-style: none;
+        }
+
+        .feature-highlights li {
+            position: relative;
+            padding-left: 2.2rem;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            color: var(--text-main);
+        }
+
+        .feature-highlights li i {
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        .feature-visual {
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-visual img {
+            width: 100%;
+            border-radius: 1rem;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            border: none;
+        }
+
+        .feature-visual:hover img {
+            transform: scale(1.03) translateY(-10px);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.18);
+        }
+
+        .feature-visual::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.15;
+            filter: blur(40px);
+        }
+
+        /* --- Secondary Features Grid --- */
+        .secondary-features {
+            padding: 100px 5%;
+            text-align: center;
+        }
+
+        .section-intro {
+            max-width: 800px;
+            margin: 0 auto 5rem;
+        }
+
+        .section-intro h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .feature-grid {
+            max-width: 1250px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 3rem 2rem;
+            border-radius: 2rem;
+            border: 1px solid var(--border);
+            transition: all 0.4s;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary);
+        }
+
+        .feature-card i {
+            display: inline-block;
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover i {
+            transform: scale(1.1);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* --- CTA Section --- */
+        .premium-cta {
+            margin: 100px 5%;
+            border-radius: 3rem;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 8rem 2rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.1;
+        }
+
+        .premium-cta h2 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .premium-cta p {
+            font-size: 1.4rem;
+            max-width: 700px;
+            margin: 0 auto 3.5rem;
+            opacity: 0.8;
+            position: relative;
+        }
+
+        .btn-cta-luxe {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.2rem;
+            border-radius: 1.2rem;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+            position: relative;
+        }
+
+        .btn-cta-luxe:hover {
+            transform: scale(1.05) translateY(-5px);
+            background: var(--primary-dark);
+            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.5);
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: #0f172a;
+            color: #f1f5f9;
+            padding: 5rem 5% 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-content-premium {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .footer-brand .footer-logo {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            text-decoration: none;
+        }
+
+        .footer-brand .footer-logo .logo-text {
+            color: var(--white);
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-left: -17px;
+        }
+
+        .footer-brand .footer-logo img {
+            height: 70px;
+            width: auto;
+        }
+
+        .footer-brand p {
+            color: #94a3b8;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            max-width: 320px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .footer-links-group h4 {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-links-group h4::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .footer-links-group ul {
+            list-style: none;
+        }
+
+        .footer-links-group li {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links-group a {
+            text-decoration: none;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .footer-links-group a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .footer-bottom-premium {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-bottom-links a {
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-bottom-links a:hover {
+            color: white;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 1024px) {
+            .feature-container {
+                grid-template-columns: 1fr;
+                gap: 5rem;
+                text-align: center;
+            }
+
+            .feature-container:nth-child(even) .feature-text {
+                order: 2;
+            }
+
+            .feature-icon-box {
+                margin: 0 auto 2rem;
+            }
+
+            .feature-highlights li {
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .feature-text h2 {
+                font-size: 2.2rem;
+            }
+
+            .footer-content-premium {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .footer-content-premium {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-bottom-premium {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Dark/Light Theme Handler -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
+    <nav>
+        <a href="/" class="logo">
+            <img src="{% static 'monitoring/images/logo.png' %}" alt="EcoWatch Logo">
+            <span class="logo-text">EcoWatch</span>
+        </a>
+        <div class="nav-links">
+            <a href="{% url 'features' %}" class="active">Fonctionnalités</a>
+            <a href="{% url 'stations' %}">Stations</a>
+            <a href="{% url 'alerts' %}">Alertes</a>
+            <a href="{% url 'reports' %}">Rapports</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn-nav-primary">Dashboard</a>
+            {% else %}
+            <a href="{% url 'login' %}">Connexion</a>
+            <a href="{% url 'signup' %}" class="btn-nav-primary">S'inscrire</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-tag">Technologie IoT Avancée</div>
+        <h1 data-aos="fade-up">L'Intelligence au Service de <br>votre Environnement</h1>
+        <p data-aos="fade-up" data-aos-delay="200">Explorez notre écosystème complet de surveillance environnementale. Précision scientifique, réactivité temps réel et analyses prédictives pour protéger votre santé.</p>
+    </section>
+
+    <!-- Detailed Features -->
+    <section class="feature-item">
+        <div class="feature-container">
+            <div class="feature-text" data-aos="fade-right">
+                <div class="feature-icon-box"><i class="fas fa-chart-line"></i></div>
+                <h2>Tableau de Bord<br>Analytique Temps Réel</h2>
+                <p>Visualisez la qualité de l'air avec une précision chirurgicale. Notre dashboard interactif centralise toutes vos données critiques sur une interface unifiée.</p>
+                <ul class="feature-highlights">
+                    <li><i class="fas fa-check-circle"></i> Cartographie IQA dynamique 3D</li>
+                    <li><i class="fas fa-check-circle"></i> Graphiques d'évolution par polluant (PM2.5, NO2, CO)</li>
+                    <li><i class="fas fa-check-circle"></i> Rafraîchissement intelligent via HTMX</li>
+                    <li><i class="fas fa-check-circle"></i> Comparaison multi-stations instantanée</li>
+                </ul>
+            </div>
+            <div class="feature-visual" data-aos="fade-left">
+                <!-- Dashboard Preview -->
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80" alt="Dashboard EcoWatch" style="height: 550px; object-fit: cover;">
+            </div>
+        </div>
+    </section>
+
+    <section class="feature-item">
+        <div class="feature-container">
+            <div class="feature-visual" data-aos="fade-right">
+                <!-- Alerts Preview -->
+                <img src="{% static 'monitoring/images/slide3.png' %}" alt="Alertes EcoWatch">
+            </div>
+            <div class="feature-text" data-aos="fade-left">
+                <div class="feature-icon-box" style="color: var(--accent);"><i class="fas fa-bell"></i></div>
+                <h2>Système d'Alertes Préventives</h2>
+                <p>Ne soyez plus jamais surpris par une dégradation de l'air. EcoWatch vous informe en temps réel dès qu'une anomalie est détectée.</p>
+                <ul class="feature-highlights">
+                    <li><i class="fas fa-check-circle"></i> Notifications Push, SMS et Email</li>
+                    <li><i class="fas fa-check-circle"></i> Seuils de pollution personnalisables</li>
+                    <li><i class="fas fa-check-circle"></i> Alertes géolocalisées intelligentes</li>
+                    <li><i class="fas fa-check-circle"></i> Recommandations sanitaires instantanées</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="feature-item">
+        <div class="feature-container">
+            <div class="feature-text" data-aos="fade-right">
+                <div class="feature-icon-box" style="color: var(--secondary);"><i class="fas fa-microchip"></i></div>
+                <h2>Gestion de Réseau IoT & Stations</h2>
+                <p>Supervisez votre flotte de capteurs avec une facilité déconcertante. De l'installation à la maintenance, tout est automatisé.</p>
+                <ul class="feature-highlights">
+                    <li><i class="fas fa-check-circle"></i> Statut de santé des capteurs en direct</li>
+                    <li><i class="fas fa-check-circle"></i> Géofencing des zones surveillées</li>
+                    <li><i class="fas fa-check-circle"></i> Logs techniques et historique de maintenance</li>
+                    <li><i class="fas fa-check-circle"></i> Calibration à distance IA-driven</li>
+                </ul>
+            </div>
+            <div class="feature-visual" data-aos="fade-left">
+                <!-- IoT Preview -->
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80" alt="IoT Stations" style="height: 550px; object-fit: cover;">
+            </div>
+        </div>
+    </section>
+
+    <section class="feature-item">
+        <div class="feature-container">
+            <div class="feature-visual" data-aos="fade-right">
+                <!-- Reports Preview -->
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80" alt="Reports EcoWatch" style="height: 580px; object-fit: cover;">
+            </div>
+            <div class="feature-text" data-aos="fade-left">
+                <div class="feature-icon-box" style="color: #8b5cf6;"><i class="fas fa-file-invoice"></i></div>
+                <h2>Analyses & Rapports Exécutifs</h2>
+                <p>Transformez les données brutes en décisions stratégiques. Générez des rapports professionnels en quelques secondes.</p>
+                <ul class="feature-highlights">
+                    <li><i class="fas fa-check-circle"></i> Exports PDF Premium (Luxe Design)</li>
+                    <li><i class="fas fa-check-circle"></i> Données brutes au format Excel/CSV</li>
+                    <li><i class="fas fa-check-circle"></i> Analyses mensuelles automatisées</li>
+                    <li><i class="fas fa-check-circle"></i> Rapports de conformité réglementaire</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Grid of micro-features -->
+    <section class="secondary-features">
+        <div class="section-intro" data-aos="fade-up">
+            <h2>Chaque détail compte</h2>
+            <p>EcoWatch ne se limite pas aux fonctionnalités majeures. Nous avons peaufiné l'expérience pour offrir un service irréprochable.</p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card" data-aos="zoom-in" data-aos-delay="0">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Sécurité Bancaire</h3>
+                <p>Vos données environnementales et personnelles sont protégées par un chiffrement AES-256 de bout en bout.</p>
+            </div>
+            <div class="feature-card" data-aos="zoom-in" data-aos-delay="100">
+                <i class="fas fa-mobile-alt"></i>
+                <h3>Expérience Mobile First</h3>
+                <p>Une application web progressive fluide et réactive, optimisée pour tous vos appareils nomades.</p>
+            </div>
+            <div class="feature-card" data-aos="zoom-in" data-aos-delay="200">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>API Développeur</h3>
+                <p>Intégrez nos flux de données IQA directement dans vos propres applications via notre API REST documentée.</p>
+            </div>
+            <div class="feature-card" data-aos="zoom-in" data-aos-delay="300">
+                <i class="fas fa-moon"></i>
+                <h3>Mode Sombre Natif</h3>
+                <p>Un confort visuel optimal de jour comme de nuit grâce à notre interface sombre adaptative.</p>
+            </div>
+            <div class="feature-card" data-aos="zoom-in" data-aos-delay="400">
+                <i class="fas fa-users-cog"></i>
+                <h3>Multi-Utilisateurs</h3>
+                <p>Gérez les accès de votre équipe avec des rôles et permissions finement granulés.</p>
+            </div>
+            <div class="feature-card" data-aos="zoom-in" data-aos-delay="500">
+                <i class="fas fa-infinity"></i>
+                <h3>Scalabilité Illimitée</h3>
+                <p>Notre infrastructure cloud s'adapte à votre croissance, qu'il s'agisse de 10 ou de 10 000 stations.</p>
+            </div>
+        </div>
+    </section>
+
+
+
+    <footer>
+      <div class="footer-content-premium">
+        <div class="footer-brand">
+          <a href="/" class="footer-logo">
+            <img
+              src="{% static 'monitoring/images/logo.png' %}"
+              alt="EcoWatch Logo"
+            />
+            <span class="logo-text">EcoWatch</span>
+          </a>
+          <p>
+            Le premier réseau intelligent de surveillance environnementale en
+            Afrique de l'Ouest. Technologie IoT au service de votre santé.
+          </p>
+          <div class="social-links">
+            <a href="#" aria-label="Facebook"
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="LinkedIn"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <a href="#" aria-label="Instagram"
+              ><i class="fab fa-instagram"></i
+            ></a>
+          </div>
+        </div>
+
+        <div class="footer-links-group">
+          <h4>Plateforme</h4>
+          <ul>
+            <li><a href="{% url 'index' %}#zones">Zones à risque</a></li>
+            <li><a href="/dashboard/">Tableau de bord</a></li>
+            <li><a href="{% url 'features' %}">Technologie IoT</a></li>
+            <li><a href="#">API Développeurs</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-group">
+          <h4>Légal & Support</h4>
+          <ul>
+            <li><a href="#">Conditions d'utilisation</a></li>
+            <li><a href="#">Confidentialité (RGPD)</a></li>
+            <li><a href="/contact/">Support Technique</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-group">
+          <h4>Contact</h4>
+          <ul>
+            <li style="color: #94a3b8">
+              <i
+                class="fas fa-envelope"
+                style="margin-right: 10px; color: var(--primary)"
+              ></i>
+              support@ecowatch.gn
+            </li>
+            <li style="color: #94a3b8">
+              <i
+                class="fas fa-phone"
+                style="margin-right: 10px; color: var(--primary)"
+              ></i>
+              +224 610 85 00 29
+            </li>
+            <li style="color: #94a3b8">
+              <i
+                class="fas fa-map-marker-alt"
+                style="margin-right: 10px; color: var(--primary)"
+              ></i>
+              Conakry, Guinée
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom-premium">
+        <p>&copy; 2026 EcoWatch Platform - Groupe 4. Tous droits réservés.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Sitemap</a>
+          <a href="#">Cookies</a>
+          <a href="#">Accessibilité</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- AOS Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+
+        // Sticky Nav Effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.padding = '0.5rem 5%';
+                nav.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+            } else {
+                nav.style.padding = '0.5rem 5%';
+                nav.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^dxs+ld*n1z3&ghni==2%nq(2*&tf2a312n&ah(=3fe=lw*4od'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-default-key-for-dev')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -43,6 +48,11 @@ INSTALLED_APPS = [
     'core',
     'ingestion',
     'api',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'ecowatch.urls'
@@ -148,6 +159,46 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APPS': [
+            {
+                'client_id': os.getenv('GOOGLE_OAUTH_CLIENT_ID'),
+                'secret': os.getenv('GOOGLE_OAUTH_CLIENT_SECRET'),
+                'key': ''
+            },
+        ],
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+            'prompt': 'select_account',
+        }
+    }
+}
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Fix for the default Site record
+from django.db.models.signals import post_migrate
+@receiver(post_migrate)
+def update_site_name(sender, **kwargs):
+    if sender.name == 'django.contrib.sites':
+        from django.contrib.sites.models import Site
+        Site.objects.filter(id=SITE_ID, domain='example.com').update(
+            domain='127.0.0.1:8000',
+            name='EcoWatch'
+        )
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 LOGIN_REDIRECT_URL = '/'
@@ -155,5 +206,5 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 # Phase 2: OpenWeather Configuration
 # Get your FREE key at https://openweathermap.org/api
-OPENWEATHER_API_KEY = '1dce26d4d292e782b2a1167826b10f35'
+OPENWEATHER_API_KEY = os.getenv('OPENWEATHER_API_KEY')
 
