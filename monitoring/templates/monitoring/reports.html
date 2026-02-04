@@ -12,7 +12,7 @@
 <!-- Page Header -->
 <div class="flex-between mb-4">
     <div>
-        <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.5px; color: var(--text-color);">Rapports et Analyses</h1>
+        <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.5px;">Rapports et Analyses</h1>
         <p style="color: var(--gray); font-size: 1rem;">Gérez, générez et exportez vos données de qualité de l'air en quelques clics.</p>
     </div>
 </div>
@@ -65,39 +65,41 @@
             <h3 class="card-title">Paramétrer Nouveau Rapport</h3>
         </div>
         <div class="card-body">
-            <div class="premium-form-group">
-                <label class="premium-label">Type de Rapport</label>
-                <select class="premium-control form-select">
-                    <option>Rapport Quotidien</option>
-                    <option>Rapport Hebdomadaire</option>
-                    <option>Rapport Mensuel</option>
-                    <option>Rapport Annuel</option>
-                    <option>Rapport Personnalisé</option>
-                </select>
-            </div>
-            <div class="premium-form-group">
-                <label class="premium-label">Période de l'analyse</label>
-                <div class="grid-2" style="gap: 1rem;">
-                    <input type="date" class="premium-control" placeholder="Début">
-                    <input type="date" class="premium-control" placeholder="Fin">
+            <form id="reportForm" method="post" action="{% url 'generate_report' %}">
+                {% csrf_token %}
+                <div class="premium-form-group">
+                    <label class="premium-label">Type de Rapport</label>
+                    <select class="premium-control form-select" name="report_type" id="reportType">
+                        <option value="DAILY">Rapport Quotidien</option>
+                        <option value="WEEKLY">Rapport Hebdomadaire</option>
+                        <option value="MONTHLY">Rapport Mensuel</option>
+                        <option value="ANNUAL">Rapport Annuel</option>
+                        <option value="CUSTOM">Rapport Personnalisé</option>
+                    </select>
                 </div>
-            </div>
-            <div class="premium-form-group">
-                <label class="premium-label">Sélection des Stations</label>
-                <div class="station-selector-wrapper">
-                    <div class="station-search">
-                        <i class="fas fa-search" style="color: var(--gray);"></i>
-                        <input type="text" placeholder="Rechercher une ville ou station..." id="stationSearch">
-                    </div>
-                    <div class="station-list-container" id="stationList">
-                        {% for station in stations %}
-                        <label class="station-option">
-                            <input type="checkbox" name="stations" value="{{ station.id }}">
-                            <span>{{ station.name }}</span>
-                        </label>
-                        {% endfor %}
+                <div class="premium-form-group">
+                    <label class="premium-label">Période de l'analyse</label>
+                    <div class="grid-2" style="gap: 1rem;">
+                        <input type="date" class="premium-control" name="start_date" id="startDate" placeholder="Début" required>
+                        <input type="date" class="premium-control" name="end_date" id="endDate" placeholder="Fin" required>
                     </div>
                 </div>
+                <div class="premium-form-group">
+                    <label class="premium-label">Sélection des Stations</label>
+                    <div class="station-selector-wrapper">
+                        <div class="station-search">
+                            <i class="fas fa-search" style="color: var(--gray);"></i>
+                            <input type="text" placeholder="Rechercher une ville ou station..." id="stationSearch">
+                        </div>
+                        <div class="station-list-container" id="stationList">
+                            {% for station in stations %}
+                            <label class="station-option">
+                                <input type="checkbox" name="stations" value="{{ station.id }}">
+                                <span>{{ station.name }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
                 <div style="margin-top: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
                     <div style="color: var(--gray); font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem;">
                         <i class="fas fa-info-circle"></i>
@@ -111,20 +113,20 @@
             <div class="premium-form-group">
                 <label class="premium-label">Indicateurs à inclure</label>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
-                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.5rem; transition: background 0.3s;">
-                        <input type="checkbox" checked style="accent-color: var(--primary); width: 18px; height: 18px;">
+                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; padding: 0.5rem; border: 1px solid var(--gray-light); border-radius: 0.5rem; transition: background 0.3s;">
+                        <input type="checkbox" name="indicators" value="aqi" checked style="accent-color: var(--primary); width: 18px; height: 18px;">
                         <span style="font-size: 0.9rem;">Indice IQA</span>
                     </label>
-                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.5rem; transition: background 0.3s;">
-                        <input type="checkbox" checked style="accent-color: var(--primary); width: 18px; height: 18px;">
+                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; padding: 0.5rem; border: 1px solid var(--gray-light); border-radius: 0.5rem; transition: background 0.3s;">
+                        <input type="checkbox" name="indicators" value="pm25" checked style="accent-color: var(--primary); width: 18px; height: 18px;">
                         <span style="font-size: 0.9rem;">PM2.5</span>
                     </label>
-                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.5rem; transition: background 0.3s;">
-                        <input type="checkbox" style="accent-color: var(--primary); width: 18px; height: 18px;">
+                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; padding: 0.5rem; border: 1px solid var(--gray-light); border-radius: 0.5rem; transition: background 0.3s;">
+                        <input type="checkbox" name="indicators" value="pm10" style="accent-color: var(--primary); width: 18px; height: 18px;">
                         <span style="font-size: 0.9rem;">PM10</span>
                     </label>
-                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.5rem; transition: background 0.3s;">
-                        <input type="checkbox" style="accent-color: var(--primary); width: 18px; height: 18px;">
+                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; padding: 0.5rem; border: 1px solid var(--gray-light); border-radius: 0.5rem; transition: background 0.3s;">
+                        <input type="checkbox" name="indicators" value="co" style="accent-color: var(--primary); width: 18px; height: 18px;">
                         <span style="font-size: 0.9rem;">CO</span>
                     </label>
                 </div>
@@ -133,20 +135,20 @@
                 <label class="premium-label">Format de sortie</label>
                 <div style="display: flex; gap: 1.5rem;">
                     <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer;">
-                        <input type="radio" name="format" checked style="accent-color: var(--secondary); width: 20px; height: 20px;">
+                        <input type="radio" name="format" value="PDF" checked style="accent-color: var(--secondary); width: 20px; height: 20px;">
                         <span style="font-weight: 500;">PDF Luxe</span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer;">
-                        <input type="radio" name="format" style="accent-color: var(--secondary); width: 20px; height: 20px;">
+                        <input type="radio" name="format" value="EXCEL" style="accent-color: var(--secondary); width: 20px; height: 20px;">
                         <span style="font-weight: 500;">Excel (Data)</span>
                     </label>
                 </div>
             </div>
-        </div>
+        </form>
         <div class="card-footer" style="padding-top: 2rem;">
-            <button class="btn btn-primary btn-lg" style="width: 100%; justify-content: center; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);">
+            <button type="submit" form="reportForm" class="btn btn-primary btn-lg" id="generateBtn" style="width: 100%; justify-content: center; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);">
                 <i class="fas fa-file-contract"></i>
-                Lancer la Génération
+                <span id="btnText">Lancer la Génération</span>
             </button>
         </div>
     </div>
@@ -160,7 +162,7 @@
                 <div class="premium-empty-icon">
                     <i class="fas fa-folder-open"></i>
                 </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-color); margin-bottom: 0.5rem;">Aucun document archivé</h3>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem;">Aucun document archivé</h3>
                 <p style="color: var(--gray); max-width: 250px; margin: 0 auto;">Vos rapports générés apparaîtront ici pour téléchargement ultérieur.</p>
             </div>
         </div>
@@ -177,11 +179,11 @@
             Exportez rapidement les données brutes sans générer un rapport complet
         </p>
         <div class="flex gap-2">
-            <button class="btn btn-outline" disabled>
+            <button class="btn btn-outline" id="csvExportBtn">
                 <i class="fas fa-file-csv"></i>
                 Exporter Toutes les Données (CSV)
             </button>
-            <button class="btn btn-outline" disabled>
+            <button class="btn btn-outline" id="excelExportBtn">
                 <i class="fas fa-file-excel"></i>
                 Exporter vers Excel
             </button>
@@ -197,10 +199,178 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Définir les dates par défaut (7 derniers jours)
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 7);
+        
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        
+        if (startDateInput && endDateInput) {
+            endDateInput.valueAsDate = endDate;
+            startDateInput.valueAsDate = startDate;
+        }
+        
         const stationSearch = document.getElementById('stationSearch');
         const stationList = document.getElementById('stationList');
         const stationOptions = stationList ? stationList.querySelectorAll('.station-option') : [];
         const selectedCount = document.getElementById('selectedCount');
+        const reportForm = document.getElementById('reportForm');
+        const generateBtn = document.getElementById('generateBtn');
+        const btnText = document.getElementById('btnText');
+        
+        // Handle form submission
+        if (reportForm) {
+            reportForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Validate stations selection
+                const checkedStations = stationList.querySelectorAll('input[name="stations"]:checked');
+                if (checkedStations.length === 0) {
+                    alert('Veuillez sélectionner au moins une station');
+                    return;
+                }
+                
+                // Show loading state
+                generateBtn.disabled = true;
+                btnText.textContent = 'Génération en cours...';
+                generateBtn.querySelector('i').className = 'fas fa-spinner fa-spin';
+                
+                // Prepare form data
+                const formData = new FormData(reportForm);
+                
+                // Send request
+                fetch(reportForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Erreur de génération');
+                    
+                    // Get filename from headers if available
+                    const disposition = response.headers.get('Content-Disposition');
+                    let filename = `rapport_${new Date().toISOString().split('T')[0]}.pdf`;
+                    if (disposition) {
+                        const filenameMatch = disposition.match(/filename="(.+)"/);
+                        if (filenameMatch) filename = filenameMatch[1];
+                    }
+                    
+                    return response.blob().then(blob => ({ blob, filename }));
+                })
+                .then(({ blob, filename }) => {
+                    // Verify it's a PDF
+                    if (blob.type !== 'application/pdf') {
+                        console.warn('Type de fichier:', blob.type);
+                    }
+                    
+                    // Create download link
+                    const url = window.URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    
+                    // Cleanup
+                    setTimeout(() => {
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                    }, 100);
+                    
+                    // Reset button
+                    generateBtn.disabled = false;
+                    btnText.textContent = 'Lancer la Génération';
+                    generateBtn.querySelector('i').className = 'fas fa-file-contract';
+                    
+                    // Show success message
+                    alert('Rapport généré avec succès!');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Erreur lors de la génération du rapport');
+                    generateBtn.disabled = false;
+                    btnText.textContent = 'Lancer la Génération';
+                    generateBtn.querySelector('i').className = 'fas fa-file-contract';
+                });
+            });
+        }
+        
+        // CSV Export
+        const csvExportBtn = document.getElementById('csvExportBtn');
+        if (csvExportBtn) {
+            csvExportBtn.addEventListener('click', function() {
+                this.disabled = true;
+                this.querySelector('i').className = 'fas fa-spinner fa-spin';
+                
+                fetch('{% url "export_csv" %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `donnees_${new Date().toISOString().split('T')[0]}.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    a.remove();
+                    
+                    this.disabled = false;
+                    this.querySelector('i').className = 'fas fa-file-csv';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Erreur lors de l\'export CSV');
+                    this.disabled = false;
+                    this.querySelector('i').className = 'fas fa-file-csv';
+                });
+            });
+        }
+        
+        // Excel Export
+        const excelExportBtn = document.getElementById('excelExportBtn');
+        if (excelExportBtn) {
+            excelExportBtn.addEventListener('click', function() {
+                this.disabled = true;
+                this.querySelector('i').className = 'fas fa-spinner fa-spin';
+                
+                fetch('{% url "export_excel" %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `donnees_${new Date().toISOString().split('T')[0]}.xlsx`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    a.remove();
+                    
+                    this.disabled = false;
+                    this.querySelector('i').className = 'fas fa-file-excel';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Erreur lors de l\'export Excel');
+                    this.disabled = false;
+                    this.querySelector('i').className = 'fas fa-file-excel';
+                });
+            });
+        }
         
         // Search functionality
         if (stationSearch) {

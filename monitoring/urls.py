@@ -15,6 +15,11 @@ urlpatterns = [
     path('exports/', views.exports_view, name='exports'),
     path('analyses/', views.analyses_view, name='analyses'),
     
+    # Reports & Exports
+    path('reports/generate/', views.generate_report, name='generate_report'),
+    path('reports/export-excel/', views.export_excel, name='export_excel'),
+    path('reports/export-csv/', views.export_csv, name='export_csv'),
+    
     # HTMX Partials
     path('partials/stats-overview/', views_htmx.stats_overview, name='stats_overview'),
     path('partials/trigger-api/', views_htmx.trigger_api_fetch, name='trigger_api_fetch'),
