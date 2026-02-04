@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from .forms import CustomUserCreationForm
+from django.contrib import messages
+from .forms import CustomUserCreationForm, ContactForm, NewsletterForm
 from datetime import timedelta, datetime
 from rest_framework import viewsets
 from django.utils import timezone
@@ -23,7 +24,31 @@ def dashboard(request):
     return render(request, 'monitoring/dashboard.html')
 
 def contact(request):
-    return render(request, 'monitoring/contact.html')
+    form = ContactForm()
+    newsletter_form = NewsletterForm()
+
+    if request.method == 'POST':
+        if 'submit_contact' in request.POST:
+            form = ContactForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Votre message a été envoyé avec succès !")
+                return redirect('contact')
+        
+        elif 'submit_newsletter' in request.POST:
+            newsletter_form = NewsletterForm(request.POST)
+            if newsletter_form.is_valid():
+                newsletter_form.save()
+                messages.success(request, "Merci de vous être inscrit à notre newsletter !")
+                return redirect('contact')
+            else:
+                messages.error(request, "Une erreur est survenue lors de l'inscription à la newsletter.")
+
+    context = {
+        'form': form,
+        'newsletter_form': newsletter_form,
+    }
+    return render(request, 'monitoring/contact.html', context)
 
 def features(request):
     return render(request, 'monitoring/features.html')
