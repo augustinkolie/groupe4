@@ -25,6 +25,9 @@ def dashboard(request):
 def contact(request):
     return render(request, 'monitoring/contact.html')
 
+def features(request):
+    return render(request, 'monitoring/features.html')
+
 def about(request):
     return render(request, 'monitoring/about.html')
 
@@ -60,6 +63,12 @@ def reports_view(request):
         'total_readings': total_readings,
     }
     return render(request, 'monitoring/reports.html', context)
+
+def exports_view(request):
+    return render(request, 'monitoring/exports.html')
+
+def analyses_view(request):
+    return render(request, 'monitoring/analyses.html')
 
 def signup(request):
     if request.method == 'POST':
