@@ -5,533 +5,725 @@
 {% block page_title %}Tableau de bord{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'monitoring/css/dashboard.css' %}">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<link rel="stylesheet" href="{% static 'monitoring/css/dashboard.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin=""
+/>
 <style>
-    #map {
-        height: 500px;
-        border-radius: 0.75rem;
-    }
+  #map {
+    height: 500px;
+    border-radius: 0.75rem;
+  }
 
-    #chart-container {
-        height: 300px;
-    }
+  #chart-container {
+    height: 300px;
+  }
 
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-top: 1.5rem;
-    }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
 
-    .iqa-card {
-        grid-column: span 2;
-        background: var(--primary);
-        color: white;
-    }
+  .iqa-card {
+    grid-column: span 2;
+    background: var(--primary);
+    color: white;
+  }
 
-    .iqa-card .stat-value {
-        color: white;
-        font-size: 3rem;
-    }
+  .iqa-card .stat-value {
+    color: white;
+    font-size: 3rem;
+  }
 
-    .iqa-card .stat-label {
-        color: rgba(255, 255, 255, 0.9);
-    }
+  .iqa-card .stat-label {
+    color: rgba(255, 255, 255, 0.9);
+  }
 
-    #station-info {
-        margin-bottom: 1rem;
-    }
+  #station-info {
+    margin-bottom: 1rem;
+  }
 
-    #station-info h4 {
-        margin-bottom: 0.5rem;
-        color: var(--text-color);
-    }
+  #station-info h4 {
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+  }
 
-    #station-info p {
-        color: var(--gray);
-        font-size: 0.9rem;
-    }
+  #station-info p {
+    color: var(--gray);
+    font-size: 0.9rem;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
 <!-- Debug Panel (Masqué par défaut - Appuyez sur 'D' pour afficher) -->
-<div id="debug-panel" style="background: #1e293b; color: #38bdf8; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; font-family: monospace; font-size: 0.8rem; display: none;">
-    <b>[DEBUG ECOWATCH]</b> <small>(Appuyez sur 'D' pour masquer)</small><br>
-    - Etat Map: <span id="debug-map">Initialisation...</span><br>
-    - API Stations: <span id="debug-api-stations">Attente...</span><br>
-    - Marqueurs visibles: <span id="debug-markers" style="color: #22c55e;">0</span><br>
-    - Erreur JS: <span id="debug-js-error" style="color: #f87171;">Aucune</span>
+<div
+  id="debug-panel"
+  style="
+    background: #1e293b;
+    color: #38bdf8;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    font-family: monospace;
+    font-size: 0.8rem;
+    display: none;
+  "
+>
+  <b>[DEBUG ECOWATCH]</b> <small>(Appuyez sur 'D' pour masquer)</small><br />
+  - Etat Map: <span id="debug-map">Initialisation...</span><br />
+  - API Stations: <span id="debug-api-stations">Attente...</span><br />
+  - Marqueurs visibles: <span id="debug-markers" style="color: #22c55e">0</span
+  ><br />
+  - Erreur JS: <span id="debug-js-error" style="color: #f87171">Aucune</span>
 </div>
 
 <!-- Stats Overview (Managed by HTMX Polling) -->
-<div id="stats-container" hx-get="{% url 'stats_overview' %}" hx-trigger="load, every 60s" hx-swap="innerHTML">
-    <div class="grid-4 mb-4">
-        <!-- Loader / Initial State -->
-        <div class="stat-card"><div class="stat-label">Chargement...</div></div>
-        <div class="stat-card"><div class="stat-label">Chargement...</div></div>
-        <div class="stat-card"><div class="stat-label">Chargement...</div></div>
-        <div class="stat-card"><div class="stat-label">Chargement...</div></div>
-    </div>
+<div
+  id="stats-container"
+  hx-get="{% url 'stats_overview' %}"
+  hx-trigger="load, every 60s"
+  hx-swap="innerHTML"
+>
+  <div class="grid-4 mb-4">
+    <!-- Loader / Initial State -->
+    <div class="stat-card"><div class="stat-label">Chargement...</div></div>
+    <div class="stat-card"><div class="stat-label">Chargement...</div></div>
+    <div class="stat-card"><div class="stat-label">Chargement...</div></div>
+    <div class="stat-card"><div class="stat-label">Chargement...</div></div>
+  </div>
 </div>
 
 <!-- Map Card -->
 <div class="card mb-4 map-visual-container">
-    <div class="card-header">
-        <h3 class="card-title">Carte de la Qualité de l'Air</h3>
-        <div style="display: flex; gap: 0.75rem; font-size: 0.85rem;">
-            <span style="display:flex; align-items:center; gap:5px;">
-                <span style="width:12px; height:12px; background:#10b981; border-radius:50%;"></span>
-                Bon
-            </span>
-            <span style="display:flex; align-items:center; gap:5px;">
-                <span style="width:12px; height:12px; background:#f59e0b; border-radius:50%;"></span>
-                Modéré
-            </span>
-            <span style="display:flex; align-items:center; gap:5px;">
-                <span style="width:12px; height:12px; background:#ef4444; border-radius:50%;"></span>
-                Mauvais
-            </span>
-        </div>
+  <div class="card-header">
+    <h3 class="card-title">Carte de la Qualité de l'Air</h3>
+    <div style="display: flex; gap: 0.75rem; font-size: 0.85rem">
+      <span style="display: flex; align-items: center; gap: 5px">
+        <span
+          style="
+            width: 12px;
+            height: 12px;
+            background: #10b981;
+            border-radius: 50%;
+          "
+        ></span>
+        Bon
+      </span>
+      <span style="display: flex; align-items: center; gap: 5px">
+        <span
+          style="
+            width: 12px;
+            height: 12px;
+            background: #f59e0b;
+            border-radius: 50%;
+          "
+        ></span>
+        Modéré
+      </span>
+      <span style="display: flex; align-items: center; gap: 5px">
+        <span
+          style="
+            width: 12px;
+            height: 12px;
+            background: #ef4444;
+            border-radius: 50%;
+          "
+        ></span>
+        Mauvais
+      </span>
     </div>
-    <div class="card-body">
-        <div id="map" style="height: 450px;"></div>
-    </div>
+  </div>
+  <div class="card-body">
+    <div id="map" style="height: 450px"></div>
+  </div>
 </div>
 
 <!-- Station Details & Chart -->
 <div class="grid-2">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Détails de la Station</h3>
+      <button
+        id="export-btn"
+        class="btn btn-primary btn-sm"
+        style="display: none"
+      >
+        <i class="fas fa-download"></i> Export CSV
+      </button>
+    </div>
+    <div class="card-body">
+      <div id="station-info">
+        <p style="color: var(--gray)">
+          Sélectionnez une station sur la carte pour voir les détails.
+        </p>
+      </div>
+      <div class="stats-grid" id="current-stats" style="display: none">
+        <div class="stat-card iqa-card" id="card-iqa">
+          <div class="stat-label">Indice IQA</div>
+          <div class="stat-value" id="val-iqa">-</div>
+          <div id="iqa-status" style="font-size: 0.9rem; font-weight: 600">
+            Chargement...
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="val-no2">-</div>
+          <div class="stat-label">NO2 (µg/m³)</div>
+          <small
+            style="
+              color: #666;
+              font-size: 0.75rem;
+              margin-top: 0.5rem;
+              display: block;
+            "
+            >Dioxyde d'azote - Pollution routière</small
+          >
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="val-so2">-</div>
+          <div class="stat-label">SO2 (µg/m³)</div>
+          <small
+            style="
+              color: #666;
+              font-size: 0.75rem;
+              margin-top: 0.5rem;
+              display: block;
+            "
+            >Dioxyde de soufre - Industries</small
+          >
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="val-o3">-</div>
+          <div class="stat-label">O3 (µg/m³)</div>
+          <small
+            style="
+              color: #666;
+              font-size: 0.75rem;
+              margin-top: 0.5rem;
+              display: block;
+            "
+            >Ozone troposphérique - Pollution secondaire</small
+          >
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="val-pm25">-</div>
+          <div class="stat-label">PM2.5 (µg/m³)</div>
+          <small
+            style="
+              color: #666;
+              font-size: 0.75rem;
+              margin-top: 0.5rem;
+              display: block;
+            "
+            >Particules fines ≤2.5µm - Respiration</small
+          >
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="val-co">-</div>
+          <div class="stat-label">CO (µg/m³)</div>
+          <small
+            style="
+              color: #666;
+              font-size: 0.75rem;
+              margin-top: 0.5rem;
+              display: block;
+            "
+            >Monoxyde de carbone - Trafic, chauffage</small
+          >
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="val-temp">-</div>
+          <div class="stat-label">Temp °C</div>
+          <small
+            style="
+              color: #666;
+              font-size: 0.75rem;
+              margin-top: 0.5rem;
+              display: block;
+            "
+            >Température ambiante</small
+          >
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="val-hum">-</div>
+          <div class="stat-label">Humidité %</div>
+          <small
+            style="
+              color: #666;
+              font-size: 0.75rem;
+              margin-top: 0.5rem;
+              display: block;
+            "
+            >Humidité relative de l'air</small
+          >
+        </div>
+        <div
+          class="stat-card"
+          style="
+            grid-column: span 2;
+            font-size: 0.8rem;
+            text-align: center;
+            background: var(--light);
+          "
+        >
+          Source :
+          <span
+            id="val-source"
+            style="font-weight: 600; color: var(--text-color)"
+            >-</span
+          >
+          (ID:
+          <span id="val-source-id" style="color: var(--text-color)">-</span>)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="charts-column"
+    style="display: flex; flex-direction: column; gap: 1.5rem"
+  >
     <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Détails de la Station</h3>
-            <button id="export-btn" class="btn btn-primary btn-sm" style="display: none;">
-                <i class="fas fa-download"></i> Export CSV
-            </button>
+      <div class="card-header">
+        <h3 class="card-title">Évolution Temporelle</h3>
+      </div>
+      <div class="card-body">
+        <div id="chart-container">
+          <canvas id="airChart"></canvas>
         </div>
-        <div class="card-body">
-            <div id="station-info">
-                <p style="color: var(--gray);">Sélectionnez une station sur la carte pour voir les détails.</p>
-            </div>
-            <div class="stats-grid" id="current-stats" style="display: none;">
-                <div class="stat-card iqa-card" id="card-iqa">
-                    <div class="stat-label">Indice IQA</div>
-                    <div class="stat-value" id="val-iqa">-</div>
-                    <div id="iqa-status" style="font-size: 0.9rem; font-weight: 600;">Chargement...</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="val-no2">-</div>
-                    <div class="stat-label">NO2 (µg/m³)</div>
-                    <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Dioxyde d'azote - Pollution routière</small>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="val-so2">-</div>
-                    <div class="stat-label">SO2 (µg/m³)</div>
-                    <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Dioxyde de soufre - Industries</small>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="val-o3">-</div>
-                    <div class="stat-label">O3 (µg/m³)</div>
-                    <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Ozone troposphérique - Pollution secondaire</small>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="val-pm25">-</div>
-                    <div class="stat-label">PM2.5 (µg/m³)</div>
-                    <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Particules fines ≤2.5µm - Respiration</small>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="val-co">-</div>
-                    <div class="stat-label">CO (mg/m³)</div>
-                    <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Monoxyde de carbone - Trafic, chauffage</small>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="val-temp">-</div>
-                    <div class="stat-label">Temp °C</div>
-                    <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Température ambiante</small>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="val-hum">-</div>
-                    <div class="stat-label">Humidité %</div>
-                    <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Humidité relative de l'air</small>
-                </div>
-                <div class="stat-card" style="grid-column: span 2; font-size: 0.8rem; text-align: center; background: var(--light);">
-                    Source : <span id="val-source" style="font-weight: 600; color: var(--text-color);">-</span> 
-                    (ID: <span id="val-source-id" style="color: var(--text-color);">-</span>)
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <div class="charts-column" style="display: flex; flex-direction: column; gap: 1.5rem;">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Évolution Temporelle</h3>
-            </div>
-            <div class="card-body">
-                <div id="chart-container">
-                    <canvas id="airChart"></canvas>
-                </div>
-            </div>
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Répartition des Polluants</h3>
+      </div>
+      <div class="card-body">
+        <div style="height: 300px">
+          <canvas id="pollutantPieChart"></canvas>
         </div>
-
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Répartition des Polluants</h3>
-            </div>
-            <div class="card-body">
-                <div style="height: 300px;">
-                    <canvas id="pollutantPieChart"></canvas>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Background Data Fetch (HTMX) -->
-<div hx-post="/api/v1/ingest/trigger-fetch/" hx-trigger="every 10m" hx-swap="none"></div>
+<div
+  hx-post="/api/v1/ingest/trigger-fetch/"
+  hx-trigger="every 10m"
+  hx-swap="none"
+></div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  crossorigin=""
+></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // Initialize map
-    const map = L.map('map').setView([10.5, -11.0], 7);
+  // Initialize map
+  const map = L.map("map").setView([10.5, -11.0], 7);
 
-    const standard = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  const standard = L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    },
+  );
+
+  const satellite = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+      attribution: "Tiles &copy; Esri",
+    },
+  );
+
+  standard.addTo(map);
+  L.control.layers({ Standard: standard, Satellite: satellite }).addTo(map);
+
+  let airChart;
+  let pollutantChart;
+  let currentReadings = [];
+
+  function getIQAColor(iqa) {
+    if (!iqa) return "#94a3b8"; // Gray for unknown
+    if (iqa <= 50) return "#10b981"; // Good
+    if (iqa <= 100) return "#f59e0b"; // Moderate
+    if (iqa <= 150) return "#f97316"; // Unhealthy for Sensitive
+    return "#ef4444"; // Unhealthy+
+  }
+
+  function createCustomIcon(iqa) {
+    const color = getIQAColor(iqa);
+    return L.divIcon({
+      className: "custom-div-icon",
+      html: `<div style="background-color:${color}; border: 3px solid white; width:16px; height:16px; border-radius:50%; box-shadow: 0 0 10px rgba(0,0,0,0.2);"></div>`,
+      iconSize: [16, 16],
+      iconAnchor: [8, 8],
     });
+  }
 
-    const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Tiles &copy; Esri'
-    });
+  let allStationMarkers = {}; // To store marker references by station ID
 
-    standard.addTo(map);
-    L.control.layers({ "Standard": standard, "Satellite": satellite }).addTo(map);
+  async function fetchStations() {
+    const debugMap = document.getElementById("debug-map");
+    const debugApi = document.getElementById("debug-api-stations");
+    const debugErr = document.getElementById("debug-js-error");
+    let markersCreated = 0;
 
-    let airChart;
-    let pollutantChart;
-    let currentReadings = [];
+    try {
+      debugMap.innerText = "OK (Leaflet chargé)";
+      debugApi.innerText = "Appel en cours...";
 
-    function getIQAColor(iqa) {
-        if (!iqa) return "#94a3b8"; // Gray for unknown
-        if (iqa <= 50) return "#10b981"; // Good
-        if (iqa <= 100) return "#f59e0b"; // Moderate
-        if (iqa <= 150) return "#f97316"; // Unhealthy for Sensitive
-        return "#ef4444"; // Unhealthy+
-    }
+      const response = await fetch("/api/v1/stations/");
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-    function createCustomIcon(iqa) {
-        const color = getIQAColor(iqa);
-        return L.divIcon({
-            className: 'custom-div-icon',
-            html: `<div style="background-color:${color}; border: 3px solid white; width:16px; height:16px; border-radius:50%; box-shadow: 0 0 10px rgba(0,0,0,0.2);"></div>`,
-            iconSize: [16, 16],
-            iconAnchor: [8, 8]
-        });
-    }
+      const stations = await response.json();
+      debugApi.innerText = `OK (${stations.length} stations trouvées)`;
 
-    let allStationMarkers = {}; // To store marker references by station ID
-
-    async function fetchStations() {
-        const debugMap = document.getElementById('debug-map');
-        const debugApi = document.getElementById('debug-api-stations');
-        const debugErr = document.getElementById('debug-js-error');
-        let markersCreated = 0;
-        
+      for (const station of stations) {
         try {
-            debugMap.innerText = "OK (Leaflet chargé)";
-            debugApi.innerText = "Appel en cours...";
-            
-            const response = await fetch('/api/v1/stations/');
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            
-            const stations = await response.json();
-            debugApi.innerText = `OK (${stations.length} stations trouvées)`;
-            
-            for (const station of stations) {
-                try {
-                    const latest = station.latest_reading;
-                    const iqa = latest ? latest.iqa : 0;
-                    const lastTime = latest ? new Date(latest.timestamp).toLocaleTimeString() : 'N/A';
+          const latest = station.latest_reading;
+          const iqa = latest ? latest.iqa : 0;
+          const lastTime = latest
+            ? new Date(latest.timestamp).toLocaleTimeString()
+            : "N/A";
 
-                    const marker = L.marker([station.latitude, station.longitude], {
-                        icon: createCustomIcon(iqa)
-                    }).addTo(map);
+          const marker = L.marker([station.latitude, station.longitude], {
+            icon: createCustomIcon(iqa),
+          }).addTo(map);
 
-                    // Store for search
-                    allStationMarkers[station.id] = { marker, station };
+          // Store for search
+          allStationMarkers[station.id] = { marker, station };
 
-                    marker.bindPopup(`
+          marker.bindPopup(`
                         <div style="font-family: 'Inter', sans-serif;">
                             <b style="font-size: 1rem;">${station.name}</b><br>
                             <span style="color: var(--gray);">Dernier relevé : ${lastTime}</span><br>
                             <div style="margin-top: 5px; font-weight: 700; color: ${getIQAColor(iqa)}">
-                                IQA actuel : ${iqa || 'Inconnu'}
+                                IQA actuel : ${iqa || "Inconnu"}
                             </div>
-                            <small style="color: #64748b;">Source: ${latest ? (latest.source_type === 'SENSOR' ? 'Capteur' : 'OpenWeather') : 'Aucune'}</small>
+                            <small style="color: #64748b;">Source: ${latest ? (latest.source_type === "SENSOR" ? "Capteur" : "OpenWeather") : "Aucune"}</small>
                         </div>
                     `);
 
-                    marker.on('click', async () => {
-                        try {
-                            const rResp = await fetch(`/api/v1/readings/?station=${station.id}`);
-                            if (rResp.ok) {
-                                const readingsRaw = await rResp.json();
-                                updateStationDetails(station, readingsRaw);
-                            }
-                        } catch (err) {
-                            console.error("Error refreshing station data:", err);
-                        }
-                    });
-                    markersCreated++;
-                } catch (innerErr) {
-                    console.error("Marker Error:", innerErr);
-                }
+          marker.on("click", async () => {
+            try {
+              const rResp = await fetch(
+                `/api/v1/readings/?station=${station.id}`,
+              );
+              if (rResp.ok) {
+                const readingsRaw = await rResp.json();
+                updateStationDetails(station, readingsRaw);
+              }
+            } catch (err) {
+              console.error("Error refreshing station data:", err);
             }
-            debugApi.innerText = `OK (${stations.length} stations, ${markersCreated} marqueurs créés)`;
-            
-            // Initialize search with loaded stations
-            if (typeof setupSearch === 'function') setupSearch(stations);
-
-        } catch (error) {
-            debugErr.innerText = error.message;
-            console.error('Error fetching stations:', error);
+          });
+          markersCreated++;
+        } catch (innerErr) {
+          console.error("Marker Error:", innerErr);
         }
+      }
+      debugApi.innerText = `OK (${stations.length} stations, ${markersCreated} marqueurs créés)`;
+
+      // Initialize search with loaded stations
+      if (typeof setupSearch === "function") setupSearch(stations);
+    } catch (error) {
+      debugErr.innerText = error.message;
+      console.error("Error fetching stations:", error);
+    }
+  }
+
+  async function updateStationDetails(station, readingsRaw) {
+    let readings = [];
+    if (readingsRaw.results && Array.isArray(readingsRaw.results)) {
+      readings = readingsRaw.results;
+    } else if (Array.isArray(readingsRaw)) {
+      readings = readingsRaw;
     }
 
-    async function updateStationDetails(station, readingsRaw) {
-        let readings = [];
-        if (readingsRaw.results && Array.isArray(readingsRaw.results)) {
-            readings = readingsRaw.results;
-        } else if (Array.isArray(readingsRaw)) {
-            readings = readingsRaw;
-        }
-        
-        currentReadings = readings;
-        document.getElementById('station-info').innerHTML = `<h4>${station.name}</h4><p>${station.location_description || 'Aucune description'}</p>`;
-        document.getElementById('current-stats').style.display = 'grid';
-        document.getElementById('export-btn').style.display = 'inline-flex';
+    currentReadings = readings;
+    document.getElementById("station-info").innerHTML =
+      `<h4>${station.name}</h4><p>${station.location_description || "Aucune description"}</p>`;
+    document.getElementById("current-stats").style.display = "grid";
+    document.getElementById("export-btn").style.display = "inline-flex";
 
-        if (readings.length > 0) {
-            const latest = readings[0];
-            document.getElementById('val-iqa').innerText = latest.iqa || 'N/A';
-            document.getElementById('val-pm25').innerText = latest.pm25 ? latest.pm25.toFixed(1) : '-';
-            document.getElementById('val-co').innerText = latest.co ? latest.co.toFixed(2) : '-';
-            document.getElementById('val-no2').innerText = latest.no2 ? latest.no2.toFixed(1) : '-';
-            document.getElementById('val-so2').innerText = latest.so2 ? latest.so2.toFixed(1) : '-';
-            document.getElementById('val-o3').innerText = latest.o3 ? latest.o3.toFixed(1) : '-';
-            document.getElementById('val-temp').innerText = latest.temperature ? latest.temperature.toFixed(1) : '-';
-            document.getElementById('val-hum').innerText = latest.humidity ? latest.humidity.toFixed(1) : '-';
-            document.getElementById('val-source').innerText = latest.source_type === 'SENSOR' ? 'Capteur Physique' : 'Données API';
-            document.getElementById('val-source-id').innerText = latest.source_id || 'Inconnu';
+    if (readings.length > 0) {
+      const latest = readings[0];
+      document.getElementById("val-iqa").innerText = latest.iqa || "N/A";
+      document.getElementById("val-pm25").innerText = latest.pm25
+        ? latest.pm25.toFixed(1)
+        : "-";
+      document.getElementById("val-co").innerText = latest.co
+        ? latest.co.toFixed(2)
+        : "-";
+      document.getElementById("val-no2").innerText = latest.no2
+        ? latest.no2.toFixed(1)
+        : "-";
+      document.getElementById("val-so2").innerText = latest.so2
+        ? latest.so2.toFixed(1)
+        : "-";
+      document.getElementById("val-o3").innerText = latest.o3
+        ? latest.o3.toFixed(1)
+        : "-";
+      document.getElementById("val-temp").innerText = latest.temperature
+        ? latest.temperature.toFixed(1)
+        : "-";
+      document.getElementById("val-hum").innerText = latest.humidity
+        ? latest.humidity.toFixed(1)
+        : "-";
 
-            const iqaCard = document.getElementById('card-iqa');
-            const iqaStatus = document.getElementById('iqa-status');
-            const color = getIQAColor(latest.iqa);
-            iqaCard.style.backgroundColor = color;
-            
-            if (latest.iqa) {
-                iqaStatus.innerText = latest.iqa <= 50 ? "BON - Air sain" : (latest.iqa <= 100 ? "MODÉRÉ - Attention" : "MAUVAIS - Alerte");
-            } else {
-                iqaStatus.innerText = "Données insuffisantes";
-            }
+      let sourceLabel = "Source Inconnue";
+      if (latest.source_type === "SENSOR") {
+        sourceLabel = "Capteur Physique";
+      } else if (latest.source_id === "openweather") {
+        sourceLabel = "API OpenWeather";
+      } else {
+        sourceLabel = "Données API";
+      }
+      document.getElementById("val-source").innerText = sourceLabel;
 
-            // Show last 24 readings for a full daily curve
-            updateChart(readings.slice(0, 24).reverse(), color);
-            // Update Pie Chart
-            updatePieChart(latest);
-        }
+      document.getElementById("val-source-id").innerText =
+        latest.source_id || "Inconnu";
+
+      const iqaCard = document.getElementById("card-iqa");
+      const iqaStatus = document.getElementById("iqa-status");
+      const color = getIQAColor(latest.iqa);
+      iqaCard.style.backgroundColor = color;
+
+      if (latest.iqa) {
+        iqaStatus.innerText =
+          latest.iqa <= 50
+            ? "BON - Air sain"
+            : latest.iqa <= 100
+              ? "MODÉRÉ - Attention"
+              : "MAUVAIS - Alerte";
+      } else {
+        iqaStatus.innerText = "Données insuffisantes";
+      }
+
+      // Show last 24 readings for a full daily curve
+      updateChart(readings.slice(0, 24).reverse(), color);
+      // Update Pie Chart
+      updatePieChart(latest);
     }
+  }
 
-    function updatePieChart(latest) {
-        const ctx = document.getElementById('pollutantPieChart').getContext('2d');
-        if (pollutantChart) pollutantChart.destroy();
-        
-        const dataValues = [
-            latest.no2 || 0,
-            latest.so2 || 0,
-            latest.o3 || 0,
-            latest.pm25 || 0,
-            latest.co || 0
-        ];
+  function updatePieChart(latest) {
+    const ctx = document.getElementById("pollutantPieChart").getContext("2d");
+    if (pollutantChart) pollutantChart.destroy();
 
-        pollutantChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ['NO2', 'SO2', 'O3', 'PM2.5', 'CO'],
-                datasets: [{
-                    data: dataValues,
-                    backgroundColor: [
-                        '#3b82f6', // NO2 - Blue
-                        '#eab308', // SO2 - Yellow
-                        '#a855f7', // O3 - Purple
-                        '#ef4444', // PM2.5 - Red
-                        '#10b981'  // CO - Green
-                    ],
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
+    const dataValues = [
+      latest.no2 || 0,
+      latest.so2 || 0,
+      latest.o3 || 0,
+      latest.pm25 || 0,
+      latest.co || 0,
+    ];
+
+    pollutantChart = new Chart(ctx, {
+      type: "pie",
+      data: {
+        labels: ["NO2", "SO2", "O3", "PM2.5", "CO"],
+        datasets: [
+          {
+            data: dataValues,
+            backgroundColor: [
+              "#3b82f6", // NO2 - Blue
+              "#eab308", // SO2 - Yellow
+              "#a855f7", // O3 - Purple
+              "#ef4444", // PM2.5 - Red
+              "#10b981", // CO - Green
+            ],
+            borderWidth: 0,
+            hoverOffset: 4,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "right",
+            labels: {
+              usePointStyle: true,
+              font: {
+                family: "'Inter', sans-serif",
+                size: 11,
+              },
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'right',
-                        labels: {
-                            usePointStyle: true,
-                            font: {
-                                family: "'Inter', sans-serif",
-                                size: 11
-                            }
-                        }
-                    },
-                    tooltip: {
-                         callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed !== null) {
-                                    label += context.parsed;
-                                }
-                                return label;
-                            }
-                        }
-                    }
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                let label = context.label || "";
+                if (label) {
+                  label += ": ";
                 }
-            }
-        });
-    }
-
-    function updateChart(data, color) {
-        const ctx = document.getElementById('airChart').getContext('2d');
-        if (airChart) airChart.destroy();
-        airChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: data.map(r => {
-                    const d = new Date(r.timestamp);
-                    return d.getHours() + ":" + String(d.getMinutes()).padStart(2, '0');
-                }),
-                datasets: [{
-                    label: 'IQA',
-                    data: data.map(r => r.iqa),
-                    borderColor: color || '#10b981',
-                    backgroundColor: (color || '#10b981') + '20', // Add transparency
-                    fill: true,
-                    tension: 0.2,
-                    borderWidth: 1,
-                    pointRadius: 1,
-                    pointHoverRadius: 5
-                }]
+                if (context.parsed !== null) {
+                  label += context.parsed;
+                }
+                return label;
+              },
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        grid: { color: 'rgba(0,0,0,0.05)' }
-                    },
-                    x: {
-                        grid: { display: false }
-                    }
-                }
-            }
-        });
-    }
-
-    document.getElementById('export-btn').addEventListener('click', () => {
-        if (!currentReadings.length) return;
-        let csv = "Timestamp,IQA,PM2.5,CO,Temp,Humidity\n";
-        currentReadings.forEach(r => {
-            csv += `${r.timestamp},${r.iqa},${r.pm25},${r.co},${r.temperature},${r.humidity}\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `readings_${new Date().getTime()}.csv`;
-        a.click();
+          },
+        },
+      },
     });
+  }
 
-    // --- SEARCH LOGIC ---
-    const globalSearch = document.getElementById('globalSearch');
-    const globalResults = document.getElementById('global-search-results');
+  function updateChart(data, color) {
+    const ctx = document.getElementById("airChart").getContext("2d");
+    if (airChart) airChart.destroy();
+    airChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: data.map((r) => {
+          const d = new Date(r.timestamp);
+          return d.getHours() + ":" + String(d.getMinutes()).padStart(2, "0");
+        }),
+        datasets: [
+          {
+            label: "IQA",
+            data: data.map((r) => r.iqa),
+            borderColor: color || "#10b981",
+            backgroundColor: (color || "#10b981") + "20", // Add transparency
+            fill: true,
+            tension: 0.2,
+            borderWidth: 1,
+            pointRadius: 1,
+            pointHoverRadius: 5,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            mode: "index",
+            intersect: false,
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            grid: { color: "rgba(0,0,0,0.05)" },
+          },
+          x: {
+            grid: { display: false },
+          },
+        },
+      },
+    });
+  }
 
-    function setupSearch(stations) {
-        if (!globalSearch || !globalResults) return;
+  document.getElementById("export-btn").addEventListener("click", () => {
+    if (!currentReadings.length) return;
+    let csv = "Timestamp,IQA,PM2.5,CO,Temp,Humidity\n";
+    currentReadings.forEach((r) => {
+      csv += `${r.timestamp},${r.iqa},${r.pm25},${r.co},${r.temperature},${r.humidity}\n`;
+    });
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+        const stationName = document.querySelector('#station-info h4').innerText.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        a.download = `readings_${stationName}_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+  });
 
-        globalSearch.addEventListener('input', (e) => {
-            const val = e.target.value.toLowerCase();
-            if (!val) {
-                globalResults.style.display = 'none';
-                return;
-            }
+  // --- SEARCH LOGIC ---
+  const globalSearch = document.getElementById("globalSearch");
+  const globalResults = document.getElementById("global-search-results");
 
-            const matches = stations.filter(s => s.name.toLowerCase().includes(val));
-            if (matches.length > 0) {
-                globalResults.innerHTML = matches.map(s => `
+  function setupSearch(stations) {
+    if (!globalSearch || !globalResults) return;
+
+    globalSearch.addEventListener("input", (e) => {
+      const val = e.target.value.toLowerCase();
+      if (!val) {
+        globalResults.style.display = "none";
+        return;
+      }
+
+      const matches = stations.filter(s =>
+        s.name.toLowerCase().includes(val) ||
+        (s.location_description && s.location_description.toLowerCase().includes(val))
+      );
+      if (matches.length > 0) {
+        globalResults.innerHTML = matches
+          .map(
+            (s) => `
                     <div class="search-item" data-id="${s.id}" style="padding: 10px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color); background: var(--card-bg); transition: background 0.2s;">
                         <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-color);">${s.name}</div>
-                        <div style="font-size: 0.75rem; color: var(--gray);">Dernier IQA: ${s.latest_reading ? s.latest_reading.iqa : 'N/A'}</div>
+                        <div style="font-size: 0.75rem; color: var(--gray);">Dernier IQA: ${s.latest_reading ? s.latest_reading.iqa : "N/A"}</div>
                     </div>
-                `).join('');
-                globalResults.style.display = 'block';
+                `,
+          )
+          .join("");
+        globalResults.style.display = "block";
 
-                document.querySelectorAll('.search-item').forEach(item => {
-                    item.addEventListener('mouseover', function() { this.style.background = '#f8fafc'; });
-                    item.addEventListener('mouseout', function() { this.style.background = 'white'; });
-                    
-                    item.addEventListener('click', () => {
-                        const id = item.getAttribute('data-id');
-                        const data = allStationMarkers[id];
-                        if (data) {
-                            map.setView(data.marker.getLatLng(), 14);
-                            data.marker.openPopup();
-                            // Trigger details update
-                            data.marker.fire('click');
-                            globalResults.style.display = 'none';
-                            globalSearch.value = data.station.name;
-                        }
-                    });
-                });
-            } else {
-                globalResults.innerHTML = '<div style="padding: 10px 15px; color: var(--gray); font-size: 0.9rem;">Aucun résultat trouvé</div>';
-                globalResults.style.display = 'block';
+        document.querySelectorAll(".search-item").forEach((item) => {
+          item.addEventListener("mouseover", function () {
+            this.style.background = "#f8fafc";
+          });
+          item.addEventListener("mouseout", function () {
+            this.style.background = "white";
+          });
+
+          item.addEventListener("click", () => {
+            const id = item.getAttribute("data-id");
+            const data = allStationMarkers[id];
+            if (data) {
+              map.setView(data.marker.getLatLng(), 14);
+              data.marker.openPopup();
+              // Trigger details update
+              data.marker.fire("click");
+              globalResults.style.display = "none";
+              globalSearch.value = data.station.name;
             }
+          });
         });
-
-        // Close results on click outside
-        document.addEventListener('click', (e) => {
-            if (!globalSearch.contains(e.target) && !globalResults.contains(e.target)) {
-                globalResults.style.display = 'none';
-            }
-        });
-    }
-
-    fetchStations();
-    // Refresh data every 5 minutes
-    setInterval(fetchStations, 300000);
-    
-    // Toggle debug panel with 'D' key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'd' || e.key === 'D') {
-            const panel = document.getElementById('debug-panel');
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        }
+      } else {
+        globalResults.innerHTML =
+          '<div style="padding: 10px 15px; color: var(--gray); font-size: 0.9rem;">Aucun résultat trouvé</div>';
+        globalResults.style.display = "block";
+      }
     });
+
+    // Close results on click outside
+    document.addEventListener("click", (e) => {
+      if (
+        !globalSearch.contains(e.target) &&
+        !globalResults.contains(e.target)
+      ) {
+        globalResults.style.display = "none";
+      }
+    });
+  }
+
+  fetchStations();
+  // Refresh data every 5 minutes
+  setInterval(fetchStations, 300000);
+
+  // Toggle debug panel with 'D' key
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "d" || e.key === "D") {
+      const panel = document.getElementById("debug-panel");
+      panel.style.display = panel.style.display === "none" ? "block" : "none";
+    }
+  });
 </script>
 {% endblock %}

@@ -77,3 +77,61 @@ class NewsletterSubscriber(models.Model):
 
     def __str__(self):
         return self.email
+
+class AlertRule(models.Model):
+    # Seuils (None = pas de seuil)
+    iqa_threshold = models.IntegerField(null=True, blank=True, help_text="Seuil IQA (ex: 100)")
+    pm25_threshold = models.FloatField(null=True, blank=True, help_text="Seuil PM2.5 en µg/m³")
+    co_threshold = models.FloatField(null=True, blank=True, help_text="Seuil CO en µg/m³")
+    temperature_threshold = models.FloatField(null=True, blank=True, help_text="Seuil Température en °C")
+    
+    # Notifications
+    email_notification = models.BooleanField(default=True)
+    email_address = models.EmailField(blank=True, null=True)
+    sms_notification = models.BooleanField(default=False)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    
+    # Métadonnées
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Règle d'alerte ({'Active' if self.is_active else 'Inactive'})"
+
+class AlertLog(models.Model):
+    station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name='alerts')
+    rule = models.ForeignKey(AlertRule, on_delete=models.SET_NULL, null=True)
+    reading = models.ForeignKey(Reading, on_delete=models.CASCADE, related_name='triggered_alerts')
+    message = models.TextField()
+    is_resolved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Alerte {self.station.name} - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
+class GeneratedReport(models.Model):
+    REPORT_TYPES = [
+        ('DAILY', 'Quotidien'),
+        ('WEEKLY', 'Hebdomadaire'),
+        ('MONTHLY', 'Mensuel'),
+        ('ANNUAL', 'Annuel'),
+        ('CUSTOM', 'Personnalisé'),
+    ]
+    FORMAT_CHOICES = [
+        ('PDF', 'PDF Luxe'),
+        ('EXCEL', 'Excel (Data)'),
+    ]
+    
+    report_type = models.CharField(max_length=20, choices=REPORT_TYPES)
+    format = models.CharField(max_length=10, choices=FORMAT_CHOICES)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    file_path = models.CharField(max_length=255)
+    stations_included = models.JSONField(default=list)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Rapport {self.report_type} ({self.format}) - {self.created_at.strftime('%d/%m/%Y')}"

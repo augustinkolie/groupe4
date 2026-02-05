@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib import messages
+from django.db.models import Count
+from django.db.models.functions import TruncDay
 from .forms import CustomUserCreationForm, ContactForm, NewsletterForm
 from datetime import timedelta, datetime
 from rest_framework import viewsets
 from django.utils import timezone
-from .models import Station, Reading
+from .models import Station, Reading, AlertRule, AlertLog, GeneratedReport
 from .serializers import StationSerializer, ReadingSerializer
 from django.http import HttpResponse, FileResponse, JsonResponse
 from django.views.decorators.http import require_POST
@@ -68,24 +70,75 @@ def stations_list(request):
     return render(request, 'monitoring/stations.html', {'page_obj': page_obj})
 
 def alerts_view(request):
+    # Récupérer la règle d'alerte globale (pour l'exemple)
+    rule, created = AlertRule.objects.get_or_create(id=1)
+    
+    if request.method == 'POST':
+        # Mise à jour des seuils
+        rule.iqa_threshold = request.POST.get('iqa_threshold') or None
+        rule.pm25_threshold = request.POST.get('pm25_threshold') or None
+        rule.co_threshold = request.POST.get('co_threshold') or None
+        rule.temperature_threshold = request.POST.get('temp_threshold') or None
+        
+        # Notifications
+        rule.email_address = request.POST.get('email')
+        rule.phone_number = request.POST.get('phone')
+        rule.email_notification = 'email_notif' in request.POST
+        rule.sms_notification = 'sms_notif' in request.POST
+        
+        rule.save()
+        messages.success(request, "Configuration des alertes mise à jour.")
+        return redirect('alerts')
+
     time_threshold = timezone.now() - timedelta(hours=24)
-    # Count readings with IQA > 100 as "alerts" for demonstration
-    alerts_count = Reading.objects.filter(iqa__gt=100, timestamp__gte=time_threshold).count()
+    month_threshold = timezone.now() - timedelta(days=30)
+    
+    # Statistiques réelles
+    alerts_all = AlertLog.objects.all().order_by('-created_at')
+    alerts_today_count = alerts_all.filter(created_at__gte=time_threshold).count()
+    
+    # Répartition par station
+    alerts_by_station = list(AlertLog.objects.values('station__name').annotate(count=Count('id')).order_by('-count'))
+    
+    # Filière temporelle (30 derniers jours)
+    alerts_by_day = AlertLog.objects.filter(created_at__gte=month_threshold)\
+        .annotate(day=TruncDay('created_at'))\
+        .values('day')\
+        .annotate(count=Count('id'))\
+        .order_by('day')
+    
+    # Formater pour Chart.js
+    alerts_by_day_list = [
+        {'day': item['day'].strftime('%d/%m'), 'count': item['count']}
+        for item in alerts_by_day
+    ]
+
     context = {
-        'alerts_total': alerts_count,
-        'alerts_today': alerts_count, # Simplified
-        'rules_count': 4, # Mock count
+        'rule': rule,
+        'alerts': alerts_all[:10], # 10 dernières alertes
+        'alerts_total': alerts_all.count(),
+        'alerts_today': alerts_today_count,
+        'rules_count': 1,
+        'alerts_by_station': alerts_by_station,
+        'alerts_by_day': alerts_by_day_list,
     }
     return render(request, 'monitoring/alerts.html', context)
 
 def reports_view(request):
     stations = Station.objects.all()
     total_readings = Reading.objects.all().count()
+    
+    # Récupérer l'historique réel des rapports
+    generated_reports = GeneratedReport.objects.all()[:10]  # 10 derniers rapports
+    total_reports = GeneratedReport.objects.count()
+    total_exports = GeneratedReport.objects.filter(created_at__month=timezone.now().month).count()
+    
     context = {
         'stations': stations,
-        'total_reports': 12, # Mock count
-        'total_exports': 45, # Mock count
+        'total_reports': total_reports,
+        'total_exports': total_exports,
         'total_readings': total_readings,
+        'generated_reports': generated_reports,
     }
     return render(request, 'monitoring/reports.html', context)
 
@@ -127,8 +180,12 @@ class ReadingViewSet(viewsets.ModelViewSet):
         if not instance.iqa:
             # Simple placeholder logic for IQA calculation
             # Based on PM2.5 (very simplified for now)
-            instance.iqa = int(instance.pm25 * 2) 
+            instance.iqa = int(instance.pm25 * 2) if instance.pm25 else 0
             instance.save()
+        
+        # Déclenchement des alertes pour les capteurs physiques également
+        from .utils import check_alert_rules
+        check_alert_rules(instance)
 
 @require_POST
 def generate_report(request):
@@ -181,6 +238,28 @@ def generate_report(request):
         pdf_data = pdf_buffer.getvalue()
         pdf_size = len(pdf_data)
         print(f"   📄 PDF généré: {pdf_size} octets ({pdf_size / 1024:.2f} KB)")
+        
+        # Sauvegarder le fichier dans media/reports
+        import os
+        from django.conf import settings
+        reports_dir = os.path.join(settings.MEDIA_ROOT, 'reports')
+        os.makedirs(reports_dir, exist_ok=True)
+        file_path = os.path.join(reports_dir, filename)
+        
+        with open(file_path, 'wb') as f:
+            f.write(pdf_data)
+        
+        # Créer un enregistrement dans la base de données
+        GeneratedReport.objects.create(
+            report_type=report_type,
+            format='PDF',
+            start_date=start_date,
+            end_date=end_date,
+            file_path=f'reports/{filename}',
+            stations_included=[{'id': s.id, 'name': s.name} for s in stations]
+        )
+        
+        print(f"   ✅ Rapport sauvegardé: {file_path}")
         
         # Retourner le fichier
         response = HttpResponse(pdf_data, content_type='application/pdf')

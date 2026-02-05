@@ -632,13 +632,10 @@
           </div>
 
               <div class="nav-section">
+                  <div class="nav-section-title">Surveillance</div>
                   <a href="{% url 'stations' %}" class="nav-item {% if request.resolver_match.url_name == 'stations' %}active{% endif %}">
                       <i class="fas fa-map-marked-alt"></i>
                       <span>Stations</span>
-                  </a>
-                  <a href="{% url 'dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                      <i class="fas fa-wind" style="margin-right: 0.75rem;"></i>
-                      <span>Qualité de l'air</span>
                   </a>
                   <a href="{% url 'alerts' %}" class="nav-item {% if request.resolver_match.url_name == 'alerts' %}active{% endif %}">
                       <i class="fas fa-bell" style="margin-right: 0.75rem;"></i>
@@ -647,6 +644,7 @@
               </div>
 
               <div class="nav-section">
+                  <div class="nav-section-title">Analytique</div>
                   <a href="{% url 'reports' %}" class="nav-item {% if request.resolver_match.url_name == 'reports' %}active{% endif %}">
                       <i class="fas fa-file-alt" style="margin-right: 0.75rem;"></i>
                       <span>Rapports</span>

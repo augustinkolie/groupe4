@@ -1,171 +1,437 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Alertes - EcoWatch{% endblock %}
-{% block page_title %}Système d'Alertes{% endblock %}
+{% block title %}Alertes - EcoWatch Premium{% endblock %}
+{% block page_title %}Système d'Alertes Intelligent{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'monitoring/css/dashboard.css' %}">
+<style>
+    .premium-alert-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 1.25rem;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    }
+    
+    .premium-alert-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .alert-status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+        box-shadow: 0 0 10px currentColor;
+    }
+
+    .status-active { background: #ef4444; color: #ef4444; animation: pulse-red 2s infinite; }
+    .status-resolved { background: #10b981; color: #10b981; }
+
+    @keyframes pulse-red {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    .premium-tab-nav {
+        display: flex;
+        gap: 0.5rem;
+        background: var(--light);
+        padding: 0.4rem;
+        border-radius: 0.75rem;
+        margin-bottom: 2rem;
+        width: fit-content;
+    }
+
+    .premium-tab-btn {
+        padding: 0.6rem 1.25rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--gray);
+        transition: all 0.3s ease;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .premium-tab-btn.active {
+        background: var(--white);
+        color: var(--primary);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .notification-pill {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        border-radius: 12px;
+        background: var(--light);
+        margin-bottom: 12px;
+        transition: all 0.3s;
+        border: 1px solid transparent;
+    }
+
+    .notification-pill:hover {
+        background: var(--white);
+        border-color: var(--primary-light);
+        transform: scale(1.02);
+    }
+
+    .premium-header-gradient {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+        padding: 2.5rem;
+        border-radius: 1.5rem;
+        margin-bottom: 2.5rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+    }
+
+    .premium-header-gradient i {
+        position: absolute;
+        bottom: -20px;
+        right: 20px;
+        opacity: 0.1;
+        font-size: 10rem;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}
 
 {% block content %}
-<!-- Page Header -->
-<div class="flex-between mb-4">
-    <div>
-        <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-color);">Alertes de Qualité de l'Air</h1>
-        <p style="color: var(--gray);">Configurez et surveillez les alertes automatiques basées sur les seuils de pollution</p>
+<!-- Premium Hero Banner -->
+<div class="premium-header-gradient">
+    <div style="position: relative; z-index: 1;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -0.5px;">Centre de Surveillance des Alertes</h1>
+        <p style="opacity: 0.9; font-size: 1.1rem; max-width: 600px;">Configurez des seuils intelligents et recevez des notifications instantanées pour protéger la santé de votre communauté.</p>
     </div>
-    <button class="btn btn-primary">
-        <i class="fas fa-plus"></i>
-        Nouvelle Alerte
-    </button>
+    <i class="fas fa-shield-virus"></i>
 </div>
 
-<!-- Stats Overview -->
+<!-- Key Metrics -->
 <div class="grid-4 mb-4">
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #fee2e2; color: #ef4444;">
-            <i class="fas fa-bell"></i>
+    <div class="premium-alert-card" style="padding: 1.5rem;">
+        <div class="flex-between">
+            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; width: 50px; height: 50px; font-size: 1.5rem;">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div style="text-align: right;">
+                <div class="stat-value" style="color: #ef4444; font-size: 1.8rem; margin: 0;">{{ alerts_total|default:0 }}</div>
+                <div class="stat-label">Total Alertes</div>
+            </div>
         </div>
-        <div class="stat-value" style="color: #ef4444;">{{ alerts_total }}</div>
-        <div class="stat-label">Alertes Totales</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #fef3c7; color: #f59e0b;">
-            <i class="fas fa-exclamation-triangle"></i>
+    
+    <div class="premium-alert-card" style="padding: 1.5rem;">
+        <div class="flex-between">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; width: 50px; height: 50px; font-size: 1.5rem;">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <div style="text-align: right;">
+                <div class="stat-value" style="color: #f59e0b; font-size: 1.8rem; margin: 0;">{{ alerts_today|default:0 }}</div>
+                <div class="stat-label">Aujourd'hui</div>
+            </div>
         </div>
-        <div class="stat-value" style="color: #f59e0b;">{{ alerts_today }}</div>
-        <div class="stat-label">Aujourd'hui</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #dbeafe; color: #3b82f6;">
-            <i class="fas fa-history"></i>
-        </div>
-        <div class="stat-value" style="color: #3b82f6;">{{ alerts_total }}</div>
-        <div class="stat-label">Cette Semaine</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #d1fae5; color: #059669;">
-            <i class="fas fa-cog"></i>
-        </div>
-        <div class="stat-value" style="color: #059669;">{{ rules_count }}</div>
-        <div class="stat-label">Règles Configurées</div>
-    </div>
-</div>
 
-<!-- Alert Info Banner -->
-<div class="alert alert-info mb-4">
-    <i class="fas fa-info-circle" style="font-size: 1.25rem;"></i>
-    <div>
-        <strong>Fonctionnalité en développement</strong><br>
-        Le système d'alertes automatiques sera bientôt disponible. Vous pourrez configurer des seuils personnalisés et recevoir des notifications par email ou SMS.
+    <div class="premium-alert-card" style="padding: 1.5rem;">
+        <div class="flex-between">
+            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; width: 50px; height: 50px; font-size: 1.5rem;">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div style="text-align: right;">
+                <div class="stat-value" style="color: #3b82f6; font-size: 1.8rem; margin: 0;">{{ alerts_total|default:0 }}</div>
+                <div class="stat-label">Semaine</div>
+            </div>
+        </div>
     </div>
-</div>
 
-<!-- Tabs -->
-<div class="card mb-4">
-    <div class="card-header" style="border-bottom: none;">
-        <div style="display: flex; gap: 1rem; border-bottom: 2px solid var(--border-color); margin: -1.5rem -1.5rem 0;">
-            <button class="btn" style="border-radius: 0; border-bottom: 3px solid var(--primary); padding: 1rem 1.5rem; background: transparent; color: var(--primary);">
-                Alertes Actives
-            </button>
-            <button class="btn" style="border-radius: 0; padding: 1rem 1.5rem; background: transparent; color: var(--gray);">
-                Historique
-            </button>
-            <button class="btn" style="border-radius: 0; padding: 1rem 1.5rem; background: transparent; color: var(--gray);">
-                Configuration
-            </button>
+    <div class="premium-alert-card" style="padding: 1.5rem;">
+        <div class="flex-between">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981; width: 50px; height: 50px; font-size: 1.5rem;">
+                <i class="fas fa-cog"></i>
+            </div>
+            <div style="text-align: right;">
+                <div class="stat-value" style="color: #10b981; font-size: 1.8rem; margin: 0;">{{ rules_count|default:1 }}</div>
+                <div class="stat-label">Config Active</div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Active Alerts -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h3 class="card-title">Alertes en Cours</h3>
-    </div>
-    <div class="card-body">
-        <div class="empty-state">
-            <div class="empty-state-icon">
-                <i class="fas fa-bell-slash"></i>
+<!-- Navigation Tabs -->
+<div class="premium-tab-nav">
+    <button class="premium-tab-btn active" onclick="switchTab('flow', this)">Flux en Direct</button>
+    <button class="premium-tab-btn" onclick="switchTab('stats', this)">Statistiques</button>
+    <button class="premium-tab-btn" onclick="switchTab('config', this)">Configuration</button>
+</div>
+
+<!-- Main Content Area -->
+<div id="section-flow" class="tab-content">
+    <div class="grid-2">
+        <!-- Left: History -->
+        <div class="premium-alert-card">
+            <div class="card-header" style="border: none; padding: 1.5rem 1.5rem 0.5rem;">
+                <h3 class="card-title">Alertes de Pollution</h3>
+                <span class="badge badge-info">{{ alerts|length }} récents</span>
             </div>
-            <h3 class="empty-state-title">Aucune alerte active</h3>
-            <p class="empty-state-text">Toutes les stations fonctionnent dans les limites normales</p>
+            <div class="card-body" style="padding: 1.5rem;">
+                {% if alerts %}
+                <div style="display: flex; flex-direction: column;">
+                    {% for alert in alerts %}
+                    <div class="notification-pill">
+                        <div class="stat-icon" style="flex-shrink: 0; background: var(--light); width: 42px; height: 42px; border-radius: 12px;">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                        </div>
+                        <div style="flex-grow: 1;">
+                            <div class="flex-between">
+                                <strong style="font-size: 0.95rem; color: var(--text-color);">{{ alert.station.name }}</strong>
+                                <span style="font-size: 0.75rem; color: var(--gray);">{{ alert.created_at|date:"H:i" }}</span>
+                            </div>
+                            <p style="margin: 4px 0 0; color: var(--gray); font-size: 0.85rem; line-height: 1.4;">{{ alert.message }}</p>
+                        </div>
+                        <div style="display: flex; align-items: center; padding-left: 10px;">
+                            <span class="{% if alert.is_resolved %}status-resolved{% else %}status-active{% endif %} alert-status-dot"></span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="premium-empty">
+                    <div class="premium-empty-icon">
+                        <i class="fas fa-check-circle" style="color: var(--primary);"></i>
+                    </div>
+                    <h3 class="card-title">Environnement Sain</h3>
+                    <p style="color: var(--gray); margin-top: 0.5rem; max-width: 250px; margin-left: auto; margin-right: auto;">Aucune anomalie détectée. La qualité de l'air est conforme aux normes définies.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Right side info or mini-config summary for Flow tab -->
+        <div class="premium-alert-card" style="background: linear-gradient(to bottom, var(--white), var(--light));">
+            <div class="card-header" style="border: none; padding: 1.5rem 1.5rem 0.5rem;">
+                <h3 class="card-title">Résumé de Surveillance</h3>
+            </div>
+            <div class="card-body" style="padding: 1.5rem;">
+                <div style="text-align: center; padding: 2rem;">
+                    <i class="fas fa-chart-pie" style="font-size: 3rem; color: var(--primary); opacity: 0.5; margin-bottom: 1.5rem;"></i>
+                    <h4 style="margin-bottom: 1rem;">Protection Active</h4>
+                    <p style="color: var(--gray); font-size: 0.9rem;">Le système surveille actuellement <strong>{{ alerts_total }}</strong> incidents potentiels basés sur vos seuils personnalisés.</p>
+                    <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 10px;">
+                        <div class="notification-pill" style="background: white; border: 1px solid var(--border-color);">
+                            <i class="fas fa-check-circle" style="color: var(--primary);"></i>
+                            <span style="font-size: 0.85rem;">Algorithme de détection : <strong>Actif</strong></span>
+                        </div>
+                        <div class="notification-pill" style="background: white; border: 1px solid var(--border-color);">
+                            <i class="fas fa-check-circle" style="color: var(--primary);"></i>
+                            <span style="font-size: 0.85rem;">Notifications push : <strong>Prêt</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Alert Configuration -->
-<div class="grid-2">
-    <div class="card" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="card-header">
-            <h3 class="card-title">Seuils d'Alerte</h3>
-        </div>
-        <div class="card-body" style="flex: 1;">
-            <div class="form-group">
-                <label class="form-label">IQA Maximum</label>
-                <input type="number" class="form-control" placeholder="100" value="100">
+<div id="section-stats" class="tab-content" style="display: none;">
+    <div class="grid-2">
+        <div class="premium-alert-card">
+            <div class="card-header" style="border: none; padding: 1.5rem 1.5rem 0.2rem;">
+                <h3 class="card-title">Répartition par Station</h3>
             </div>
-            <div class="form-group">
-                <label class="form-label">PM2.5 Maximum (µg/m³)</label>
-                <input type="number" class="form-control" placeholder="35" value="35">
+            <p style="padding: 0 1.5rem; font-size: 0.85rem; color: var(--gray); margin-bottom: 1rem;">
+                Compare le volume d'alertes par localité pour identifier les zones les plus exposées.
+            </p>
+            <div class="card-body" style="padding: 0 1.5rem 1rem; height: 300px; position: relative;">
+                 <canvas id="stationChart"></canvas>
             </div>
-            <div class="form-group">
-                <label class="form-label">CO Maximum (ppm)</label>
-                <input type="number" class="form-control" placeholder="9" value="9">
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label">Température Maximum (°C)</label>
-                <input type="number" class="form-control" placeholder="40" value="40">
+            <div style="padding: 0 1.5rem 1.5rem; background: var(--light); margin: 0 1rem 1rem; border-radius: 0.75rem; font-size: 0.8rem;">
+                <p style="margin: 0; padding: 0.75rem; color: var(--text-color);">
+                    <i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i>
+                    <strong>Comment lire :</strong> Chaque barre représente une station. Plus la barre est haute, plus la pollution dépasse souvent les seuils dans cette zone.
+                </p>
             </div>
         </div>
-        <div class="card-footer">
-            <button class="btn btn-primary" disabled>
-                <i class="fas fa-save"></i>
-                Enregistrer les Seuils
-            </button>
-        </div>
-    </div>
-
-    <div class="card" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="card-header">
-            <h3 class="card-title">Notifications</h3>
-        </div>
-        <div class="card-body" style="flex: 1;">
-            <div class="form-group">
-                <label class="form-label">Email de Notification</label>
-                <input type="email" class="form-control" placeholder="admin@ecowatch.com">
+        <div class="premium-alert-card">
+            <div class="card-header" style="border: none; padding: 1.5rem 1.5rem 0.2rem;">
+                <h3 class="card-title">Fréquence (30j)</h3>
             </div>
-            <div class="form-group">
-                <label class="form-label">Numéro de Téléphone (SMS)</label>
-                <input type="tel" class="form-control" placeholder="+224 XXX XXX XXX">
+            <p style="padding: 0 1.5rem; font-size: 0.85rem; color: var(--gray); margin-bottom: 1rem;">
+                Analyse l'évolution temporelle pour détecter des cycles ou des pics de pollution anormaux.
+            </p>
+            <div class="card-body" style="padding: 0 1.5rem 1rem; height: 300px; position: relative;">
+                 <canvas id="timeChart"></canvas>
             </div>
-            <div class="form-group">
-                <label class="form-label">Fréquence des Notifications</label>
-                <select class="form-control form-select" style="background: var(--bg-color); color: var(--text-color); border-color: var(--border-color);">
-                    <option>Immédiate</option>
-                    <option>Toutes les heures</option>
-                    <option>Toutes les 6 heures</option>
-                    <option>Une fois par jour</option>
-                </select>
+            <div style="padding: 0 1.5rem 1.5rem; background: var(--light); margin: 0 1rem 1rem; border-radius: 0.75rem; font-size: 0.8rem;">
+                <p style="margin: 0; padding: 0.75rem; color: var(--text-color);">
+                    <i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i>
+                    <strong>Comment lire :</strong> La courbe monte lorsqu'il y a eu plusieurs alertes ce jour-là. Un pic indique un événement de pollution majeur.
+                </p>
             </div>
-            <div class="form-group" style="margin-bottom: 1.5rem;">
-                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                    <input type="checkbox" style="width: 18px; height: 18px;">
-                    <span class="form-label" style="margin: 0; color: var(--text-color);">Activer les notifications SMS</span>
-                </label>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label">Webhook URL (Slack/Discord)</label>
-                <input type="url" class="form-control" placeholder="https://hooks.slack.com/services/...">
-            </div>
-        </div>
-        <div class="card-footer">
-            <button class="btn btn-primary" disabled>
-                <i class="fas fa-save"></i>
-                Enregistrer les Préférences
-            </button>
         </div>
     </div>
 </div>
+
+{{ alerts_by_station|json_script:"station-data" }}
+{{ alerts_by_day|json_script:"day-data" }}
+
+<section id="section-config" class="tab-content" style="display: none;">
+    <div class="premium-alert-card" style="max-width: 800px; margin: 0 auto;">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="card-header" style="border: none; padding: 1.5rem 1.5rem 0.5rem;">
+                <h3 class="card-title">Paramètres de Surveillance</h3>
+                <i class="fas fa-sliders-h" style="color: var(--gray);"></i>
+            </div>
+            <div class="card-body" style="padding: 1.5rem;">
+                <!-- Re-using form elements -->
+                <div class="grid-2">
+                    <div class="premium-form-group">
+                        <label class="premium-label">Seuil IQA</label>
+                        <input type="number" name="iqa_threshold" class="premium-control" placeholder="100" value="{{ rule.iqa_threshold|default:'' }}">
+                    </div>
+                    <div class="premium-form-group">
+                        <label class="premium-label">PM2.5 (µg/m³)</label>
+                        <input type="number" step="0.1" name="pm25_threshold" class="premium-control" placeholder="35.0" value="{{ rule.pm25_threshold|default:'' }}">
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="premium-form-group">
+                        <label class="premium-label">CO (µg/m³)</label>
+                        <input type="number" step="0.1" name="co_threshold" class="premium-control" placeholder="10.0" value="{{ rule.co_threshold|default:'' }}">
+                    </div>
+                    <div class="premium-form-group">
+                        <label class="premium-label">Temp. Max (°C)</label>
+                        <input type="number" step="0.1" name="temp_threshold" class="premium-control" placeholder="40.0" value="{{ rule.temperature_threshold|default:'' }}">
+                    </div>
+                </div>
+
+                <div style="background: var(--light); border-radius: 1.25rem; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border-color);">
+                    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--text-color); display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-paper-plane" style="color: var(--primary);"></i>
+                        Notifications Multi-Canaux
+                    </h4>
+                    
+                    <div class="premium-form-group">
+                        <input type="email" name="email" class="premium-control" style="background: white;" placeholder="adresse@email.com" value="{{ rule.email_address|default:'' }}">
+                    </div>
+                    
+                    <div style="display: flex; gap: 1.5rem; margin-top: 1.25rem; padding-left: 5px;">
+                        <label class="flex items-center gap-2 cursor-pointer" style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" name="email_notif" style="width: 20px; height: 20px; accent-color: var(--primary);" {% if rule.email_notification %}checked{% endif %}>
+                            <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-color);">Email</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer" style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" name="sms_notif" style="width: 20px; height: 20px; accent-color: var(--primary);" {% if rule.sms_notification %}checked{% endif %}>
+                            <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-color);">SMS</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1.2rem; border-radius: 1.25rem; font-size: 1.05rem; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);">
+                    <i class="fas fa-check-circle"></i>
+                    Sauvegarder les Paramètres
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function switchTab(tabId, el) {
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.style.display = 'none';
+    });
+    document.getElementById('section-' + tabId).style.display = 'block';
+    document.querySelectorAll('.premium-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    el.classList.add('active');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Data Loading
+    const stationDataScript = document.getElementById('station-data');
+    const dayDataScript = document.getElementById('day-data');
+    
+    if (stationDataScript && dayDataScript) {
+        const stationData = JSON.parse(stationDataScript.textContent);
+        const dayData = JSON.parse(dayDataScript.textContent);
+
+        // 2. Station Chart (Bar)
+        const ctxStation = document.getElementById('stationChart').getContext('2d');
+        new Chart(ctxStation, {
+            type: 'bar',
+            data: {
+                labels: stationData.map(d => d.station__name),
+                datasets: [{
+                    label: 'Nombre d\'alertes',
+                    data: stationData.map(d => d.count),
+                    backgroundColor: '#10b981',
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: { stepSize: 1 },
+                        title: { display: true, text: 'Alertes', font: { size: 10 } }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // 3. Time Chart (Line)
+        const ctxTime = document.getElementById('timeChart').getContext('2d');
+        new Chart(ctxTime, {
+            type: 'line',
+            data: {
+                labels: dayData.map(d => d.day),
+                datasets: [{
+                    label: 'Volume d\'alertes',
+                    data: dayData.map(d => d.count),
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#3b82f6',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: { stepSize: 1 },
+                        title: { display: true, text: 'Volume', font: { size: 10 } }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

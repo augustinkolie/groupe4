@@ -2,9 +2,17 @@ from rest_framework import serializers
 from .models import Station, Reading
 
 class StationSerializer(serializers.ModelSerializer):
+    latest_reading = serializers.SerializerMethodField()
+
     class Meta:
         model = Station
-        fields = '__all__'
+        fields = ['id', 'name', 'latitude', 'longitude', 'station_type', 'location_description', 'latest_reading']
+
+    def get_latest_reading(self, obj):
+        recent = obj.readings.first()
+        if recent:
+            return ReadingSerializer(recent).data
+        return None
 
 class ReadingSerializer(serializers.ModelSerializer):
     class Meta:
