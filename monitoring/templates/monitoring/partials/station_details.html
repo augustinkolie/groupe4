@@ -1,0 +1,59 @@
+    <div class="stat-card iqa-card {% if latest and latest.iqa != None %}{% if latest.iqa <= 50 %}iqa-good{% elif latest.iqa <= 100 %}iqa-moderate{% elif latest.iqa <= 150 %}iqa-unhealthy{% else %}iqa-hazardous{% endif %}{% else %}iqa-unknown{% endif %}" id="card-iqa">
+      <div class="stat-label">Indice IQA</div>
+      <div class="stat-value" id="val-iqa">{{ latest.iqa|default:"-" }}</div>
+      <div id="iqa-status" style="font-size: 0.9rem; font-weight: 600">
+        {% if latest and latest.iqa != None %}
+          {% if latest.iqa <= 50 %}BON - Air sain{% elif latest.iqa <= 100 %}MODÉRÉ - Attention{% elif latest.iqa <= 150 %}MAUVAIS - Sensible{% else %}DANGER - Alerte{% endif %}
+        {% else %}
+          Données insuffisantes
+        {% endif %}
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="val-no2">{{ latest.no2|floatformat:1|default:"-" }}</div>
+      <div class="stat-label">NO2 (µg/m³)</div>
+      <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Dioxyde d'azote - Pollution routière</small>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="val-so2">{{ latest.so2|floatformat:1|default:"-" }}</div>
+      <div class="stat-label">SO2 (µg/m³)</div>
+      <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Dioxyde de soufre - Industries</small>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="val-o3">{{ latest.o3|floatformat:1|default:"-" }}</div>
+      <div class="stat-label">O3 (µg/m³)</div>
+      <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Ozone troposphérique - Pollution secondaire</small>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="val-pm25">{{ latest.pm25|floatformat:1|default:"-" }}</div>
+      <div class="stat-label">PM2.5 (µg/m³)</div>
+      <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Particules fines ≤2.5µm - Respiration</small>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="val-co">{{ latest.co|floatformat:2|default:"-" }}</div>
+      <div class="stat-label">CO (µg/m³)</div>
+      <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Monoxyde de carbone - Trafic, chauffage</small>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="val-temp">{{ latest.temperature|floatformat:1|default:"-" }}</div>
+      <div class="stat-label">Temp °C</div>
+      <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Température ambiante</small>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="val-hum">{{ latest.humidity|floatformat:1|default:"-" }}</div>
+      <div class="stat-label">Humidité %</div>
+      <small style="color: #666; font-size: 0.75rem; margin-top: 0.5rem; display: block;">Humidité relative de l'air</small>
+    </div>
+    <div class="stat-card" style="grid-column: span 2; font-size: 0.8rem; text-align: center; background: var(--light);">
+      Source : <span id="val-source" style="font-weight: 600; color: var(--text-color)">{{ latest.get_source_type_display }}</span>
+      (ID: <span id="val-source-id" style="color: var(--text-color)">{{ latest.source_id|default:"Inconnu" }}</span>)
+    </div>
+</div>
+<!-- Hidden data for Charts update (processed by client-side JS) -->
+<script>
+    if (typeof updateChart === 'function') {
+        // Trigger chart updates with new data... this part is tricky with pure HTMX replacement.
+        // For now, let's keep the visual refresh. Full chart update via HTMX would require returning JSON or a script.
+        // We will trigger a custom event or let the existing polling handle charts for now to keep it simple as per request.
+    }
+</script>

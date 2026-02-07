@@ -57,6 +57,29 @@
     color: var(--gray);
     font-size: 0.9rem;
   }
+
+  /* IQA Status Colors */
+  .iqa-good { background-color: #10b981 !important; }
+  .iqa-moderate { background-color: #f59e0b !important; }
+  .iqa-unhealthy { background-color: #f97316 !important; }
+  .iqa-hazardous { background-color: #ef4444 !important; }
+  .iqa-unknown { background-color: #94a3b8 !important; }
+
+  /* Force Grid Layout for Stats */
+  #current-stats.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  @media (max-width: 768px) {
+    #current-stats.stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  /* IQA Card full width */
+  #current-stats .iqa-card {
+     grid-column: span 2;
+  }
 </style>
 {% endblock %}
 
@@ -163,126 +186,12 @@
           Sélectionnez une station sur la carte pour voir les détails.
         </p>
       </div>
-      <div class="stats-grid" id="current-stats" style="display: none">
-        <div class="stat-card iqa-card" id="card-iqa">
-          <div class="stat-label">Indice IQA</div>
-          <div class="stat-value" id="val-iqa">-</div>
-          <div id="iqa-status" style="font-size: 0.9rem; font-weight: 600">
-            Chargement...
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="val-no2">-</div>
-          <div class="stat-label">NO2 (µg/m³)</div>
-          <small
-            style="
-              color: #666;
-              font-size: 0.75rem;
-              margin-top: 0.5rem;
-              display: block;
-            "
-            >Dioxyde d'azote - Pollution routière</small
-          >
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="val-so2">-</div>
-          <div class="stat-label">SO2 (µg/m³)</div>
-          <small
-            style="
-              color: #666;
-              font-size: 0.75rem;
-              margin-top: 0.5rem;
-              display: block;
-            "
-            >Dioxyde de soufre - Industries</small
-          >
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="val-o3">-</div>
-          <div class="stat-label">O3 (µg/m³)</div>
-          <small
-            style="
-              color: #666;
-              font-size: 0.75rem;
-              margin-top: 0.5rem;
-              display: block;
-            "
-            >Ozone troposphérique - Pollution secondaire</small
-          >
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="val-pm25">-</div>
-          <div class="stat-label">PM2.5 (µg/m³)</div>
-          <small
-            style="
-              color: #666;
-              font-size: 0.75rem;
-              margin-top: 0.5rem;
-              display: block;
-            "
-            >Particules fines ≤2.5µm - Respiration</small
-          >
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="val-co">-</div>
-          <div class="stat-label">CO (µg/m³)</div>
-          <small
-            style="
-              color: #666;
-              font-size: 0.75rem;
-              margin-top: 0.5rem;
-              display: block;
-            "
-            >Monoxyde de carbone - Trafic, chauffage</small
-          >
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="val-temp">-</div>
-          <div class="stat-label">Temp °C</div>
-          <small
-            style="
-              color: #666;
-              font-size: 0.75rem;
-              margin-top: 0.5rem;
-              display: block;
-            "
-            >Température ambiante</small
-          >
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="val-hum">-</div>
-          <div class="stat-label">Humidité %</div>
-          <small
-            style="
-              color: #666;
-              font-size: 0.75rem;
-              margin-top: 0.5rem;
-              display: block;
-            "
-            >Humidité relative de l'air</small
-          >
-        </div>
-        <div
-          class="stat-card"
-          style="
-            grid-column: span 2;
-            font-size: 0.8rem;
-            text-align: center;
-            background: var(--light);
-          "
-        >
-          Source :
-          <span
-            id="val-source"
-            style="font-weight: 600; color: var(--text-color)"
-            >-</span
-          >
-          (ID:
-          <span id="val-source-id" style="color: var(--text-color)">-</span>)
-        </div>
-      </div>
+      <!-- HTMX Container for Station Details -->
+      <div id="station-details-container" class="grid-2" style="margin-top: 1rem; row-gap: 1rem !important;"></div>
     </div>
   </div>
+
+
 
   <div
     class="charts-column"
@@ -349,6 +258,19 @@
   standard.addTo(map);
   L.control.layers({ Standard: standard, Satellite: satellite }).addTo(map);
 
+  // Add Last Sync Control with HTMX
+  const lastSyncControl = L.control({position: 'bottomleft'});
+  lastSyncControl.onAdd = function (map) {
+      const div = L.DomUtil.create('div', 'info legend');
+      // Load initial content via HTMX
+      div.setAttribute('hx-get', '{% url "map_sync_badge" %}');
+      div.setAttribute('hx-trigger', 'load');
+      div.setAttribute('hx-swap', 'outerHTML');
+      setTimeout(() => htmx.process(div), 100); // Trigger HTMX manually
+      return div;
+  };
+  lastSyncControl.addTo(map);
+
   let airChart;
   let pollutantChart;
   let currentReadings = [];
@@ -394,7 +316,10 @@
           const latest = station.latest_reading;
           const iqa = latest ? latest.iqa : 0;
           const lastTime = latest
-            ? new Date(latest.timestamp).toLocaleTimeString()
+            ? new Date(latest.timestamp).toLocaleString('fr-FR', { 
+                day: '2-digit', month: '2-digit', year: 'numeric', 
+                hour: '2-digit', minute: '2-digit' 
+              })
             : "N/A";
 
           const marker = L.marker([station.latitude, station.longitude], {
@@ -416,13 +341,20 @@
                     `);
 
           marker.on("click", async () => {
+             // Use HTMX to load station details
+             const stationDetailsContainer = document.getElementById("station-details-container");
+             stationDetailsContainer.innerHTML = '<div style="text-align:center; padding: 2rem;"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>';
+             
+             htmx.ajax('GET', `/partials/station-details/${station.id}/`, {target:'#station-details-container', swap:'innerHTML'});
+             
+             // Also load charts logic still needs JS for now, so we keep fetching raw data for charts
             try {
               const rResp = await fetch(
                 `/api/v1/readings/?station=${station.id}`,
               );
               if (rResp.ok) {
                 const readingsRaw = await rResp.json();
-                updateStationDetails(station, readingsRaw);
+                updateChartsOnly(station, readingsRaw);
               }
             } catch (err) {
               console.error("Error refreshing station data:", err);
@@ -434,6 +366,10 @@
         }
       }
       debugApi.innerText = `OK (${stations.length} stations, ${markersCreated} marqueurs créés)`;
+      
+      
+      // Removed manual sync update here as HTMX handles it self-contained
+
 
       // Initialize search with loaded stations
       if (typeof setupSearch === "function") setupSearch(stations);
@@ -443,7 +379,7 @@
     }
   }
 
-  async function updateStationDetails(station, readingsRaw) {
+  function updateChartsOnly(station, readingsRaw) {
     let readings = [];
     if (readingsRaw.results && Array.isArray(readingsRaw.results)) {
       readings = readingsRaw.results;
@@ -454,66 +390,15 @@
     currentReadings = readings;
     document.getElementById("station-info").innerHTML =
       `<h4>${station.name}</h4><p>${station.location_description || "Aucune description"}</p>`;
-    document.getElementById("current-stats").style.display = "grid";
+    // document.getElementById("current-stats").style.display = "grid"; // Handled by HTMX
     document.getElementById("export-btn").style.display = "inline-flex";
 
     if (readings.length > 0) {
       const latest = readings[0];
-      document.getElementById("val-iqa").innerText = latest.iqa || "N/A";
-      document.getElementById("val-pm25").innerText = latest.pm25
-        ? latest.pm25.toFixed(1)
-        : "-";
-      document.getElementById("val-co").innerText = latest.co
-        ? latest.co.toFixed(2)
-        : "-";
-      document.getElementById("val-no2").innerText = latest.no2
-        ? latest.no2.toFixed(1)
-        : "-";
-      document.getElementById("val-so2").innerText = latest.so2
-        ? latest.so2.toFixed(1)
-        : "-";
-      document.getElementById("val-o3").innerText = latest.o3
-        ? latest.o3.toFixed(1)
-        : "-";
-      document.getElementById("val-temp").innerText = latest.temperature
-        ? latest.temperature.toFixed(1)
-        : "-";
-      document.getElementById("val-hum").innerText = latest.humidity
-        ? latest.humidity.toFixed(1)
-        : "-";
-
-      let sourceLabel = "Source Inconnue";
-      if (latest.source_type === "SENSOR") {
-        sourceLabel = "Capteur Physique";
-      } else if (latest.source_id === "openweather") {
-        sourceLabel = "API OpenWeather";
-      } else {
-        sourceLabel = "Données API";
-      }
-      document.getElementById("val-source").innerText = sourceLabel;
-
-      document.getElementById("val-source-id").innerText =
-        latest.source_id || "Inconnu";
-
-      const iqaCard = document.getElementById("card-iqa");
-      const iqaStatus = document.getElementById("iqa-status");
       const color = getIQAColor(latest.iqa);
-      iqaCard.style.backgroundColor = color;
-
-      if (latest.iqa) {
-        iqaStatus.innerText =
-          latest.iqa <= 50
-            ? "BON - Air sain"
-            : latest.iqa <= 100
-              ? "MODÉRÉ - Attention"
-              : "MAUVAIS - Alerte";
-      } else {
-        iqaStatus.innerText = "Données insuffisantes";
-      }
-
-      // Show last 24 readings for a full daily curve
+      
+      // Update Charts
       updateChart(readings.slice(0, 24).reverse(), color);
-      // Update Pie Chart
       updatePieChart(latest);
     }
   }

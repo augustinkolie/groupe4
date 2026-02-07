@@ -619,6 +619,18 @@ select.premium-control {
   box-shadow: 0 6px 15px rgba(16, 185, 129, 0.25);
 }
 
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Tables */
 .table-modern {
   width: 100%;

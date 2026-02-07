@@ -23,6 +23,9 @@ urlpatterns = [
     # HTMX Partials
     path('partials/stats-overview/', views_htmx.stats_overview, name='stats_overview'),
     path('partials/trigger-api/', views_htmx.trigger_api_fetch, name='trigger_api_fetch'),
+    path('partials/map-sync/', views_htmx.map_sync_badge, name='map_sync_badge'),
+    path('partials/station-details/<int:station_id>/', views_htmx.station_details_partial, name='station_details_partial'),
+    path('partials/station-popup/<int:station_id>/', views_htmx.station_popup_partial, name='station_popup_partial'),
     
     path('accounts/', include('django.contrib.auth.urls')),
 ]
