@@ -174,7 +174,8 @@
                 </div>
             </div>
         </form>
-        <div class="card-footer" style="padding-top: 2rem;">
+    </div>
+    <div class="card-footer" style="padding-top: 2rem;">
             <button type="submit" form="reportForm" class="btn btn-primary btn-lg" id="generateBtn" style="width: 100%; justify-content: center; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);">
                 <i class="fas fa-file-contract"></i>
                 <span id="btnText">Lancer la Génération</span>
@@ -207,8 +208,11 @@
                                 <span class="badge badge-info">{{ report.get_report_type_display }}</span>
                             </td>
                             <td>
-                                <i class="fas {% if report.format == 'PDF' %}fa-file-pdf{% else %}fa-file-excel{% endif %}" 
-                                   style="color: {% if report.format == 'PDF' %}#ef4444{% else %}#10b981{% endif %}; margin-right: 0.5rem;"></i>
+                                {% if report.format == 'PDF' %}
+                                    <i class="fas fa-file-pdf" style="color: #ef4444; margin-right: 0.5rem;"></i>
+                                {% else %}
+                                    <i class="fas fa-file-excel" style="color: #10b981; margin-right: 0.5rem;"></i>
+                                {% endif %}
                                 {{ report.format }}
                             </td>
                             <td style="font-size: 0.9rem; color: var(--gray);">
