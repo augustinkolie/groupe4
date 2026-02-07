@@ -1,10 +1,7 @@
 {% load tz %}
-<div style="font-family: 'Inter', sans-serif;"
-     hx-get="{% url 'station_popup_partial' station.id %}"
-     hx-trigger="every 30s"
-     hx-swap="outerHTML">
+<div style="font-family: 'Inter', sans-serif;" hx-get="{% url 'station_popup_partial' station.id %}" hx-trigger="every 30s" hx-swap="outerHTML">
     <b style="font-size: 1rem;">{{ station.name }}</b><br>
-    <span style="color: var(--gray);">
+    <span style="color: #64748b;">
         Dernier relevé : 
         {% if latest %}
             {{ latest.timestamp|date:"d/m/Y H:i" }}
@@ -12,9 +9,29 @@
             N/A
         {% endif %}
     </span><br>
-    <div style="margin-top: 5px; font-weight: 700; color: {% if latest and latest.iqa %}{% if latest.iqa <= 50 %}#10b981{% elif latest.iqa <= 100 %}#f59e0b{% elif latest.iqa <= 150 %}#f97316{% else %}#ef4444{% endif %}{% else %}#94a3b8{% endif %}">
-        IQA actuel : {{ latest.iqa|default:"Inconnu" }}
-    </div>
+    {% if latest and latest.iqa %}
+        {% if latest.iqa <= 50 %}
+            <div style="margin-top: 5px; font-weight: 700; color: #10b981;">
+                IQA actuel : {{ latest.iqa }}
+            </div>
+        {% elif latest.iqa <= 100 %}
+            <div style="margin-top: 5px; font-weight: 700; color: #f59e0b;">
+                IQA actuel : {{ latest.iqa }}
+            </div>
+        {% elif latest.iqa <= 150 %}
+            <div style="margin-top: 5px; font-weight: 700; color: #f97316;">
+                IQA actuel : {{ latest.iqa }}
+            </div>
+        {% else %}
+            <div style="margin-top: 5px; font-weight: 700; color: #ef4444;">
+                IQA actuel : {{ latest.iqa }}
+            </div>
+        {% endif %}
+    {% else %}
+        <div style="margin-top: 5px; font-weight: 700; color: #94a3b8;">
+            IQA actuel : Inconnu
+        </div>
+    {% endif %}
     <small style="color: #64748b;">
         Source: 
         {% if latest %}
