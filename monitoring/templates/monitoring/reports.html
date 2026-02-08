@@ -6,6 +6,32 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'monitoring/css/dashboard.css' %}">
+<style>
+    .reports-scroll-container {
+        max-height: 480px;
+        overflow-y: auto;
+        padding-right: 8px;
+    }
+
+    .reports-scroll-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .reports-scroll-container::-webkit-scrollbar-track {
+        background: var(--light);
+        border-radius: 10px;
+    }
+
+    .reports-scroll-container::-webkit-scrollbar-thumb {
+        background: var(--primary-light);
+        border-radius: 10px;
+        transition: background 0.3s;
+    }
+
+    .reports-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: var(--primary);
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -66,7 +92,7 @@
 </div>
 
 <!-- Report Generator -->
-<div class="grid-2 mb-4">
+<div class="grid-2 mb-4" style="align-items: start;">
     <div class="card" style="animation-delay: 0.1s; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06); border: 1px solid rgba(16, 185, 129, 0.08);">
         <div class="card-header" style="padding: 1.75rem 1.5rem; border-bottom: 1px solid var(--gray-light);">
             <div>
@@ -189,54 +215,56 @@
         </div>
         <div class="card-body">
             {% if generated_reports %}
-            <div style="overflow-x: auto;">
-                <table class="table-modern">
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Format</th>
-                            <th>Période</th>
-                            <th>Stations</th>
-                            <th>Date Génération</th>
-                            <th style="text-align: right;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for report in generated_reports %}
-                        <tr>
-                            <td>
-                                <span class="badge badge-info">{{ report.get_report_type_display }}</span>
-                            </td>
-                            <td>
-                                {% if report.format == 'PDF' %}
-                                    <i class="fas fa-file-pdf" style="color: #ef4444; margin-right: 0.5rem;"></i>
-                                {% else %}
-                                    <i class="fas fa-file-excel" style="color: #10b981; margin-right: 0.5rem;"></i>
-                                {% endif %}
-                                {{ report.format }}
-                            </td>
-                            <td style="font-size: 0.9rem; color: var(--gray);">
-                                {{ report.start_date|date:"d/m/Y" }} - {{ report.end_date|date:"d/m/Y" }}
-                            </td>
-                            <td>
-                                <span style="font-weight: 600; color: var(--primary);">{{ report.stations_included|length }}</span> station{{ report.stations_included|length|pluralize }}
-                            </td>
-                            <td style="font-size: 0.9rem;">
-                                {{ report.created_at|date:"d/m/Y à H:i" }}
-                            </td>
-                            <td style="text-align: right;">
-                                <a href="/media/{{ report.file_path }}" 
-                                   download 
-                                   class="btn btn-sm btn-outline" 
-                                   style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
-                                    <i class="fas fa-download"></i>
-                                    Télécharger
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="reports-scroll-container">
+                <div style="overflow-x: auto;">
+                    <table class="table-modern">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Format</th>
+                                <th>Période</th>
+                                <th>Stations</th>
+                                <th>Date Génération</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in generated_reports %}
+                            <tr>
+                                <td>
+                                    <span class="badge badge-info">{{ report.get_report_type_display }}</span>
+                                </td>
+                                <td>
+                                    {% if report.format == 'PDF' %}
+                                        <i class="fas fa-file-pdf" style="color: #ef4444; margin-right: 0.5rem;"></i>
+                                    {% else %}
+                                        <i class="fas fa-file-excel" style="color: #10b981; margin-right: 0.5rem;"></i>
+                                    {% endif %}
+                                    {{ report.format }}
+                                </td>
+                                <td style="font-size: 0.9rem; color: var(--gray);">
+                                    {{ report.start_date|date:"d/m/Y" }} - {{ report.end_date|date:"d/m/Y" }}
+                                </td>
+                                <td>
+                                    <span style="font-weight: 600; color: var(--primary);">{{ report.stations_included|length }}</span> station{{ report.stations_included|length|pluralize }}
+                                </td>
+                                <td style="font-size: 0.9rem;">
+                                    {{ report.created_at|date:"d/m/Y à H:i" }}
+                                </td>
+                                <td style="text-align: right;">
+                                    <a href="/media/{{ report.file_path }}" 
+                                       download 
+                                       class="btn btn-sm btn-outline" 
+                                       style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                        <i class="fas fa-download"></i>
+                                        Télécharger
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
             {% else %}
             <div class="premium-empty">
@@ -310,7 +338,7 @@
                 // Validate stations selection
                 const checkedStations = stationList.querySelectorAll('input[name="stations"]:checked');
                 if (checkedStations.length === 0) {
-                    alert('Veuillez sélectionner au moins une station');
+                    showToast('Stations manquantes', 'Veuillez sélectionner au moins une station.', 'info');
                     return;
                 }
                 
@@ -331,50 +359,41 @@
                     }
                 })
                 .then(response => {
-                    if (!response.ok) throw new Error('Erreur de génération');
-                    
-                    // Get filename from headers if available
-                    const disposition = response.headers.get('Content-Disposition');
-                    let filename = `rapport_${new Date().toISOString().split('T')[0]}.pdf`;
-                    if (disposition) {
-                        const filenameMatch = disposition.match(/filename="(.+)"/);
-                        if (filenameMatch) filename = filenameMatch[1];
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw new Error(errorData.error || 'Erreur serveur');
+                        }).catch(() => {
+                            throw new Error('Erreur de génération (500)');
+                        });
                     }
-                    
-                    return response.blob().then(blob => ({ blob, filename }));
+                    return response.json();
                 })
-                .then(({ blob, filename }) => {
-                    // Verify it's a PDF
-                    if (blob.type !== 'application/pdf') {
-                        console.warn('Type de fichier:', blob.type);
-                    }
-                    
-                    // Create download link
-                    const url = window.URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = filename;
-                    a.style.display = 'none';
-                    document.body.appendChild(a);
-                    a.click();
-                    
-                    // Cleanup
-                    setTimeout(() => {
-                        window.URL.revokeObjectURL(url);
+                .then(data => {
+                    if (data.success && data.url) {
+                        // Créer un lien de téléchargement invisible
+                        const a = document.createElement('a');
+                        a.href = data.url;
+                        a.download = data.filename || 'rapport.pdf';
+                        document.body.appendChild(a);
+                        a.click();
                         document.body.removeChild(a);
-                    }, 100);
-                    
-                    // Reset button
-                    generateBtn.disabled = false;
-                    btnText.textContent = 'Lancer la Génération';
-                    generateBtn.querySelector('i').className = 'fas fa-file-contract';
-                    
-                    // Show success message
-                    alert('Rapport généré avec succès!');
+                        
+                        // Reset button
+                        generateBtn.disabled = false;
+                        btnText.textContent = 'Lancer la Génération';
+                        generateBtn.querySelector('i').className = 'fas fa-file-contract';
+                        
+                        showToast('Succès', 'Le rapport a été généré avec succès ! Le téléchargement commence.', 'success');
+                        
+                        // Optionnel : recharger la page pour voir l'historique mis à jour
+                        // setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        throw new Error(data.error || 'Réponse invalide du serveur');
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Erreur lors de la génération du rapport');
+                    showToast('Erreur', error.message, 'error');
                     generateBtn.disabled = false;
                     btnText.textContent = 'Lancer la Génération';
                     generateBtn.querySelector('i').className = 'fas fa-file-contract';
@@ -411,7 +430,7 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Erreur lors de l\'export CSV');
+                    showToast('Erreur Export', 'Une erreur est survenue lors de l\'export CSV.', 'error');
                     this.disabled = false;
                     this.querySelector('i').className = 'fas fa-file-csv';
                 });
@@ -447,7 +466,7 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Erreur lors de l\'export Excel');
+                    showToast('Erreur Export', 'Une erreur est survenue lors de l\'export Excel.', 'error');
                     this.disabled = false;
                     this.querySelector('i').className = 'fas fa-file-excel';
                 });

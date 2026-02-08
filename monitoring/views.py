@@ -18,6 +18,7 @@ from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.chart import LineChart, Reference
 from .report_generator import ReportGenerator
 import os
+from django.conf import settings
 
 def index(request):
     stations = Station.objects.all()
@@ -243,24 +244,21 @@ def generate_report(request):
         station_ids = request.POST.getlist('stations')
         report_type = request.POST.get('report_type', 'CUSTOM')
         
-        # Debug logs
-        print(f"🔍 DEBUG - Génération rapport:")
-        print(f"   start_date: {start_date_str}")
-        print(f"   end_date: {end_date_str}")
-        print(f"   station_ids: {station_ids}")
-        print(f"   report_type: {report_type}")
+        # Debug logs to file
+        with open('debug_pdf.log', 'a', encoding='utf-8') as log:
+            log.write(f"\n--- {datetime.now()} ---\n")
+            log.write(f"Parameters: start={start_date_str}, end={end_date_str}, stations={station_ids}\n")
         
+        if not start_date_str or not end_date_str or not station_ids:
+            return JsonResponse({'error': 'Paramètres manquants'}, status=400)
+
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
         
         # Récupérer les stations
         stations = Station.objects.filter(id__in=station_ids)
-        
         if not stations.exists():
-            print(f"   ❌ Aucune station trouvée!")
-            return JsonResponse({'error': 'Aucune station sélectionnée'}, status=400)
-        
-        print(f"   ✅ {stations.count()} stations trouvées")
+            return JsonResponse({'error': 'Aucune station trouvée'}, status=400)
         
         # Vérifier les données disponibles
         total_readings = 0
@@ -270,24 +268,25 @@ def generate_report(request):
                 timestamp__date__gte=start_date,
                 timestamp__date__lte=end_date
             ).count()
-            print(f"   {station.name}: {count} lectures")
             total_readings += count
         
-        print(f"   📊 Total lectures: {total_readings}")
-        
+        with open('debug_pdf.log', 'a', encoding='utf-8') as log:
+            log.write(f"Total readings found in DB: {total_readings}\n")
+            
+        if total_readings == 0:
+            return JsonResponse({'error': 'Aucune donnée trouvée pour cette période et ces stations'}, status=400)
+            
         # Générer le rapport
         generator = ReportGenerator(stations, start_date, end_date, report_type)
         filename = f"rapport_ecowatch_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
         pdf_buffer = generator.generate_pdf(filename)
         
-        # Vérifier la taille
         pdf_data = pdf_buffer.getvalue()
-        pdf_size = len(pdf_data)
-        print(f"   📄 PDF généré: {pdf_size} octets ({pdf_size / 1024:.2f} KB)")
         
+        with open('debug_pdf.log', 'a', encoding='utf-8') as log:
+            log.write(f"PDF generated size: {len(pdf_data)} bytes\n")
+            
         # Sauvegarder le fichier dans media/reports
-        import os
-        from django.conf import settings
         reports_dir = os.path.join(settings.MEDIA_ROOT, 'reports')
         os.makedirs(reports_dir, exist_ok=True)
         file_path = os.path.join(reports_dir, filename)
@@ -305,20 +304,24 @@ def generate_report(request):
             stations_included=[{'id': s.id, 'name': s.name} for s in stations]
         )
         
-        print(f"   ✅ Rapport sauvegardé: {file_path}")
-        
-        # Retourner le fichier
-        response = HttpResponse(pdf_data, content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
-        response['Content-Length'] = len(pdf_data)
-        response['Cache-Control'] = 'no-cache'
-        return response
+        # Retourner l'URL du fichier en JSON pour un téléchargement propre côté client
+        return JsonResponse({
+            'success': True,
+            'url': f"{settings.MEDIA_URL}reports/{filename}",
+            'filename': filename
+        })
         
     except Exception as e:
-        print(f"   ❌ ERREUR: {e}")
         import traceback
-        traceback.print_exc()
-        return JsonResponse({'error': str(e)}, status=500)
+        error_msg = str(e)
+        stack_trace = traceback.format_exc()
+        
+        with open('debug_pdf.log', 'a', encoding='utf-8') as log:
+            log.write(f"❌ CRASH: {error_msg}\n")
+            log.write(f"{stack_trace}\n")
+            
+        print(f"   ❌ ERREUR: {error_msg}")
+        return JsonResponse({'error': error_msg}, status=500)
 
 @require_POST
 def export_excel(request):

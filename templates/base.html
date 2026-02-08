@@ -257,6 +257,8 @@
       .main-wrapper {
         margin-left: var(--sidebar-width);
         min-height: 100vh;
+        display: flex;
+        flex-direction: column;
         transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
@@ -455,9 +457,9 @@
 
       /* Content Area */
       .content {
-        padding: 2rem;
-        background-color: var(--bg-color); /* Use theme variable instead of hardcoded color */
-        min-height: calc(100vh - var(--header-height));
+        padding: 2rem 2rem 2rem 2rem;
+        background-color: var(--bg-color); 
+        flex-grow: 1;
         animation: fadeInUp 0.5s ease-out;
       }
 
@@ -598,6 +600,89 @@
       body.sidebar-collapsed .sidebar-logo .logo-icon {
         margin: 0 auto;
       }
+
+      /* Professional Toast System */
+      #toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+      }
+
+      .toast {
+        min-width: 300px;
+        max-width: 450px;
+        padding: 1rem 1.25rem;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--dark);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transform: translateX(120%);
+        transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.3s ease;
+        opacity: 0;
+        pointer-events: auto;
+      }
+
+      [data-theme="dark"] .toast {
+        background: rgba(30, 41, 59, 0.9);
+        color: #f1f5f9;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .toast.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      .toast-icon {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        flex-shrink: 0;
+        font-size: 1.1rem;
+      }
+
+      .toast-success .toast-icon { background: #d1fae5; color: #059669; }
+      .toast-error .toast-icon { background: #fee2e2; color: #dc2626; }
+      .toast-info .toast-icon { background: #dbeafe; color: #2563eb; }
+
+      .toast-content {
+        flex-grow: 1;
+      }
+
+      .toast-title {
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-bottom: 2px;
+      }
+
+      .toast-message {
+        font-size: 0.85rem;
+        opacity: 0.8;
+        line-height: 1.4;
+      }
+
+      .toast-close {
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity 0.2s;
+        padding: 4px;
+      }
+
+      .toast-close:hover { opacity: 1; }
     </style>
   </head>
 
@@ -751,8 +836,65 @@
       <main class="content">{% block content %}{% endblock %}</main>
     </div>
 
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
     <script>
-      if (profileTrigger) {
+      /**
+       * Moteur de notifications Premium (Toast)
+       * @param {string} title - Titre du message
+       * @param {string} message - Description
+       * @param {string} type - success, error, info
+       * @param {number} duration - Durée en ms (défaut 5000)
+       */
+      window.showToast = function(title, message, type = 'success', duration = 5000) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        const icons = {
+          success: 'fa-check-circle',
+          error: 'fa-exclamation-circle',
+          info: 'fa-info-circle'
+        };
+
+        toast.innerHTML = `
+          <div class="toast-icon">
+            <i class="fas ${icons[type]}"></i>
+          </div>
+          <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+          </div>
+          <div class="toast-close">
+            <i class="fas fa-times"></i>
+          </div>
+        `;
+
+        container.appendChild(toast);
+
+        // Animation d'entrée
+        setTimeout(() => toast.classList.add('show'), 10);
+
+        // Fermeture manuelle
+        toast.querySelector('.toast-close').addEventListener('click', () => {
+          toast.classList.remove('show');
+          setTimeout(() => toast.remove(), 400);
+        });
+
+        // Fermeture automatique
+        const timer = setTimeout(() => {
+          if (toast.parentNode) {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 400);
+          }
+        }, duration);
+      };
+
+      const profileTrigger = document.getElementById("profileTrigger");
+      const profileDropdown = document.getElementById("profileDropdown");
+
+      if (profileTrigger && profileDropdown) {
         profileTrigger.addEventListener("click", function (e) {
           e.stopPropagation();
           profileDropdown.classList.toggle("show");
