@@ -137,13 +137,16 @@
 {% endblock %}
 
 {% block content %}
-<!-- Premium Hero Banner -->
-<div class="premium-header-gradient">
-    <div style="position: relative; z-index: 1;">
-        <h1 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -0.5px;">Centre de Surveillance des Alertes</h1>
-        <p style="opacity: 0.9; font-size: 1.1rem; max-width: 600px;">Configurez des seuils intelligents et recevez des notifications instantanées pour protéger la santé de votre communauté.</p>
+<!-- Page Header Premium -->
+<div class="flex-between mb-4" style="padding: 2.5rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%); border-radius: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.1); position: relative; overflow: hidden;">
+    <div>
+        <div style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
+            <i class="fas fa-shield-virus" style="color: var(--primary); font-size: 0.9rem;"></i>
+            <span style="color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Sécurité & Vigilance</span>
+        </div>
+        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -1px; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Centre de Surveillance</h1>
+        <p style="color: var(--gray); font-size: 1.05rem; max-width: 600px; line-height: 1.6;">Configurez des seuils intelligents et recevez des notifications instantanées pour protéger la santé de votre communauté.</p>
     </div>
-    <i class="fas fa-shield-virus"></i>
 </div>
 
 <!-- Key Metrics -->
@@ -268,30 +271,55 @@
                 </div>
 
                 <!-- Active Thresholds Summary -->
-                <div style="background: white; border-radius: 1.25rem; padding: 1.5rem; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
-                    <h4 style="font-size: 0.9rem; margin-bottom: 1.25rem; color: var(--text-color); font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                <div style="margin-top: 1rem;">
+                    <h4 style="font-size: 0.9rem; margin-bottom: 1.25rem; color: var(--text-color); font-weight: 700; display: flex; align-items: center; gap: 10px; padding-left: 5px;">
                         <i class="fas fa-microchip" style="color: var(--primary);"></i>
                         Seuils de Déclenchement
                     </h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <div style="background: var(--light); padding: 0.75rem; border-radius: 0.75rem; text-align: center;">
-                            <div style="font-size: 0.7rem; color: var(--gray); text-transform: uppercase;">IQA</div>
-                            <div style="font-weight: 800; color: var(--text-color);">{{ rule.iqa_threshold|default:"100" }}</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <!-- IQA -->
+                        <div class="premium-stat-card" style="padding: 1rem; background: white;">
+                            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--primary); width: 38px; height: 38px; font-size: 1.1rem;">
+                                <i class="fas fa-leaf"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value" style="font-size: 1.3rem;">{{ rule.iqa_threshold|default:"100" }}</div>
+                                <div class="stat-label" style="font-size: 0.65rem;">IQA</div>
+                            </div>
                         </div>
-                        <div style="background: var(--light); padding: 0.75rem; border-radius: 0.75rem; text-align: center;">
-                            <div style="font-size: 0.7rem; color: var(--gray); text-transform: uppercase;">PM2.5</div>
-                            <div style="font-weight: 800; color: var(--text-color);">{{ rule.pm25_threshold|default:"35" }}</div>
+                        <!-- PM2.5 -->
+                        <div class="premium-stat-card" style="padding: 1rem; background: white;">
+                            <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; width: 38px; height: 38px; font-size: 1.1rem;">
+                                <i class="fas fa-atom"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value" style="font-size: 1.3rem; color: #8b5cf6;">{{ rule.pm25_threshold|default:"35" }}</div>
+                                <div class="stat-label" style="font-size: 0.65rem;">PM2.5</div>
+                            </div>
                         </div>
-                        <div style="background: var(--light); padding: 0.75rem; border-radius: 0.75rem; text-align: center;">
-                            <div style="font-size: 0.7rem; color: var(--gray); text-transform: uppercase;">CO</div>
-                            <div style="font-weight: 800; color: var(--text-color);">{{ rule.co_threshold|default:"10" }}</div>
+                        <!-- CO -->
+                        <div class="premium-stat-card" style="padding: 1rem; background: white;">
+                            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); width: 38px; height: 38px; font-size: 1.1rem;">
+                                <i class="fas fa-burn"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value" style="font-size: 1.3rem; color: var(--danger);">{{ rule.co_threshold|default:"10" }}</div>
+                                <div class="stat-label" style="font-size: 0.65rem;">CO</div>
+                            </div>
                         </div>
-                        <div style="background: var(--light); padding: 0.75rem; border-radius: 0.75rem; text-align: center;">
-                            <div style="font-size: 0.7rem; color: var(--gray); text-transform: uppercase;">Temp.</div>
-                            <div style="font-weight: 800; color: var(--text-color);">{{ rule.temperature_threshold|default:"40" }}°</div>
+                        <!-- Temp -->
+                        <div class="premium-stat-card" style="padding: 1rem; background: white;">
+                            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; width: 38px; height: 38px; font-size: 1.1rem;">
+                                <i class="fas fa-thermometer-half"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value" style="font-size: 1.3rem; color: #3b82f6;">{{ rule.temperature_threshold|default:"40" }}°</div>
+                                <div class="stat-label" style="font-size: 0.65rem;">TEMP.</div>
+                            </div>
                         </div>
                     </div>
-                    <p style="margin-top: 1rem; font-size: 0.75rem; color: var(--gray); text-align: center; font-style: italic;">
+                    <p style="margin-top: 1.25rem; font-size: 0.75rem; color: var(--gray); text-align: center; font-style: italic; opacity: 0.8;">
+                        <i class="fas fa-info-circle" style="margin-right: 4px;"></i>
                         Ces seuils sont modifiables dans l'onglet Configuration.
                     </p>
                 </div>

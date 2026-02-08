@@ -1,76 +1,140 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Exports - EcoWatch{% endblock %}
-{% block page_title %}Centre d'Exports{% endblock %}
+{% block title %}Archives & Exports - EcoWatch Premium{% endblock %}
+{% block page_title %}Centre de Documents{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'monitoring/css/dashboard.css' %}">
+<style>
+    .premium-header-gradient {
+        background: linear-gradient(135deg, var(--dark) 0%, #1e293b 100%);
+        color: white;
+        padding: 2.5rem;
+        border-radius: 1.5rem;
+        margin-bottom: 2.5rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .premium-header-gradient i.bg-icon {
+        position: absolute;
+        bottom: -20px;
+        right: 20px;
+        opacity: 0.05;
+        font-size: 10rem;
+    }
+
+    .document-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 1.25rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .document-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        border-color: var(--primary-light);
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="flex-between mb-4">
+<!-- Page Header Premium -->
+<div class="flex-between mb-4" style="padding: 2.5rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%); border-radius: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.1); position: relative; overflow: hidden;">
     <div>
-        <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-color);">Exports de Données</h1>
-        <p style="color: var(--gray);">Téléchargez les historiques de données de qualité de l'air</p>
+        <div style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
+            <i class="fas fa-folder-tree" style="color: var(--primary); font-size: 0.9rem;"></i>
+            <span style="color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Centre de Données</span>
+        </div>
+        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -1px; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Archives & Exports</h1>
+        <p style="color: var(--gray); font-size: 1.05rem; max-width: 600px; line-height: 1.6;">Gérez, consultez et téléchargez l'ensemble des rapports et exports générés par la plateforme.</p>
     </div>
-    <button class="btn btn-primary">
-        <i class="fas fa-file-export"></i>
-        Nouvel Export
-    </button>
 </div>
 
-<!-- Recent Exports Table -->
-<div class="card">
-    <div class="card-header">
-        <h3 class="card-title">Exports Récents</h3>
+<div class="flex-between mb-4">
+    <div class="search-bar" style="max-width: 400px; width: 100%;">
+        <i class="fas fa-search"></i>
+        <input type="text" id="docSearch" placeholder="Rechercher un document (ID, date, station)..." style="width: 100%;">
     </div>
-    <div class="card-body">
+    <a href="{% url 'reports' %}" class="btn btn-primary" style="padding: 0.75rem 1.5rem; border-radius: 0.8rem;">
+        <i class="fas fa-plus-circle"></i>
+        Nouveau Rapport
+    </a>
+</div>
+
+<!-- Main Documents Table -->
+<div class="document-card" style="overflow: hidden;">
+    <div class="card-header" style="padding: 1.5rem; border-bottom: 1px solid var(--border-color);">
+        <h3 class="card-title" style="font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-list-ul" style="color: var(--primary);"></i>
+            Liste Complète des Archives
+        </h3>
+    </div>
+    <div class="card-body" style="padding: 0;">
         <div style="overflow-x: auto;">
-            <table class="table-modern">
+            <table class="table-modern" id="docsTable">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Date</th>
+                        <th style="padding-left: 1.5rem;">Document</th>
+                        <th>Période d'analyse</th>
+                        <th>Stations incluses</th>
                         <th>Format</th>
-                        <th>Taille</th>
-                        <th>Statut</th>
-                        <th class="text-right">Action</th>
+                        <th>Généré le</th>
+                        <th class="text-right" style="padding-right: 1.5rem;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for export in exports %}
-                    <tr>
-                        <td style="font-weight: 600;">{{ export.id }}</td>
-                        <td>{{ export.date|date:"d M Y, H:i" }}</td>
-                        <td>
-                            <span class="badge badge-info">{{ export.format }}</span>
+                    <tr class="doc-row">
+                        <td style="padding-left: 1.5rem;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--light); display: flex; align-items: center; justify-content: center; color: var(--gray);">
+                                    <i class="fas fa-file-invoice"></i>
+                                </div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-color);">Rapport #{{ export.id }}</div>
+                                    <div style="font-size: 0.75rem; color: var(--gray);">{{ export.get_report_type_display }}</div>
+                                </div>
+                            </div>
                         </td>
-                        <td>{{ export.size }}</td>
-                        <td>
-                            {% if export.status == 'Completed' %}
-                            <span class="badge badge-success"><i class="fas fa-check-circle"></i> Terminé</span>
-                            {% elif export.status == 'Failed' %}
-                            <span class="badge badge-danger"><i class="fas fa-times-circle"></i> Échoué</span>
-                            {% else %}
-                            <span class="badge badge-warning"><i class="fas fa-spinner fa-spin"></i> En cours</span>
-                            {% endif %}
+                        <td style="font-size: 0.85rem; color: var(--gray);">
+                            {{ export.start_date|date:"d/m/Y" }} — {{ export.end_date|date:"d/m/Y" }}
                         </td>
-                        <td class="text-right">
-                            {% if export.status == 'Completed' %}
-                            <button class="btn btn-sm btn-outline">
-                                <i class="fas fa-download"></i> Télécharger
-                            </button>
-                            {% else %}
-                            <button class="btn btn-sm btn-outline" disabled style="opacity: 0.5; cursor: not-allowed;">
+                        <td style="max-width: 250px;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                                {% for station in export.stations_included %}
+                                <span style="background: var(--primary-light); color: var(--primary-dark); font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 600;">{{ station.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge {% if export.format == 'PDF' %}badge-danger{% else %}badge-success{% endif %}" style="border-radius: 6px; font-size: 0.7rem; padding: 4px 10px; font-weight: 700;">
+                                <i class="fas {% if export.format == 'PDF' %}fa-file-pdf{% else %}fa-file-excel{% endif %}" style="margin-right: 5px;"></i>
+                                {{ export.format }}
+                            </span>
+                        </td>
+                        <td style="font-size: 0.85rem; color: var(--gray);">
+                            {{ export.created_at|date:"d/m/Y à H:i" }}
+                        </td>
+                        <td class="text-right" style="padding-right: 1.5rem;">
+                            <a href="/media/{{ export.file_path }}" download class="btn btn-primary" style="padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem;">
                                 <i class="fas fa-download"></i>
-                            </button>
-                            {% endif %}
+                                Télécharger
+                            </a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="text-center" style="padding: 2rem; color: var(--gray);">Aucun export récent trouvé.</td>
+                        <td colspan="6" class="text-center" style="padding: 5rem 2rem;">
+                            <div style="font-size: 3rem; color: var(--border-color); margin-bottom: 1.5rem;">
+                                <i class="fas fa-inbox"></i>
+                            </div>
+                            <h3 style="color: var(--gray); font-weight: 600;">Aucun fichier archivé</h3>
+                            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Commencez par générer un rapport dans la section analyses.</p>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -78,4 +142,17 @@
         </div>
     </div>
 </div>
+
+<script>
+    // System de recherche dynamique
+    document.getElementById('docSearch').addEventListener('input', function(e) {
+        const term = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('.doc-row');
+        
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(term) ? '' : 'none';
+        });
+    });
+</script>
 {% endblock %}

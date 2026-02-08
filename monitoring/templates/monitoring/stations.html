@@ -386,12 +386,17 @@
 {% endblock %}
 
 {% block content %}
-    <div class="flex-between mb-4">
+    <!-- Page Header Premium -->
+    <div class="flex-between mb-4" style="padding: 2.5rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%); border-radius: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.1); position: relative; overflow: hidden;">
         <div>
-            <h1 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.25rem; letter-spacing: -0.5px; color: var(--text-color);">Stations de Surveillance</h1>
-            <p style="color: var(--gray); font-size: 0.9rem;">Gérez et surveillez vos unités de mesure en temps réel.</p>
+            <div style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
+                <i class="fas fa-satellite-dish" style="color: var(--primary); font-size: 0.9rem;"></i>
+                <span style="color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Réseau de Surveillance</span>
+            </div>
+            <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -1px; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Stations de Surveillance</h1>
+            <p style="color: var(--gray); font-size: 1.05rem; max-width: 600px; line-height: 1.6;">Gérez et surveillez vos unités de mesure en temps réel sur l'ensemble du territoire.</p>
         </div>
-        <button class="btn btn-primary" onclick="openAddStationModal()">
+        <button class="btn btn-primary" onclick="openAddStationModal()" style="padding: 0.75rem 1.5rem; border-radius: 0.8rem; height: fit-content; align-self: flex-end; margin-bottom: 0.5rem;">
             <i class="fas fa-plus"></i>
             Ajouter une Station
         </button>

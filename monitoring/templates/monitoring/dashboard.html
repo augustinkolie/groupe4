@@ -107,6 +107,18 @@
 </div>
 
 <!-- Stats Overview (Managed by HTMX Polling) -->
+<!-- Page Header Premium -->
+<div class="flex-between mb-4" style="padding: 2.5rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%); border-radius: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.1); position: relative; overflow: hidden;">
+    <div>
+        <div style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
+            <i class="fas fa-microchip" style="color: var(--primary); font-size: 0.9rem;"></i>
+            <span style="color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Système Intelligent</span>
+        </div>
+        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -1px; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Tableau de Bord</h1>
+        <p style="color: var(--gray); font-size: 1.05rem; max-width: 600px; line-height: 1.6;">Bienvenue sur votre interface de pilotage. Suivez en temps réel la qualité de l'air et les performances de vos stations.</p>
+    </div>
+</div>
+
 <div
   id="stats-container"
   hx-get="{% url 'stats_overview' %}"

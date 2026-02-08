@@ -190,7 +190,9 @@ def reports_view(request):
     return render(request, 'monitoring/reports.html', context)
 
 def exports_view(request):
-    return render(request, 'monitoring/exports.html')
+    """Centre de téléchargement des rapports et exports archivés"""
+    exports = GeneratedReport.objects.all().order_by('-created_at')
+    return render(request, 'monitoring/exports.html', {'exports': exports})
 
 def analyses_view(request):
     return render(request, 'monitoring/analyses.html')
