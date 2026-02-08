@@ -10,6 +10,9 @@ urlpatterns = [
     path('features/', views.features, name='features'),
     path('about/', views.about, name='about'),
     path('stations/', views.stations_list, name='stations'),
+    path('stations/add/', views.add_station, name='add_station'),
+    path('stations/<int:pk>/edit/', views.edit_station, name='edit_station'),
+    path('stations/<int:pk>/delete/', views.delete_station, name='delete_station'),
     path('alerts/', views.alerts_view, name='alerts'),
     path('reports/', views.reports_view, name='reports'),
     path('exports/', views.exports_view, name='exports'),
@@ -26,6 +29,7 @@ urlpatterns = [
     path('partials/map-sync/', views_htmx.map_sync_badge, name='map_sync_badge'),
     path('partials/station-details/<int:station_id>/', views_htmx.station_details_partial, name='station_details_partial'),
     path('partials/station-popup/<int:station_id>/', views_htmx.station_popup_partial, name='station_popup_partial'),
+    path('partials/get-station-form/<int:station_id>/', views_htmx.get_station_edit_form, name='get_station_edit_form'),
     
     path('accounts/', include('django.contrib.auth.urls')),
 ]

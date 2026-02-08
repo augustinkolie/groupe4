@@ -10,8 +10,10 @@ class Station(models.Model):
     longitude = models.FloatField(db_index=True)
     station_type = models.CharField(max_length=10, choices=STATION_TYPES, default='PHYSICAL')
     location_description = models.TextField(blank=True, null=True)
-    image_url = models.URLField(blank=True, null=True, help_text="Image illustrative de la zone")
+    image = models.ImageField(upload_to='stations/', blank=True, null=True, help_text="Image illustrative de la zone")
+    image_url = models.URLField(blank=True, null=True, help_text="URL de l'image (obsolète)")
     pollution_causes = models.TextField(blank=True, null=True, help_text="Causes principales de la pollution")
+    sensors_count = models.IntegerField(default=0, null=True, blank=True, help_text="Nombre de capteurs installés sur cette station")
     metadata = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

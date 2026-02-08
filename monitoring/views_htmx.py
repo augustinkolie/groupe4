@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Avg, Count
 from django.utils import timezone
 from datetime import timedelta
 from monitoring.models import Station, Reading
+from .forms import StationForm
 
 def stats_overview(request):
     """
@@ -75,4 +76,12 @@ def station_popup_partial(request, station_id):
         return render(request, 'monitoring/partials/station_popup.html', context)
     except Station.DoesNotExist:
         return HttpResponse('<div>Station introuvable</div>')
+
+def get_station_edit_form(request, station_id):
+    station = get_object_or_404(Station, id=station_id)
+    form = StationForm(instance=station)
+    return render(request, 'monitoring/partials/edit_station_form.html', {
+        'station': station,
+        'station_form': form,
+    })
 

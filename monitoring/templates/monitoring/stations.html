@@ -236,6 +236,152 @@
         color: var(--primary);
         border-color: var(--primary);
     }
+
+    /* Pagination Styles */
+    .pagination-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 3rem;
+        padding-bottom: 2rem;
+    }
+
+    .page-btn {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.75rem;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+        font-weight: 600;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+
+    .page-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+    }
+
+    .page-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .page-btn.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    .page-dots {
+        color: var(--gray);
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(4px);
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+        background-color: var(--card-bg);
+        padding: 0; /* Remove padding to contain scrollbar */
+        border-radius: 1.25rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        position: relative;
+        max-width: 600px;
+        width: 90%;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        animation: slideUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        overflow: hidden; /* Contain body */
+    }
+
+    .modal-header {
+        padding: 1.5rem 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .modal-body {
+        padding: 2rem;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .modal-footer {
+        padding: 1.5rem 2rem;
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        border-top: 1px solid var(--border-color);
+        background: var(--card-bg);
+    }
+
+    /* Custom Scrollbar */
+    .modal-body::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .modal-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .modal-body::-webkit-scrollbar-thumb {
+        background: var(--primary); /* Green color */
+        border-radius: 10px;
+        border: 2px solid var(--card-bg); /* Padding around thumb */
+    }
+
+    .modal-body::-webkit-scrollbar-thumb:hover {
+        background: #059669; /* Darker green */
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 1rem;
+        right: 1.25rem;
+        font-size: 1.75rem;
+        font-weight: bold;
+        color: var(--gray);
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .close-modal:hover {
+        color: var(--text-color);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
 </style>
 {% endblock %}
 
@@ -245,10 +391,10 @@
             <h1 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.25rem; letter-spacing: -0.5px; color: var(--text-color);">Stations de Surveillance</h1>
             <p style="color: var(--gray); font-size: 0.9rem;">Gérez et surveillez vos unités de mesure en temps réel.</p>
         </div>
-        <a href="/admin/monitoring/station/add/" class="btn btn-primary">
+        <button class="btn btn-primary" onclick="openAddStationModal()">
             <i class="fas fa-plus"></i>
             Ajouter une Station
-        </a>
+        </button>
     </div>
 
 <!-- Stats Overview -->
@@ -315,10 +461,10 @@
 <!-- Stations List -->
 <div class="grid-3 animate-fade-in stations-container" id="stationsContainer">
     {% for station in page_obj %}
-    <div class="card" style="padding: 0.75rem;">
+    <div class="card" id="station-card-{{ station.id }}" style="padding: 0.75rem;">
         <div class="station-card">
             <div class="station-image-wrapper">
-                <img src="{{ station.image_url|default:'/static/monitoring/images/conakry.png' }}" 
+                <img src="{% if station.image %}{{ station.image.url }}{% else %}{{ station.image_url|default:'/static/monitoring/images/conakry.png' }}{% endif %}" 
                      alt="{{ station.name }}" 
                      class="station-image"
                      style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; border-radius: 0.5rem;"
@@ -338,9 +484,9 @@
             </p>
             
             <div class="station-meta">
-                <div class="meta-item" title="Nombre de relevés">
-                    <i class="fas fa-database" style="color: var(--secondary);"></i>
-                    <strong>{{ station.readings.count }}</strong>
+                <div class="meta-item" title="Nombre de capteurs">
+                    <i class="fas fa-microchip" style="color: var(--secondary);"></i>
+                    <strong>{{ station.sensors_count|default:0 }}</strong>
                 </div>
                 <div class="meta-item" title="Indice de Qualité de l'Air">
                     <i class="fas fa-wind" style="color: var(--primary);"></i>
@@ -356,9 +502,14 @@
                 <a href="{% url 'dashboard' %}?station={{ station.id }}" class="btn btn-primary btn-sm" style="flex: 1; justify-content: center; padding: 0.5rem 1rem;">
                     Détails
                 </a>
-                <a href="/admin/monitoring/station/{{ station.id }}/change/" class="btn btn-outline btn-sm" style="padding: 0.5rem; width: 38px; height: 38px; justify-content: center;">
+                <button hx-get="{% url 'get_station_edit_form' station.id %}" hx-target="#editStationModalBody" onclick="openEditStationModal()" class="btn btn-outline btn-sm" style="padding: 0.5rem; width: 38px; height: 38px; justify-content: center;">
                     <i class="fas fa-edit"></i>
-                </a>
+                </button>
+                <button onclick="openDeleteModal('{{ station.id }}', '{{ station.name|escapejs }}')" 
+                        class="btn btn-outline btn-sm delete-btn" 
+                        style="padding: 0.5rem; width: 38px; height: 38px; justify-content: center; color: #ef4444; border-color: #fee2e2;">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -369,7 +520,7 @@
         </div>
         <h3 class="empty-state-title">Aucune station trouvée</h3>
         <p class="empty-state-text">Commencez par ajouter votre première station de surveillance</p>
-        <button class="btn btn-primary">
+        <button class="btn btn-primary" onclick="openAddStationModal()">
             <i class="fas fa-plus"></i>
             Ajouter une Station
         </button>
@@ -379,26 +530,128 @@
 
 <!-- Pagination -->
 {% if page_obj.paginator.num_pages > 1 %}
-<div class="pagination-container">
+<div class="pagination-wrapper">
     {% if page_obj.has_previous %}
-        <a href="?page=1" class="page-link"><i class="fas fa-angle-double-left"></i></a>
-        <a href="?page={{ page_obj.previous_page_number }}" class="page-link"><i class="fas fa-angle-left"></i></a>
+        <a href="?page=1" class="page-btn" title="Première page">
+            <i class="fas fa-angle-double-left"></i>
+        </a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">
+            <i class="fas fa-angle-left"></i>
+        </a>
     {% endif %}
 
     {% for num in page_obj.paginator.page_range %}
         {% if page_obj.number == num %}
-            <span class="page-link active">{{ num }}</span>
+            <span class="page-btn active">{{ num }}</span>
         {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+            <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
         {% endif %}
     {% endfor %}
 
     {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}" class="page-link"><i class="fas fa-angle-right"></i></a>
-        <a href="?page={{ page_obj.paginator.num_pages }}" class="page-link"><i class="fas fa-angle-double-right"></i></a>
+        <a href="?page={{ page_obj.next_page_number }}" class="page-btn">
+            <i class="fas fa-angle-right"></i>
+        </a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="page-btn" title="Dernière page">
+            <i class="fas fa-angle-double-right"></i>
+        </a>
     {% endif %}
 </div>
 {% endif %}
+
+<!-- Add Station Modal -->
+<div id="addStationModal" class="modal" onclick="if(event.target == this) closeAddStationModal()">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="width: 45px; height: 45px; background: var(--primary-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                <i class="fas fa-plus-circle" style="font-size: 1.5rem;"></i>
+            </div>
+            <h2 style="margin: 0; color: var(--text-color); font-size: 1.4rem;">Nouvelle Station</h2>
+            <span class="close-modal" onclick="closeAddStationModal()" style="position: static; font-size: 2rem; margin-left: auto;">&times;</span>
+        </div>
+        
+        <form hx-post="{% url 'add_station' %}" enctype="multipart/form-data" hx-swap="none" hx-on::after-request="if(event.detail.successful) { closeAddStationModal(); window.location.reload(); }" style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Nom de la station</label>
+                        {{ station_form.name }}
+                    </div>
+                    <div class="form-group">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Type de station</label>
+                        {{ station_form.station_type }}
+                    </div>
+                    <div class="form-group">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Latitude</label>
+                        {{ station_form.latitude }}
+                    </div>
+                    <div class="form-group">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Longitude</label>
+                        {{ station_form.longitude }}
+                    </div>
+                    <div class="form-group">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Nombre de capteurs</label>
+                        {{ station_form.sensors_count }}
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Description</label>
+                    {{ station_form.location_description }}
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Photo de la station</label>
+                    {{ station_form.image }}
+                    <small style="color: var(--gray); font-size: 0.75rem;">Sélectionnez une image de haute qualité depuis votre ordinateur.</small>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeAddStationModal()">Annuler</button>
+                <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.5rem;">Enregistrer la station</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Station Modal -->
+<div id="editStationModal" class="modal" onclick="if(event.target == this) closeEditStationModal()">
+    <div class="modal-content" id="editStationModalBody">
+        <!-- Content loaded via HTMX -->
+        <div style="padding: 2rem; text-align: center;">
+            <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
+            <p>Chargement du formulaire...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal" onclick="if(event.target == this) closeDeleteModal()">
+    <div class="modal-content" style="max-width: 450px;">
+        <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+            <div style="width: 45px; height: 45px; background: #fee2e2; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #ef4444;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem;"></i>
+            </div>
+            <h2 style="margin: 0; color: var(--text-color); font-size: 1.4rem;">Suppression</h2>
+            <span class="close-modal" onclick="closeDeleteModal()" style="position: static; font-size: 2rem; margin-left: auto;">&times;</span>
+        </div>
+        
+        <div class="modal-body" style="padding-top: 1rem; text-align: center;">
+            <p style="color: var(--text-color); font-size: 1.1rem; margin-bottom: 0.5rem;">Confirmer la suppression ?</p>
+            <p style="color: var(--gray); font-size: 0.95rem;">Vous êtes sur le point de supprimer la station <strong id="deleteStationName" style="color: var(--text-color);"></strong>. Cette action est irréversible.</p>
+        </div>
+
+        <form id="deleteForm" hx-post="" hx-on::after-request="if(event.detail.successful) { closeDeleteModal(); }" class="modal-footer" style="border-top: none; padding-top: 0.5rem; justify-content: center; gap: 1rem; padding-bottom: 2rem;">
+            {% csrf_token %}
+            <button type="button" class="btn btn-outline" onclick="closeDeleteModal()" style="min-width: 120px;">Annuler</button>
+            <button type="submit" class="btn" style="min-width: 140px; background: #ef4444; color: white;">
+                Supprimer
+            </button>
+        </form>
+    </div>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -441,5 +694,46 @@
             });
         }
     });
+
+    function openAddStationModal() {
+        document.getElementById('addStationModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAddStationModal() {
+        document.getElementById('addStationModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    function openEditStationModal() {
+        document.getElementById('editStationModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditStationModal() {
+        document.getElementById('editStationModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    let stationIdToDelete = null;
+
+    function openDeleteModal(id, name) {
+        stationIdToDelete = id;
+        document.getElementById('deleteStationName').textContent = name;
+        document.getElementById('deleteModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        
+        // Update HTMX form in modal
+        const deleteForm = document.getElementById('deleteForm');
+        deleteForm.setAttribute('hx-post', `/stations/${id}/delete/`);
+        deleteForm.setAttribute('hx-target', `#station-card-${id}`);
+        deleteForm.setAttribute('hx-swap', 'outerHTML swap:0.5s');
+        htmx.process(deleteForm);
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
 </script>
 {% endblock %}

@@ -9,8 +9,9 @@ from rest_framework import viewsets
 from django.utils import timezone
 from .models import Station, Reading, AlertRule, AlertLog, GeneratedReport
 from .serializers import StationSerializer, ReadingSerializer
+from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, FileResponse, JsonResponse
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 import csv
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment
@@ -60,6 +61,13 @@ def about(request):
 
 from django.core.paginator import Paginator
 
+def stations_list(request):
+    stations_list = Station.objects.all().order_by('-created_at')
+    paginator = Paginator(stations_list, 6) # Show 6 stations per page
+    
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     return render(request, 'monitoring/stations.html', {
         'page_obj': page_obj,
         'station_form': StationForm()
@@ -67,17 +75,44 @@ from django.core.paginator import Paginator
 
 def add_station(request):
     if request.method == 'POST':
-        form = StationForm(request.POST)
+        form = StationForm(request.POST, request.FILES)
         if form.is_valid():
             station = form.save()
             if request.headers.get('HX-Request'):
-                # Return just a success message or the new station partial if using HTMX
                 messages.success(request, f"La station {station.name} a été ajoutée avec succès !")
                 return HttpResponse(status=204, headers={'HX-Trigger': 'stationAdded'})
             
             messages.success(request, f"La station {station.name} a été ajoutée avec succès !")
             return redirect('stations')
     
+    return redirect('stations')
+
+def edit_station(request, pk):
+    station = get_object_or_404(Station, pk=pk)
+    if request.method == 'POST':
+        form = StationForm(request.POST, request.FILES, instance=station)
+        if form.is_valid():
+            form.save()
+            if request.headers.get('HX-Request'):
+                messages.success(request, f"La station {station.name} a été modifiée avec succès !")
+                return HttpResponse(status=204, headers={'HX-Trigger': 'stationUpdated'})
+            
+            messages.success(request, f"La station {station.name} a été modifiée avec succès !")
+            return redirect('stations')
+    
+    return redirect('stations')
+
+@require_http_methods(['DELETE', 'POST'])
+def delete_station(request, pk):
+    station = get_object_or_404(Station, pk=pk)
+    station_name = station.name
+    station.delete()
+    
+    if request.headers.get('HX-Request'):
+        messages.success(request, f"La station {station_name} a été supprimée.")
+        return HttpResponse(status=204, headers={'HX-Trigger': 'stationDeleted'})
+    
+    messages.success(request, f"La station {station_name} a été supprimée.")
     return redirect('stations')
 
 def alerts_view(request):

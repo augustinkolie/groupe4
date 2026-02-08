@@ -6,14 +6,15 @@ from .models import ContactMessage, NewsletterSubscriber, Station
 class StationForm(forms.ModelForm):
     class Meta:
         model = Station
-        fields = ['name', 'latitude', 'longitude', 'station_type', 'location_description', 'image_url', 'pollution_causes']
+        fields = ['name', 'latitude', 'longitude', 'station_type', 'sensors_count', 'location_description', 'image', 'pollution_causes']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'premium-control', 'placeholder': 'Nom de la station'}),
             'latitude': forms.NumberInput(attrs={'class': 'premium-control', 'placeholder': 'Ex: 9.5', 'step': '0.000001'}),
             'longitude': forms.NumberInput(attrs={'class': 'premium-control', 'placeholder': 'Ex: -13.7', 'step': '0.000001'}),
             'station_type': forms.Select(attrs={'class': 'premium-control'}),
+            'sensors_count': forms.NumberInput(attrs={'class': 'premium-control', 'placeholder': 'Nombre de capteurs'}),
             'location_description': forms.Textarea(attrs={'class': 'premium-control', 'placeholder': 'Description...', 'rows': 3}),
-            'image_url': forms.URLInput(attrs={'class': 'premium-control', 'placeholder': 'URL de l\'image (Optionnel)'}),
+            'image': forms.FileInput(attrs={'class': 'premium-control', 'accept': 'image/*'}),
             'pollution_causes': forms.Textarea(attrs={'class': 'premium-control', 'placeholder': 'Causes de la pollution...', 'rows': 3}),
         }
 

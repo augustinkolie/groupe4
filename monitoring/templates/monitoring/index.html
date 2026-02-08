@@ -1890,7 +1890,7 @@
               IQA: {{ latest.iqa|default:"--" }}
             </div>
             <img
-              src="{{ station.image_url|default:'/static/monitoring/images/conakry.png' }}"
+              src="{% if station.image %}{{ station.image.url }}{% else %}{{ station.image_url|default:'/static/monitoring/images/conakry.png' }}{% endif %}"
               alt="{{ station.name }}"
               class="zone-img"
               onerror="this.src='/static/monitoring/images/conakry.png'; this.onerror=null;"

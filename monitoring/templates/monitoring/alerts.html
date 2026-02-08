@@ -103,6 +103,35 @@
         opacity: 0.1;
         font-size: 10rem;
     }
+
+    /* Alerts Scroll Container */
+    .alerts-scroll-container {
+        max-height: 480px;
+        overflow-y: auto;
+        padding-right: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .alerts-scroll-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .alerts-scroll-container::-webkit-scrollbar-track {
+        background: var(--light);
+        border-radius: 10px;
+    }
+
+    .alerts-scroll-container::-webkit-scrollbar-thumb {
+        background: rgba(16, 185, 129, 0.4);
+        border-radius: 10px;
+        transition: background 0.3s;
+    }
+
+    .alerts-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(16, 185, 129, 0.7);
+    }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}
@@ -186,7 +215,7 @@
             </div>
             <div class="card-body" style="padding: 1.5rem;">
                 {% if alerts %}
-                <div style="display: flex; flex-direction: column;">
+                <div class="alerts-scroll-container">
                     {% for alert in alerts %}
                     <div class="notification-pill">
                         <div class="stat-icon" style="flex-shrink: 0; background: var(--light); width: 42px; height: 42px; border-radius: 12px;">
@@ -217,26 +246,54 @@
             </div>
         </div>
         
-        <!-- Right side info or mini-config summary for Flow tab -->
+        <!-- Right Side: Legend and Current Configuration -->
         <div class="premium-alert-card" style="background: linear-gradient(to bottom, var(--white), var(--light));">
             <div class="card-header" style="border: none; padding: 1.5rem 1.5rem 0.5rem;">
-                <h3 class="card-title">Résumé de Surveillance</h3>
+                <h3 class="card-title">Guide & Configuration</h3>
             </div>
             <div class="card-body" style="padding: 1.5rem;">
-                <div style="text-align: center; padding: 2rem;">
-                    <i class="fas fa-chart-pie" style="font-size: 3rem; color: var(--primary); opacity: 0.5; margin-bottom: 1.5rem;"></i>
-                    <h4 style="margin-bottom: 1rem;">Protection Active</h4>
-                    <p style="color: var(--gray); font-size: 0.9rem;">Le système surveille actuellement <strong>{{ alerts_total }}</strong> incidents potentiels basés sur vos seuils personnalisés.</p>
-                    <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 10px;">
-                        <div class="notification-pill" style="background: white; border: 1px solid var(--border-color);">
-                            <i class="fas fa-check-circle" style="color: var(--primary);"></i>
-                            <span style="font-size: 0.85rem;">Algorithme de détection : <strong>Actif</strong></span>
+                <!-- Legend -->
+                <div style="margin-bottom: 2rem;">
+                    <h4 style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-color); font-weight: 700;">Légende du Flux</h4>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 12px; font-size: 0.85rem;">
+                            <span class="status-active alert-status-dot" style="margin: 0; flex-shrink: 0;"></span>
+                            <span style="color: var(--gray);"><strong>Critique / Actif :</strong> Un seuil a été dépassé. Une intervention ou une vigilance est requise.</span>
                         </div>
-                        <div class="notification-pill" style="background: white; border: 1px solid var(--border-color);">
-                            <i class="fas fa-check-circle" style="color: var(--primary);"></i>
-                            <span style="font-size: 0.85rem;">Notifications push : <strong>Prêt</strong></span>
+                        <div style="display: flex; align-items: center; gap: 12px; font-size: 0.85rem;">
+                            <span class="status-resolved alert-status-dot" style="margin: 0; flex-shrink: 0; box-shadow: none;"></span>
+                            <span style="color: var(--gray);"><strong>Rétabli :</strong> La qualité de l'air est revenue sous les seuils de sécurité.</span>
                         </div>
                     </div>
+                </div>
+
+                <!-- Active Thresholds Summary -->
+                <div style="background: white; border-radius: 1.25rem; padding: 1.5rem; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+                    <h4 style="font-size: 0.9rem; margin-bottom: 1.25rem; color: var(--text-color); font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-microchip" style="color: var(--primary);"></i>
+                        Seuils de Déclenchement
+                    </h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="background: var(--light); padding: 0.75rem; border-radius: 0.75rem; text-align: center;">
+                            <div style="font-size: 0.7rem; color: var(--gray); text-transform: uppercase;">IQA</div>
+                            <div style="font-weight: 800; color: var(--text-color);">{{ rule.iqa_threshold|default:"100" }}</div>
+                        </div>
+                        <div style="background: var(--light); padding: 0.75rem; border-radius: 0.75rem; text-align: center;">
+                            <div style="font-size: 0.7rem; color: var(--gray); text-transform: uppercase;">PM2.5</div>
+                            <div style="font-weight: 800; color: var(--text-color);">{{ rule.pm25_threshold|default:"35" }}</div>
+                        </div>
+                        <div style="background: var(--light); padding: 0.75rem; border-radius: 0.75rem; text-align: center;">
+                            <div style="font-size: 0.7rem; color: var(--gray); text-transform: uppercase;">CO</div>
+                            <div style="font-weight: 800; color: var(--text-color);">{{ rule.co_threshold|default:"10" }}</div>
+                        </div>
+                        <div style="background: var(--light); padding: 0.75rem; border-radius: 0.75rem; text-align: center;">
+                            <div style="font-size: 0.7rem; color: var(--gray); text-transform: uppercase;">Temp.</div>
+                            <div style="font-weight: 800; color: var(--text-color);">{{ rule.temperature_threshold|default:"40" }}°</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.75rem; color: var(--gray); text-align: center; font-style: italic;">
+                        Ces seuils sont modifiables dans l'onglet Configuration.
+                    </p>
                 </div>
             </div>
         </div>
