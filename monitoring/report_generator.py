@@ -13,6 +13,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import io
+import openpyxl
+from openpyxl.styles import Font, PatternFill, Alignment
 
 class ReportGenerator:
     def __init__(self, stations, start_date, end_date, report_type='CUSTOM'):
@@ -186,3 +188,63 @@ class ReportGenerator:
         except Exception as e:
             print(f"Erreur génération graphique: {e}")
             return None
+
+    def generate_excel(self, filename):
+        """Génère un rapport Excel professionnel"""
+        buffer = io.BytesIO()
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Données EcoWatch"
+        
+        # En-têtes
+        headers = ['Date/Heure', 'Station', 'IQA', 'PM2.5', 'PM10', 'CO', 'NO2', 'SO2', 'O3', 'Température', 'Humidité']
+        ws.append(headers)
+        
+        # Style des en-têtes
+        header_fill = PatternFill(start_color="10b981", end_color="10b981", fill_type="solid")
+        header_font = Font(bold=True, color="FFFFFF")
+        
+        for cell in ws[1]:
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = Alignment(horizontal='center')
+        
+        # Données
+        for station in self.stations:
+            readings = Reading.objects.filter(
+                station=station,
+                timestamp__date__gte=self.start_date,
+                timestamp__date__lte=self.end_date
+            ).order_by('timestamp')
+            
+            for reading in readings:
+                ws.append([
+                    reading.timestamp.strftime('%d/%m/%Y %H:%M'),
+                    station.name,
+                    reading.iqa or '',
+                    reading.pm25 or '',
+                    reading.pm10 or '',
+                    reading.co or '',
+                    reading.no2 or '',
+                    reading.so2 or '',
+                    reading.o3 or '',
+                    reading.temperature or '',
+                    reading.humidity or '',
+                ])
+        
+        # Ajuster les largeurs de colonnes
+        for column in ws.columns:
+            max_length = 0
+            column_letter = column[0].column_letter
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = (max_length + 2)
+            ws.column_dimensions[column_letter].width = adjusted_width
+            
+        wb.save(buffer)
+        buffer.seek(0)
+        return buffer

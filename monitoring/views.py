@@ -277,14 +277,21 @@ def generate_report(request):
             return JsonResponse({'error': 'Aucune donnée trouvée pour cette période et ces stations'}, status=400)
             
         # Générer le rapport
+        report_format = request.POST.get('format', 'PDF')
         generator = ReportGenerator(stations, start_date, end_date, report_type)
-        filename = f"rapport_ecowatch_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
-        pdf_buffer = generator.generate_pdf(filename)
         
-        pdf_data = pdf_buffer.getvalue()
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        if report_format == 'EXCEL':
+            filename = f"rapport_ecowatch_{timestamp}.xlsx"
+            report_buffer = generator.generate_excel(filename)
+        else:
+            filename = f"rapport_ecowatch_{timestamp}.pdf"
+            report_buffer = generator.generate_pdf(filename)
+        
+        report_data = report_buffer.getvalue()
         
         with open('debug_pdf.log', 'a', encoding='utf-8') as log:
-            log.write(f"PDF generated size: {len(pdf_data)} bytes\n")
+            log.write(f"Report ({report_format}) generated size: {len(report_data)} bytes\n")
             
         # Sauvegarder le fichier dans media/reports
         reports_dir = os.path.join(settings.MEDIA_ROOT, 'reports')
@@ -292,12 +299,12 @@ def generate_report(request):
         file_path = os.path.join(reports_dir, filename)
         
         with open(file_path, 'wb') as f:
-            f.write(pdf_data)
+            f.write(report_data)
         
         # Créer un enregistrement dans la base de données
         GeneratedReport.objects.create(
             report_type=report_type,
-            format='PDF',
+            format=report_format,
             start_date=start_date,
             end_date=end_date,
             file_path=f'reports/{filename}',

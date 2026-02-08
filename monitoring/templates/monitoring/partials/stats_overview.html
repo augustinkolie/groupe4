@@ -1,32 +1,40 @@
 {% load static %}
 <div class="grid-4 mb-4" id="stats-overview" hx-get="{% url 'stats_overview' %}" hx-trigger="every 60s" hx-swap="outerHTML">
-    <div class="stat-card">
-        <div class="stat-icon">
+    <div class="premium-stat-card">
+        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--primary);">
             <i class="fas fa-map-marker-alt"></i>
         </div>
-        <div class="stat-value" id="total-stations">{{ total_stations }}</div>
-        <div class="stat-label">Stations Actives</div>
+        <div class="stat-content">
+            <div class="stat-value" id="total-stations">{{ total_stations }}</div>
+            <div class="stat-label">Stations Actives</div>
+        </div>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #dbeafe; color: #3b82f6;">
+    <div class="premium-stat-card">
+        <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--secondary);">
             <i class="fas fa-wind"></i>
         </div>
-        <div class="stat-value" style="color: #3b82f6;" id="avg-iqa">{{ avg_iqa }}</div>
-        <div class="stat-label">IQA Moyen</div>
+        <div class="stat-content">
+            <div class="stat-value" style="background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;" id="avg-iqa">{{ avg_iqa }}</div>
+            <div class="stat-label">IQA Moyen</div>
+        </div>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #fef3c7; color: #f59e0b;">
+    <div class="premium-stat-card">
+        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">
             <i class="fas fa-exclamation-triangle"></i>
         </div>
-        <div class="stat-value" style="color: #f59e0b;">{{ alerts_count }}</div>
-        <div class="stat-label">Alertes Actives</div>
+        <div class="stat-content">
+            <div class="stat-value" style="color: var(--warning);">{{ alerts_count }}</div>
+            <div class="stat-label">Alertes Actives</div>
+        </div>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #fee2e2; color: #ef4444;">
+    <div class="premium-stat-card">
+        <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--danger);">
             <i class="fas fa-chart-line"></i>
         </div>
-        <div class="stat-value" style="color: #ef4444;" id="readings-today">{{ readings_today }}</div>
-        <div class="stat-label">Relevés (24h)</div>
+        <div class="stat-content">
+            <div class="stat-value" style="color: var(--danger);" id="readings-today">{{ readings_today }}</div>
+            <div class="stat-label">Relevés (24h)</div>
+        </div>
     </div>
     <div style="grid-column: 1 / -1; text-align: right; font-size: 0.7rem; color: var(--gray); margin-top: -0.5rem; padding-right: 0.5rem;">
         Dernière synchro : {{ last_sync|date:"H:i:s" }}
