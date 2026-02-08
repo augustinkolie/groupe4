@@ -373,6 +373,16 @@
 
       // Initialize search with loaded stations
       if (typeof setupSearch === "function") setupSearch(stations);
+
+      // Check for station ID in URL to auto-select
+      const urlParams = new URLSearchParams(window.location.search);
+      const stationId = urlParams.get('station');
+      if (stationId && allStationMarkers[stationId]) {
+        const data = allStationMarkers[stationId];
+        map.setView(data.marker.getLatLng(), 14);
+        data.marker.openPopup();
+        data.marker.fire("click");
+      }
     } catch (error) {
       debugErr.innerText = error.message;
       console.error("Error fetching stations:", error);

@@ -245,10 +245,10 @@
             <h1 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.25rem; letter-spacing: -0.5px; color: var(--text-color);">Stations de Surveillance</h1>
             <p style="color: var(--gray); font-size: 0.9rem;">Gérez et surveillez vos unités de mesure en temps réel.</p>
         </div>
-        <button class="btn btn-primary">
+        <a href="/admin/monitoring/station/add/" class="btn btn-primary">
             <i class="fas fa-plus"></i>
             Ajouter une Station
-        </button>
+        </a>
     </div>
 
 <!-- Stats Overview -->
@@ -318,10 +318,11 @@
     <div class="card" style="padding: 0.75rem;">
         <div class="station-card">
             <div class="station-image-wrapper">
-                <img src="{{ station.image_url|default:'https://images.unsplash.com/photo-1518173946687-a4c8a9ba332f?auto=format&fit=crop&w=800&q=80' }}" 
+                <img src="{{ station.image_url|default:'/static/monitoring/images/conakry.png' }}" 
                      alt="{{ station.name }}" 
                      class="station-image"
-                     style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; border-radius: 0.5rem;">
+                     style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; border-radius: 0.5rem;"
+                     onerror="this.src='/static/monitoring/images/conakry.png'; this.onerror=null;">
             </div>
 
             <div class="station-header">
@@ -352,7 +353,7 @@
             </div>
             
             <div class="station-actions">
-                <a href="{% url 'dashboard' %}" class="btn btn-primary btn-sm" style="flex: 1; justify-content: center; padding: 0.5rem 1rem;">
+                <a href="{% url 'dashboard' %}?station={{ station.id }}" class="btn btn-primary btn-sm" style="flex: 1; justify-content: center; padding: 0.5rem 1rem;">
                     Détails
                 </a>
                 <a href="/admin/monitoring/station/{{ station.id }}/change/" class="btn btn-outline btn-sm" style="padding: 0.5rem; width: 38px; height: 38px; justify-content: center;">

@@ -1,7 +1,21 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import ContactMessage, NewsletterSubscriber
+from .models import ContactMessage, NewsletterSubscriber, Station
+
+class StationForm(forms.ModelForm):
+    class Meta:
+        model = Station
+        fields = ['name', 'latitude', 'longitude', 'station_type', 'location_description', 'image_url', 'pollution_causes']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'premium-control', 'placeholder': 'Nom de la station'}),
+            'latitude': forms.NumberInput(attrs={'class': 'premium-control', 'placeholder': 'Ex: 9.5', 'step': '0.000001'}),
+            'longitude': forms.NumberInput(attrs={'class': 'premium-control', 'placeholder': 'Ex: -13.7', 'step': '0.000001'}),
+            'station_type': forms.Select(attrs={'class': 'premium-control'}),
+            'location_description': forms.Textarea(attrs={'class': 'premium-control', 'placeholder': 'Description...', 'rows': 3}),
+            'image_url': forms.URLInput(attrs={'class': 'premium-control', 'placeholder': 'URL de l\'image (Optionnel)'}),
+            'pollution_causes': forms.Textarea(attrs={'class': 'premium-control', 'placeholder': 'Causes de la pollution...', 'rows': 3}),
+        }
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True, help_text='Requis.')

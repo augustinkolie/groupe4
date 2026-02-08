@@ -1878,7 +1878,9 @@
           {% for station in stations %}
           <div
             class="zone-card"
-            onclick='openPollutionModal("{{ station.name|addslashes }}", "{{ station.pollution_causes|addslashes|default:"Données en cours de collecte..." }}")'
+            data-name="{{ station.name }}"
+            data-causes="{{ station.pollution_causes|default:'Données en cours de collecte...' }}"
+            onclick="openPollutionModal(this.dataset.name, this.dataset.causes)"
           >
             {% with latest=station.readings.first %}
             <div
@@ -1888,10 +1890,10 @@
               IQA: {{ latest.iqa|default:"--" }}
             </div>
             <img
-              src="{{ station.image_url|default:'https://images.unsplash.com/photo-1518173946687-a4c8a9ba332f?auto=format&fit=crop&w=800&q=80' }}"
+              src="{{ station.image_url|default:'/static/monitoring/images/conakry.png' }}"
               alt="{{ station.name }}"
               class="zone-img"
-              onerror="this.src='https://images.unsplash.com/photo-1518173946687-a4c8a9ba332f?auto=format&fit=crop&w=800&q=80'; this.onerror=null;"
+              onerror="this.src='/static/monitoring/images/conakry.png'; this.onerror=null;"
             />
             <div class="zone-overlay">
               <h3 class="zone-title">{{ station.name }}</h3>

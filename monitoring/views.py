@@ -3,7 +3,7 @@ from django.contrib.auth import login
 from django.contrib import messages
 from django.db.models import Count
 from django.db.models.functions import TruncDay
-from .forms import CustomUserCreationForm, ContactForm, NewsletterForm
+from .forms import CustomUserCreationForm, ContactForm, NewsletterForm, StationForm
 from datetime import timedelta, datetime
 from rest_framework import viewsets
 from django.utils import timezone
@@ -60,14 +60,25 @@ def about(request):
 
 from django.core.paginator import Paginator
 
-def stations_list(request):
-    stations_list = Station.objects.all().order_by('-created_at')
-    paginator = Paginator(stations_list, 6) # Show 6 stations per page
+    return render(request, 'monitoring/stations.html', {
+        'page_obj': page_obj,
+        'station_form': StationForm()
+    })
+
+def add_station(request):
+    if request.method == 'POST':
+        form = StationForm(request.POST)
+        if form.is_valid():
+            station = form.save()
+            if request.headers.get('HX-Request'):
+                # Return just a success message or the new station partial if using HTMX
+                messages.success(request, f"La station {station.name} a été ajoutée avec succès !")
+                return HttpResponse(status=204, headers={'HX-Trigger': 'stationAdded'})
+            
+            messages.success(request, f"La station {station.name} a été ajoutée avec succès !")
+            return redirect('stations')
     
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
-    return render(request, 'monitoring/stations.html', {'page_obj': page_obj})
+    return redirect('stations')
 
 def alerts_view(request):
     # Récupérer la règle d'alerte globale (pour l'exemple)
