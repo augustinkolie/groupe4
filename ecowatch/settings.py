@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'django_q',
 ]
 
 MIDDLEWARE = [
@@ -211,4 +212,17 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 # Phase 2: OpenWeather Configuration
 # Get your FREE key at https://openweathermap.org/api
 OPENWEATHER_API_KEY = os.getenv('OPENWEATHER_API_KEY')
+
+# Django Q2 Configuration
+Q_CLUSTER = {
+    'name': 'EcoWatchTasks',
+    'workers': 4,
+    'recycle': 500,
+    'timeout': 60,
+    'compress': True,
+    'save_limit': 250,
+    'queue_limit': 500,
+    'label': 'Django Q',
+    'orm': 'default',  # Use the default Django database as broker
+}
 
