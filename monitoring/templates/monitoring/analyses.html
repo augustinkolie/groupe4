@@ -112,47 +112,6 @@
     </div>
 </div>
 
-<!-- Guide Pédagogique (EcoWatch Academy) -->
-<div class="card mb-4" style="border-left: 5px solid var(--primary); background: linear-gradient(to right, #ffffff, #f0fdf4); border-radius: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
-    <div class="card-body" style="padding: 1.5rem;">
-        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem;">
-            <div style="background: var(--primary); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);">
-                <i class="fas fa-graduation-cap"></i>
-            </div>
-            <div>
-                <h3 style="margin: 0; font-size: 1.2rem; font-weight: 700; color: var(--dark);">Guide d'Analyse Rapide</h3>
-                <p style="margin: 0; font-size: 0.85rem; color: var(--gray);">Apprenez à interpréter ces outils comme un expert.</p>
-            </div>
-        </div>
-        <div class="grid-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
-            <div style="background: white; padding: 1rem; border-radius: 0.75rem; border: 1px solid rgba(0,0,0,0.03);">
-                <h4 style="font-size: 0.9rem; color: var(--primary-dark); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-fire-alt"></i> Caméra Thermique
-                </h4>
-                <p style="font-size: 0.8rem; color: var(--gray); line-height: 1.4; margin: 0;">
-                    Repère les <strong>points chauds</strong>. Un cercle <span style="color:#ef4444; font-weight:700;">rouge</span> indique une zone où l'air est saturé de polluants. Si c'est bleu/vert, l'air est pur.
-                </p>
-            </div>
-            <div style="background: white; padding: 1rem; border-radius: 0.75rem; border: 1px solid rgba(0,0,0,0.03);">
-                <h4 style="font-size: 0.9rem; color: #8b5cf6; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-clock"></i> Empreinte Horaire
-                </h4>
-                <p style="font-size: 0.8rem; color: var(--gray); line-height: 1.4; margin: 0;">
-                    Identifie les <strong>pics de pollution</strong>. Si la forme s'étire vers le haut à 8h ou 18h, la pollution est principalement causée par le trafic routier.
-                </p>
-            </div>
-            <div style="background: white; padding: 1rem; border-radius: 0.75rem; border: 1px solid rgba(0,0,0,0.03);">
-                <h4 style="font-size: 0.9rem; color: #3b82f6; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-wind"></i> Corrélation Météo
-                </h4>
-                <p style="font-size: 0.8rem; color: var(--gray); line-height: 1.4; margin: 0;">
-                    Analyse l'<strong>impact naturel</strong>. Par exemple, une forte humidité peut "emprisonner" la pollution au sol, tandis que le vent peut la disperser rapidement.
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Filtres -->
 <form method="GET" class="filter-bar">
     <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -193,29 +152,40 @@
 </div>
 
 <div class="grid-3 mb-4" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
-    <!-- Tendances Majeures -->
     <div class="analysis-card">
         <div class="card-header-premium">
             <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">Tendances : {{ pollutant_name }}</h3>
             <span class="badge" style="background: var(--primary-light); color: var(--primary-dark); font-size: 0.7rem;">Annuel</span>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="chart-container" style="height: 280px;">
+            <div class="chart-container" style="height: 250px;">
                 <canvas id="trendsChart"></canvas>
             </div>
         </div>
+        <div class="card-footer-premium" style="padding: 1rem; border-top: 1px solid var(--border-color); background: rgba(16, 185, 129, 0.02);">
+            <h5 style="font-size: 0.8rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.3rem;"><i class="fas fa-chart-line"></i> Analyse de Long Terme</h5>
+            <p style="font-size: 0.75rem; color: var(--gray); line-height: 1.4; margin: 0;">
+                {{ pollutant_insights.long_terme }}
+            </p>
+        </div>
     </div>
 
-    <!-- Cycle Circadien (Nouveau) -->
+    <!-- Cycle Circadien -->
     <div class="analysis-card">
         <div class="card-header-premium">
             <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">Empreinte Horaire (24h)</h3>
-            <span class="badge" style="background: rgba(139, 92, 246, 0.1); color: rgb(139, 92, 246); font-size: 0.7rem;">Jour vs Nuit</span>
+            <span class="badge" style="background: rgba(139, 92, 246, 0.1); color: rgb(139, 92, 246); font-size: 0.7rem;">Cycle Circadien</span>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="chart-container" style="height: 280px;">
+            <div class="chart-container" style="height: 250px;">
                 <canvas id="behavioralChart"></canvas>
             </div>
+        </div>
+        <div class="card-footer-premium" style="padding: 1rem; border-top: 1px solid var(--border-color); background: rgba(139, 92, 246, 0.02);">
+            <h5 style="font-size: 0.8rem; font-weight: 700; color: #8b5cf6; margin-bottom: 0.3rem;"><i class="fas fa-info-circle"></i> Analyse Comportementale</h5>
+            <p style="font-size: 0.75rem; color: var(--gray); line-height: 1.4; margin: 0;">
+                {{ pollutant_insights.behavioral }}
+            </p>
         </div>
     </div>
 
@@ -226,9 +196,15 @@
             <span class="badge" style="background: #3b82f622; color: #3b82f6; font-size: 0.7rem;">30 Jours</span>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="chart-container" style="height: 280px;">
+            <div class="chart-container" style="height: 250px;">
                 <canvas id="correlationChart"></canvas>
             </div>
+        </div>
+        <div class="card-footer-premium" style="padding: 1rem; border-top: 1px solid var(--border-color); background: rgba(59, 130, 246, 0.02);">
+            <h5 style="font-size: 0.8rem; font-weight: 700; color: #3b82f6; margin-bottom: 0.3rem;"><i class="fas fa-info-circle"></i> Impact Naturel</h5>
+            <p style="font-size: 0.75rem; color: var(--gray); line-height: 1.4; margin: 0;">
+                {{ pollutant_insights.natural }}
+            </p>
         </div>
     </div>
 </div>
@@ -240,7 +216,6 @@
             <i class="fas fa-history" style="color: var(--primary);"></i>
             <div>
                 <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0;">Heatmap Dynamique (Historique 24h)</h3>
-                <p style="font-size: 0.8rem; color: var(--gray); margin: 0;">Légende : La couleur indique la densité de particules polluantes dans l'air.</p>
             </div>
         </div>
         
@@ -249,20 +224,24 @@
         </div>
     </div>
     
-    <!-- Légende Flottante pour la Map -->
-    <div style="position: absolute; bottom: 85px; right: 20px; z-index: 1000; background: rgba(255,255,255,0.9); padding: 0.75rem; border-radius: 0.75rem; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 220px;">
-        <p style="font-size: 0.7rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.5px;">Intensité (Caméra Thermique)</p>
-        <div style="height: 10px; width: 100%; border-radius: 5px; background: linear-gradient(to right, #00ffff, #00ff00, #ffff00, #ff8000, #ff0000); margin-bottom: 0.4rem;"></div>
-        <div style="display: flex; justify-content: space-between; font-size: 0.6rem; font-weight: 700; color: var(--gray);">
-            <span>Froid</span>
-            <span>Modéré</span>
-            <span>Chaud</span>
-            <span>Alerte</span>
-        </div>
-    </div>
-
     <div class="card-body" style="padding: 0;">
         <div id="heatmap"></div>
+    </div>
+    
+    <div class="card-footer-premium" style="padding: 1.5rem; border-top: 1px solid var(--border-color); background: rgba(16, 185, 129, 0.02);">
+        <h5 style="font-size: 0.9rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.5rem;"><i class="fas fa-microscope"></i> Analyse Spatiale Avancée (Caméra Thermique)</h5>
+        <div class="grid-2" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; align-items: center;">
+            <p style="font-size: 0.85rem; color: var(--gray); line-height: 1.5; margin: 0;">
+                {{ pollutant_insights.spatial }}
+            </p>
+            <div style="background: white; padding: 1rem; border-radius: 0.75rem; border: 1px solid var(--border-color); box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);">
+                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 700; color: var(--gray); margin-bottom: 5px;">
+                    <span>FROID (Sain)</span>
+                    <span>CHAUD (Critique)</span>
+                </div>
+                <div style="height: 10px; width: 100%; border-radius: 5px; background: linear-gradient(to right, #00ffff, #00ff00, #ffff00, #ff8000, #ff0000);"></div>
+            </div>
+        </div>
     </div>
     <div class="time-slider-container">
         <i class="fas fa-clock" style="color: var(--gray);"></i>

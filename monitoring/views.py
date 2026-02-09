@@ -308,7 +308,6 @@ def analyses_view(request):
             })
 
     # 5. ANALYSE COMPORTEMENTALE (Par heure de la journée)
-    # On calcule la moyenne par "heure de la journée" (0-23)
     from django.db.models.functions import ExtractHour
     
     behavioral_data = readings_base.filter(
@@ -327,6 +326,48 @@ def analyses_view(request):
         if 0 <= h < 24:
             behavioral_values[h] = round(entry['avg_val'] or 0, 1)
 
+    # 6. DESCRIPTIONS DYNAMIQUES (Détails Novice/Expert basés sur données RÉELLES)
+    current_avg = data_val[-1] if data_val else 0
+    prev_avg = data_val[-2] if len(data_val) > 1 else current_avg
+    diff = current_avg - prev_avg
+    trend_text = "en hausse" if diff > 0 else "en baisse"
+    
+    all_insights = {
+        'iqa': {
+            'spatial': f"L'IQA actuel est de {current_avg}. La heatmap montre où cette charge de pollution est la plus dense.",
+            'behavioral': f"Analyse des pics : sur les 30 derniers jours, nous observons une tendance {trend_text} de {abs(round(diff,1))} points.",
+            'natural': "Analyse la corrélation air/météo pour comprendre pourquoi la pollution stagne ou se dissipe.",
+            'long_terme': f"Moyenne ce mois-ci ({current_avg}) comparée aux mois précédents pour suivre les cycles saisonniers."
+        },
+        'pm25': {
+            'spatial': f"Concentration actuelle : {current_avg} µg/m³. Les zones rouges localisent les sources de poussières fines.",
+            'behavioral': f"Variations : Les mesures montrent une évolution {trend_text} de {abs(round(diff,1))} µg/m³ récemment.",
+            'natural': "Détermine si l'humidité ou le vent influence le maintien au sol de ces particules fines.",
+            'long_terme': f"Suivi historique : On observe une valeur moyenne de {current_avg} µg/m³ sur la période sélectionnée."
+        },
+        'co': {
+            'spatial': f"Le taux de CO est de {current_avg} ppm. Les foyers de combustion thermique sont visibles en rouge.",
+            'behavioral': f"Traceur de trafic : Le flux montre une tendance {trend_text} ce mois-ci ({abs(round(diff,1))} ppm).",
+            'natural': "Le vent disperse ce gaz inodore. S'il n'y a pas de mouvement d'air, le CO s'accumule dangereusement.",
+            'long_terme': "Évaluation de l'impact des émissions de combustion sur la santé urbaine au fil des mois."
+        },
+        'temperature': {
+            'spatial': f"Température moyenne : {current_avg}°C. La carte identifie les îlots de chaleur urbains plus denses.",
+            'behavioral': f"Amplitude thermique : On note une variation de {abs(round(diff,1))}°C par rapport à la période précédente.",
+            'natural': "La corrélation avec l'humidité permet de calculer le stress thermique (température ressentie).",
+            'long_terme': "Analyse du réchauffement local et des pics de chaleur saisonniers sur une année."
+        },
+        'humidity': {
+            'spatial': f"Humidité relative : {current_avg}%. La carte localise les zones de stagnation humide.",
+            'behavioral': f"Évolution de l'humidité : Tendance {trend_text} constatée ({abs(round(diff,1))}%) sur cette période.",
+            'natural': "Un taux élevé peut alourdir les polluants et les maintenir piégés à hauteur d'homme.",
+            'long_terme': "Indicateur saisonnier crucial pour anticiper les périodes climatiques lourdes."
+        }
+    }
+    
+    # Fallback si pollutions exotiques
+    current_insights = all_insights.get(pollutant, all_insights['iqa'])
+
     context = {
         'stations': Station.objects.all(),
         'selected_station': station_id,
@@ -334,6 +375,8 @@ def analyses_view(request):
         'pollutant_name': allowed_pollutants[pollutant],
         'trend_labels': json.dumps(labels),
         'trend_data': json.dumps(data_val),
+        'current_avg_val': current_avg,
+        'trend_diff': round(diff, 1),
         'corr_labels': json.dumps(corr_labels),
         'corr_vals': json.dumps(corr_vals),
         'corr_temps': json.dumps(corr_temps),
@@ -343,6 +386,7 @@ def analyses_view(request):
         'heatmap_24h': json.dumps(heatmap_24h),
         'behavioral_labels': json.dumps(behavioral_labels),
         'behavioral_values': json.dumps(behavioral_values),
+        'pollutant_insights': current_insights,
     }
     
     return render(request, 'monitoring/analyses.html', context)
