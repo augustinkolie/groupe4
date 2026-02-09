@@ -51,6 +51,12 @@
         border: 1px solid var(--border-color);
         overflow: hidden;
         height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .analysis-card .card-body {
+        flex-grow: 1;
     }
     
     .card-header-premium {
@@ -96,6 +102,95 @@
         font-weight: 500;
         cursor: pointer;
     }
+
+    /* Modal Premium & Boutons */
+    .btn-understand {
+        background: none;
+        border: 1px solid var(--primary-light);
+        color: var(--primary-dark);
+        padding: 0.6rem 1.25rem;
+        border-radius: 2rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    .btn-understand:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+
+    .analysis-modal-overlay {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(12px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .analysis-modal {
+        background: rgba(15, 23, 42, 0.95);
+        width: 90%;
+        max-width: 650px;
+        border-radius: 2rem;
+        overflow: hidden;
+        position: relative;
+        transform: translateY(30px) scale(0.95);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .analysis-modal-overlay.active { display: flex; opacity: 1; }
+    .analysis-modal-overlay.active .analysis-modal { transform: translateY(0) scale(1); }
+
+    .modal-header-premium {
+        background: linear-gradient(135deg, var(--modal-color, var(--primary)) 0%, rgba(0,0,0,0.2) 100%), var(--modal-color, var(--primary));
+        padding: 3rem 2.5rem 2.5rem;
+        color: white;
+        position: relative;
+    }
+
+    .modal-body-premium .btn-primary {
+        background: var(--modal-color, var(--primary));
+        border-color: var(--modal-color, var(--primary));
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .modal-body-premium {
+        padding: 2.5rem;
+        background: #0f172a;
+    }
+
+    .modal-header-premium div {
+        background: #1e293b !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 1.5rem; right: 1.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        width: 38px; height: 38px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        transition: all 0.3s;
+        color: white;
+        z-index: 10;
+        backdrop-filter: blur(4px);
+    }
+    .modal-close:hover { background: rgba(255, 255, 255, 0.4); transform: rotate(90deg); }
 </style>
 {% endblock %}
 
@@ -107,8 +202,8 @@
             <i class="fas fa-brain" style="color: var(--primary);"></i>
             <span style="color: var(--primary-dark); font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Écosystème Intelligence 2.0</span>
         </div>
-        <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Analyses Stratégiques</h1>
-        <p style="color: var(--gray); font-size: 1.1rem;">Interprétez les données, anticipez les risques et visualisez l'invisible.</p>
+        <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Analyses : {{ pollutant_name }}</h1>
+        <p style="color: var(--gray); font-size: 1.1rem;">{{ header_subtitle }}</p>
     </div>
 </div>
 
@@ -146,7 +241,7 @@
         <i class="fas fa-lightbulb"></i>
     </div>
     <div>
-        <h4 style="margin: 0; font-weight: 700; font-size: 1rem;">Insight Automatisé</h4>
+        <h4 style="margin: 0; font-weight: 700; font-size: 1rem;">{{ insight_title }}</h4>
         <p style="margin: 0; font-size: 0.95rem;">{{ insight }}</p>
     </div>
 </div>
@@ -155,7 +250,7 @@
     <div class="analysis-card">
         <div class="card-header-premium">
             <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">Tendances : {{ pollutant_name }}</h3>
-            <span class="badge" style="background: var(--primary-light); color: var(--primary-dark); font-size: 0.7rem;">Annuel</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 0.4rem 0.8rem; border-radius: 0.75rem; font-size: 0.65rem; font-weight: 800; text-transform: uppercase;">Annuel</span>
         </div>
         <div class="card-body" style="padding: 0;">
             <div class="chart-container" style="height: 250px;">
@@ -163,18 +258,18 @@
             </div>
         </div>
         <div class="card-footer-premium" style="padding: 1rem; border-top: 1px solid var(--border-color); background: rgba(16, 185, 129, 0.02);">
-            <h5 style="font-size: 0.8rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.3rem;"><i class="fas fa-chart-line"></i> Analyse de Long Terme</h5>
-            <p style="font-size: 0.75rem; color: var(--gray); line-height: 1.4; margin: 0;">
-                {{ pollutant_insights.long_terme }}
-            </p>
+            <h5 style="font-size: 0.8rem; font-weight: 700; color: #10b981; margin-bottom: 0.3rem;"><i class="fas fa-chart-line"></i> Analyse de Long Terme</h5>
+            <button class="btn-understand" onclick="openAnalysisModal('Analyse de Long Terme', '{{ pollutant_insights.long_terme|escapejs }}', '#10b981')">
+                <i class="fas fa-plus-circle"></i> Comprendre mieux l'analyse
+            </button>
         </div>
     </div>
 
     <!-- Cycle Circadien -->
     <div class="analysis-card">
         <div class="card-header-premium">
-            <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">Empreinte Horaire (24h)</h3>
-            <span class="badge" style="background: rgba(139, 92, 246, 0.1); color: rgb(139, 92, 246); font-size: 0.7rem;">Cycle Circadien</span>
+            <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">Cycle de 24h : {{ pollutant_name }}</h3>
+            <span class="badge" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; padding: 0.4rem 0.8rem; border-radius: 0.75rem; font-size: 0.65rem; font-weight: 800; text-transform: uppercase;">Cycle Circadien</span>
         </div>
         <div class="card-body" style="padding: 0;">
             <div class="chart-container" style="height: 250px;">
@@ -183,17 +278,17 @@
         </div>
         <div class="card-footer-premium" style="padding: 1rem; border-top: 1px solid var(--border-color); background: rgba(139, 92, 246, 0.02);">
             <h5 style="font-size: 0.8rem; font-weight: 700; color: #8b5cf6; margin-bottom: 0.3rem;"><i class="fas fa-info-circle"></i> Analyse Comportementale</h5>
-            <p style="font-size: 0.75rem; color: var(--gray); line-height: 1.4; margin: 0;">
-                {{ pollutant_insights.behavioral }}
-            </p>
+            <button class="btn-understand" onclick="openAnalysisModal('Analyse Comportementale', '{{ pollutant_insights.behavioral|escapejs }}', '#8b5cf6')">
+                <i class="fas fa-plus-circle"></i> Comprendre mieux l'analyse
+            </button>
         </div>
     </div>
 
     <!-- Corrélation Météo -->
     <div class="analysis-card">
         <div class="card-header-premium">
-            <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">Impact Env. (Corrélation)</h3>
-            <span class="badge" style="background: #3b82f622; color: #3b82f6; font-size: 0.7rem;">30 Jours</span>
+            <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">Corrélation {{ pollutant_name }} / Météo</h3>
+            <span class="badge" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 0.4rem 0.8rem; border-radius: 0.75rem; font-size: 0.65rem; font-weight: 800; text-transform: uppercase;">30 Jours</span>
         </div>
         <div class="card-body" style="padding: 0;">
             <div class="chart-container" style="height: 250px;">
@@ -202,9 +297,9 @@
         </div>
         <div class="card-footer-premium" style="padding: 1rem; border-top: 1px solid var(--border-color); background: rgba(59, 130, 246, 0.02);">
             <h5 style="font-size: 0.8rem; font-weight: 700; color: #3b82f6; margin-bottom: 0.3rem;"><i class="fas fa-info-circle"></i> Impact Naturel</h5>
-            <p style="font-size: 0.75rem; color: var(--gray); line-height: 1.4; margin: 0;">
-                {{ pollutant_insights.natural }}
-            </p>
+            <button class="btn-understand" onclick="openAnalysisModal('Impact Naturel & Corrélation', '{{ pollutant_insights.natural|escapejs }}', '#3b82f6')">
+                <i class="fas fa-plus-circle"></i> Comprendre mieux l'analyse
+            </button>
         </div>
     </div>
 </div>
@@ -215,7 +310,7 @@
         <div style="display: flex; align-items: center; gap: 10px;">
             <i class="fas fa-history" style="color: var(--primary);"></i>
             <div>
-                <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0;">Heatmap Dynamique (Historique 24h)</h3>
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0;">Heatmap : {{ pollutant_name }} (24h)</h3>
             </div>
         </div>
         
@@ -231,13 +326,15 @@
     <div class="card-footer-premium" style="padding: 1.5rem; border-top: 1px solid var(--border-color); background: rgba(16, 185, 129, 0.02);">
         <h5 style="font-size: 0.9rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.5rem;"><i class="fas fa-microscope"></i> Analyse Spatiale Avancée (Caméra Thermique)</h5>
         <div class="grid-2" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; align-items: center;">
-            <p style="font-size: 0.85rem; color: var(--gray); line-height: 1.5; margin: 0;">
-                {{ pollutant_insights.spatial }}
-            </p>
+            <div>
+                <button class="btn-understand" onclick="openAnalysisModal('Analyse Spatiale Avancée', '{{ pollutant_insights.spatial|escapejs }}', '#10b981')">
+                    <i class="fas fa-plus-circle"></i> Comprendre mieux l'analyse
+                </button>
+            </div>
             <div style="background: white; padding: 1rem; border-radius: 0.75rem; border: 1px solid var(--border-color); box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);">
                 <div style="display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 700; color: var(--gray); margin-bottom: 5px;">
-                    <span>FROID (Sain)</span>
-                    <span>CHAUD (Critique)</span>
+                    <span>{{ pollutant_insights.scale.min|upper }}</span>
+                    <span>{{ pollutant_insights.scale.max|upper }}</span>
                 </div>
                 <div style="height: 10px; width: 100%; border-radius: 5px; background: linear-gradient(to right, #00ffff, #00ff00, #ffff00, #ff8000, #ff0000);"></div>
             </div>
@@ -252,6 +349,35 @@
     </div>
 </div>
 
+<!-- Modal d'Analyse Premium -->
+<div id="analysisModal" class="analysis-modal-overlay" onclick="closeAnalysisModal()">
+    <div class="analysis-modal" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeAnalysisModal()"><i class="fas fa-times"></i></button>
+        
+        <div class="modal-header-premium">
+            <div style="position: absolute; top: -25px; left: 2.5rem; width: 70px; height: 70px; border-radius: 1.5rem; background: white; display: flex; align-items: center; justify-content: center; color: var(--primary); box-shadow: 0 15px 35px rgba(0,0,0,0.15); border: 4px solid var(--primary-light);">
+                <i class="fas fa-brain fa-2xl"></i>
+            </div>
+            <h3 id="modalTitle" style="margin: 0.5rem 0 0 0; font-size: 1.8rem; font-weight: 800; color: white; letter-spacing: -0.5px;">Analyse d'Expert</h3>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; opacity: 0.9;">
+                <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Intelligence EcoWatch IA</span>
+                <span style="padding: 2px 8px; background: rgba(255,255,255,0.2); border-radius: 4px; font-size: 0.65rem; font-weight: 800;">LIVE</span>
+            </div>
+        </div>
+
+        <div class="modal-body-premium">
+            <div id="modalBody" style="font-size: 1.15rem; color: #cbd5e1; line-height: 1.7; font-weight: 500;">
+                <!-- Contenu dynamique -->
+            </div>
+            
+            <div style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: flex-end; align-items: center; gap: 1.5rem;">
+                <span style="font-size: 0.8rem; color: #64748b; font-style: italic;">Basé sur l'apprentissage profond</span>
+                <button class="btn btn-primary" onclick="closeAnalysisModal()" style="border-radius: 3rem; padding: 0.8rem 2.5rem; font-weight: 700; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">J'ai compris</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
@@ -260,6 +386,28 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
 
 <script>
+    // --- 0. LOGIQUE DES MODALES DYNAMIQUES ---
+    function openAnalysisModal(title, content, themeColor) {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalBody').innerHTML = content;
+        
+        // Appliquer le thème dynamique
+        const modal = document.getElementById('analysisModal');
+        modal.style.setProperty('--modal-color', themeColor || '#10b981');
+        
+        const iconContainer = modal.querySelector('.modal-header-premium div');
+        iconContainer.style.color = themeColor || '#10b981';
+        iconContainer.style.borderColor = (themeColor || '#10b981') + '33'; // 20% opacité
+        
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAnalysisModal() {
+        document.getElementById('analysisModal').classList.remove('active');
+        document.body.style.overflow = ''; // Libère le scroll
+    }
+
     // --- 1. GRAPHIQUE DES TENDANCES ---
     const ctxTrend = document.getElementById('trendsChart').getContext('2d');
     const trendLabels = JSON.parse('{{ trend_labels|safe }}');

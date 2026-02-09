@@ -334,39 +334,60 @@ def analyses_view(request):
     
     all_insights = {
         'iqa': {
-            'spatial': f"L'IQA actuel est de {current_avg}. La heatmap montre où cette charge de pollution est la plus dense.",
-            'behavioral': f"Analyse des pics : sur les 30 derniers jours, nous observons une tendance {trend_text} de {abs(round(diff,1))} points.",
-            'natural': "Analyse la corrélation air/météo pour comprendre pourquoi la pollution stagne ou se dissipe.",
-            'long_terme': f"Moyenne ce mois-ci ({current_avg}) comparée aux mois précédents pour suivre les cycles saisonniers."
+            'spatial': f"L'Indice global est de {current_avg}. Une zone <span style='color:#ef4444; font-weight:700;'>Rouge</span> sur cette caméra thermique indique une atmosphère saturée où les polluants stagnent, impactant lourdement la santé.",
+            'behavioral': f"Sur un cycle de 24h, l'IQA a varié de {abs(round(diff,1))} points ({trend_text}). Les pics matinaux (7h-9h) révèlent souvent l'impact du trafic alors que les pics nocturnes pointent vers des activités industrielles.",
+            'natural': "L'analyse montre comment la météo interagit avec la pollution. De fortes températures sans vent créent souvent un blocage emprisonnant les particules au sol.",
+            'long_terme': f"Avec une moyenne de {current_avg} ce mois-ci, ce graphique permet de suivre l'efficacité des politiques de santé. Les pics historiques identifient les cycles critiques comme l'Harmattan.",
+            'scale': {'min': 'Pur (Sain)', 'max': 'Saturé (Danger)'}
         },
         'pm25': {
-            'spatial': f"Concentration actuelle : {current_avg} µg/m³. Les zones rouges localisent les sources de poussières fines.",
-            'behavioral': f"Variations : Les mesures montrent une évolution {trend_text} de {abs(round(diff,1))} µg/m³ récemment.",
-            'natural': "Détermine si l'humidité ou le vent influence le maintien au sol de ces particules fines.",
-            'long_terme': f"Suivi historique : On observe une valeur moyenne de {current_avg} µg/m³ sur la période sélectionnée."
+            'spatial': f"Concentration : {current_avg} µg/m³. Les particules fines PM2.5 sont très volatiles. La heatmap localise les foyers de poussières qui s'infiltrent profondément dans les poumons.",
+            'behavioral': f"Évolution de {abs(round(diff,1))} µg/m³ ({trend_text}). Ces particules stagnent surtout le matin lors de l'inversion thermique, rendant l'air plus 'lourd' et dangereux à respirer.",
+            'natural': "La pluie diminue ces particules par lessivage. À l'inverse, l'air sec et stagnant favorise leur accumulation dangereuse en milieu urbain.",
+            'long_terme': f"Moyenne de {current_avg} µg/m³. Crucial pour surveiller l'impact des vents sahariens durant la saison sèche et comparer l'évolution annuelle.",
+            'scale': {'min': 'Léger', 'max': 'Critique'}
+        },
+        'pm10': {
+            'spatial': f"Niveau actuel : {current_avg} µg/m³. Les PM10 (plus grosses que les PM2.5) retombent plus vite mais restent critiques près des axes routiers et chantiers.",
+            'behavioral': f"Tendance {trend_text} de {abs(round(diff,1))} µg/m³. Les pics correspondent souvent aux activités de construction ou au trafic intense de camions.",
+            'natural': "Le vent est le principal facteur de dispersion de ce gaz inodore. Une forte humidité peut les agglomérer et les faire retomber au sol prématurément.",
+            'long_terme': "Analyse long terme essentielle pour mesurer l'impact des activités de construction urbaine sur la qualité de l'air locale.",
+            'scale': {'min': 'Clair', 'max': 'Poussiéreux'}
         },
         'co': {
-            'spatial': f"Le taux de CO est de {current_avg} ppm. Les foyers de combustion thermique sont visibles en rouge.",
-            'behavioral': f"Traceur de trafic : Le flux montre une tendance {trend_text} ce mois-ci ({abs(round(diff,1))} ppm).",
-            'natural': "Le vent disperse ce gaz inodore. S'il n'y a pas de mouvement d'air, le CO s'accumule dangereusement.",
-            'long_terme': "Évaluation de l'impact des émissions de combustion sur la santé urbaine au fil des mois."
+            'spatial': f"Taux de CO : {current_avg} ppm. Ce gaz provient de la combustion incomplète. Les zones rouges marquent les carrefours et zones de stockage de déchets.",
+            'behavioral': f"Le CO est un traceur direct du trafic : tendance {trend_text} de {abs(round(diff,1))} ppm. Les pics coïncident avec les engorgements routiers majeurs.",
+            'natural': "Inodore et toxique, le CO se dissipe difficilement sans courant d'air. Les zones confinées sont les plus à risque lors des pics de chaleur.",
+            'long_terme': "Permet de vérifier si le renouvellement des moteurs et l'amélioration de la circulation améliorent la santé respiratoire globale.",
+            'scale': {'min': 'Trace', 'max': 'Toxique'}
         },
         'temperature': {
-            'spatial': f"Température moyenne : {current_avg}°C. La carte identifie les îlots de chaleur urbains plus denses.",
-            'behavioral': f"Amplitude thermique : On note une variation de {abs(round(diff,1))}°C par rapport à la période précédente.",
-            'natural': "La corrélation avec l'humidité permet de calculer le stress thermique (température ressentie).",
-            'long_terme': "Analyse du réchauffement local et des pics de chaleur saisonniers sur une année."
+            'spatial': f"Moyenne : {current_avg}°C. La carte identifie les 'îlots de chaleur'. Les zones bétonnées apparaissent plus chaudes que les rares espaces verts urbains.",
+            'behavioral': f"Variation de {abs(round(diff,1))}°C ({trend_text}). L'analyse jour/nuit montre la capacité thermique du sol urbain à relâcher la chaleur emmagasinée.",
+            'natural': "Une forte chaleur corrélée à une humidité basse augmente le risque de feux et de poussières en suspension dans l'air.",
+            'long_terme': "Indicateur direct du réchauffement climatique local et de l'urgence de végétaliser les zones urbaines denses.",
+            'scale': {'min': 'Frais', 'max': 'Canicule'}
         },
         'humidity': {
-            'spatial': f"Humidité relative : {current_avg}%. La carte localise les zones de stagnation humide.",
-            'behavioral': f"Évolution de l'humidité : Tendance {trend_text} constatée ({abs(round(diff,1))}%) sur cette période.",
-            'natural': "Un taux élevé peut alourdir les polluants et les maintenir piégés à hauteur d'homme.",
-            'long_terme': "Indicateur saisonnier crucial pour anticiper les périodes climatiques lourdes."
+            'spatial': f"Humidité : {current_avg}%. Localise les zones de stagnation humide propices au développement de moisissures ou au maintien des gouttelettes de pollution.",
+            'behavioral': f"Tendance {trend_text} de {abs(round(diff,1))}%. L'humidité est maximale la nuit et chute au soleil, influençant la sensation de chaleur (indice de confort).",
+            'natural': "Une humidité saturée (proche de 100%) favorise le smog urbain en piégeant les gaz d'échappement dans les gouttelettes d'eau.",
+            'long_terme': "Essentiel pour anticiper les saisons de pluies et l'impact de l'humidité sur la pérennité des infrastructures et la santé.",
+            'scale': {'min': 'Sec', 'max': 'Humide'}
         }
     }
     
     # Fallback si pollutions exotiques
     current_insights = all_insights.get(pollutant, all_insights['iqa'])
+
+    # 7. TITRES DYNAMIQUES POUR L'EN-TÊTE ET LES INSIGHTS
+    insight_title = "Analyse Prédictive & Recommandation"
+    if diff > 10:
+        insight_title = f"Critique : Dégradation du {allowed_pollutants[pollutant]}"
+    elif diff < -10:
+        insight_title = f"Optimiste : Amélioration du {allowed_pollutants[pollutant]}"
+    
+    header_subtitle = f"Analyse précise pour {allowed_pollutants[pollutant]} - Basée sur les stations actives."
 
     context = {
         'stations': Station.objects.all(),
@@ -383,6 +404,8 @@ def analyses_view(request):
         'corr_hums': json.dumps(corr_hums),
         'insight': insight,
         'insight_type': insight_type,
+        'insight_title': insight_title,
+        'header_subtitle': header_subtitle,
         'heatmap_24h': json.dumps(heatmap_24h),
         'behavioral_labels': json.dumps(behavioral_labels),
         'behavioral_values': json.dumps(behavioral_values),
