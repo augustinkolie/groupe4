@@ -6,47 +6,449 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'monitoring/css/dashboard.css' %}">
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<style>
+    /* Design Premium Analyses 2.0 */
+    .premium-header-container {
+        padding: 2.5rem; 
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%); 
+        border-radius: 1.5rem; 
+        border: 1px solid rgba(16, 185, 129, 0.1); 
+        margin-bottom: 2rem;
+    }
+    
+    .filter-bar {
+        background: var(--card-bg);
+        padding: 1rem 1.5rem;
+        border-radius: 1rem;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border: 1px solid var(--border-color);
+    }
+
+    .insight-card {
+        padding: 1.25rem;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        border-left: 5px solid transparent;
+    }
+    .insight-neutral { background: rgba(59, 130, 246, 0.1); border-left-color: var(--secondary); color: var(--secondary); }
+    .insight-success { background: rgba(16, 185, 129, 0.1); border-left-color: var(--primary); color: var(--primary-dark); }
+    .insight-warning { background: rgba(245, 158, 11, 0.1); border-left-color: #f59e0b; color: #b45309; }
+    .insight-danger { background: rgba(239, 68, 68, 0.1); border-left-color: #ef4444; color: #b91c1c; }
+
+    .analysis-card {
+        background: var(--card-bg);
+        border-radius: 1.5rem;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        height: 100%;
+    }
+    
+    .card-header-premium {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chart-container {
+        position: relative; 
+        height: 320px; 
+        width: 100%; 
+        padding: 1.25rem;
+    }
+    
+    #heatmap {
+        height: 400px;
+        width: 100%;
+    }
+
+    .time-slider-container {
+        padding: 1rem 1.5rem;
+        background: var(--card-bg);
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    input[type=range] {
+        flex-grow: 1;
+        accent-color: var(--primary);
+    }
+
+    .select-premium {
+        padding: 0.5rem 1rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border-color);
+        background: var(--card-bg);
+        color: var(--text-color);
+        font-weight: 500;
+        cursor: pointer;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="flex-between mb-4">
+<!-- Header -->
+<div class="premium-header-container">
     <div>
-        <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-color);">Analyses Approfondies</h1>
-        <p style="color: var(--gray);">Outils d'analyse prédictive et de corrélation (Bientôt disponible)</p>
+        <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
+            <i class="fas fa-brain" style="color: var(--primary);"></i>
+            <span style="color: var(--primary-dark); font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Écosystème Intelligence 2.0</span>
+        </div>
+        <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Analyses Stratégiques</h1>
+        <p style="color: var(--gray); font-size: 1.1rem;">Interprétez les données, anticipez les risques et visualisez l'invisible.</p>
     </div>
 </div>
 
-<div class="grid-2">
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Tendances Mensuelles</h3>
+<!-- Guide Pédagogique (EcoWatch Academy) -->
+<div class="card mb-4" style="border-left: 5px solid var(--primary); background: linear-gradient(to right, #ffffff, #f0fdf4); border-radius: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+    <div class="card-body" style="padding: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem;">
+            <div style="background: var(--primary); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div>
+                <h3 style="margin: 0; font-size: 1.2rem; font-weight: 700; color: var(--dark);">Guide d'Analyse Rapide</h3>
+                <p style="margin: 0; font-size: 0.85rem; color: var(--gray);">Apprenez à interpréter ces outils comme un expert.</p>
+            </div>
         </div>
-        <div class="card-body">
-             <div class="premium-empty">
-                <div class="premium-empty-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <h3>Analyse de Tendance</h3>
-                <p>Visualisez les tendances à long terme de la qualité de l'air.</p>
-                <button class="btn btn-secondary mt-3">Configurer</button>
+        <div class="grid-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+            <div style="background: white; padding: 1rem; border-radius: 0.75rem; border: 1px solid rgba(0,0,0,0.03);">
+                <h4 style="font-size: 0.9rem; color: var(--primary-dark); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-fire-alt"></i> Caméra Thermique
+                </h4>
+                <p style="font-size: 0.8rem; color: var(--gray); line-height: 1.4; margin: 0;">
+                    Repère les <strong>points chauds</strong>. Un cercle <span style="color:#ef4444; font-weight:700;">rouge</span> indique une zone où l'air est saturé de polluants. Si c'est bleu/vert, l'air est pur.
+                </p>
+            </div>
+            <div style="background: white; padding: 1rem; border-radius: 0.75rem; border: 1px solid rgba(0,0,0,0.03);">
+                <h4 style="font-size: 0.9rem; color: #8b5cf6; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-clock"></i> Empreinte Horaire
+                </h4>
+                <p style="font-size: 0.8rem; color: var(--gray); line-height: 1.4; margin: 0;">
+                    Identifie les <strong>pics de pollution</strong>. Si la forme s'étire vers le haut à 8h ou 18h, la pollution est principalement causée par le trafic routier.
+                </p>
+            </div>
+            <div style="background: white; padding: 1rem; border-radius: 0.75rem; border: 1px solid rgba(0,0,0,0.03);">
+                <h4 style="font-size: 0.9rem; color: #3b82f6; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-wind"></i> Corrélation Météo
+                </h4>
+                <p style="font-size: 0.8rem; color: var(--gray); line-height: 1.4; margin: 0;">
+                    Analyse l'<strong>impact naturel</strong>. Par exemple, une forte humidité peut "emprisonner" la pollution au sol, tandis que le vent peut la disperser rapidement.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtres -->
+<form method="GET" class="filter-bar">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <i class="fas fa-filter" style="color: var(--gray);"></i>
+        <span style="font-weight: 600;">Analyser :</span>
+    </div>
+    
+    <select name="pollutant" class="select-premium" onchange="this.form.submit()">
+        <option value="iqa" {% if selected_pollutant == 'iqa' %}selected{% endif %}>Indice Qualité Air (IQA)</option>
+        <option value="pm25" {% if selected_pollutant == 'pm25' %}selected{% endif %}>PM2.5</option>
+        <option value="pm10" {% if selected_pollutant == 'pm10' %}selected{% endif %}>PM10</option>
+        <option value="co" {% if selected_pollutant == 'co' %}selected{% endif %}>Monoxyde de Carbone (CO)</option>
+        <option value="temperature" {% if selected_pollutant == 'temperature' %}selected{% endif %}>Température</option>
+        <option value="humidity" {% if selected_pollutant == 'humidity' %}selected{% endif %}>Humidité</option>
+    </select>
+
+    <div style="display: flex; align-items: center; gap: 0.75rem; margin-left: 1rem;">
+        <i class="fas fa-map-marker-alt" style="color: var(--gray);"></i>
+        <span style="font-weight: 600;">Zone :</span>
+    </div>
+    <select name="station" class="select-premium" onchange="this.form.submit()">
+        <option value="">Toutes les stations</option>
+        {% for s in stations %}
+        <option value="{{ s.id }}" {% if selected_station == s.id|stringformat:"s" %}selected{% endif %}>{{ s.name }}</option>
+        {% endfor %}
+    </select>
+</form>
+
+<!-- Smart Insight Box -->
+<div class="insight-card insight-{{ insight_type }}">
+    <div style="width: 45px; height: 45px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        <i class="fas fa-lightbulb"></i>
+    </div>
+    <div>
+        <h4 style="margin: 0; font-weight: 700; font-size: 1rem;">Insight Automatisé</h4>
+        <p style="margin: 0; font-size: 0.95rem;">{{ insight }}</p>
+    </div>
+</div>
+
+<div class="grid-3 mb-4" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+    <!-- Tendances Majeures -->
+    <div class="analysis-card">
+        <div class="card-header-premium">
+            <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">Tendances : {{ pollutant_name }}</h3>
+            <span class="badge" style="background: var(--primary-light); color: var(--primary-dark); font-size: 0.7rem;">Annuel</span>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            <div class="chart-container" style="height: 280px;">
+                <canvas id="trendsChart"></canvas>
             </div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Carte de Chaleur</h3>
+    <!-- Cycle Circadien (Nouveau) -->
+    <div class="analysis-card">
+        <div class="card-header-premium">
+            <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">Empreinte Horaire (24h)</h3>
+            <span class="badge" style="background: rgba(139, 92, 246, 0.1); color: rgb(139, 92, 246); font-size: 0.7rem;">Jour vs Nuit</span>
         </div>
-        <div class="card-body">
-             <div class="premium-empty">
-                <div class="premium-empty-icon">
-                    <i class="fas fa-map-marked"></i>
-                </div>
-                <h3>Distribution Spatiale</h3>
-                <p>Analysez la répartition géographique des polluants.</p>
-                <button class="btn btn-secondary mt-3">Explorer</button>
+        <div class="card-body" style="padding: 0;">
+            <div class="chart-container" style="height: 280px;">
+                <canvas id="behavioralChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Corrélation Météo -->
+    <div class="analysis-card">
+        <div class="card-header-premium">
+            <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">Impact Env. (Corrélation)</h3>
+            <span class="badge" style="background: #3b82f622; color: #3b82f6; font-size: 0.7rem;">30 Jours</span>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            <div class="chart-container" style="height: 280px;">
+                <canvas id="correlationChart"></canvas>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Heatmap Temporelle -->
+<div class="analysis-card mb-4" style="height: auto; position: relative;">
+    <div class="card-header-premium">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-history" style="color: var(--primary);"></i>
+            <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0;">Heatmap Dynamique (Historique 24h)</h3>
+                <p style="font-size: 0.8rem; color: var(--gray); margin: 0;">Légende : La couleur indique la densité de particules polluantes dans l'air.</p>
+            </div>
+        </div>
+        
+        <div id="selected-time-display" style="font-weight: 600; color: var(--primary-dark); background: var(--primary-light); padding: 0.3rem 0.75rem; border-radius: 0.5rem;">
+            Temps Réel
+        </div>
+    </div>
+    
+    <!-- Légende Flottante pour la Map -->
+    <div style="position: absolute; bottom: 85px; right: 20px; z-index: 1000; background: rgba(255,255,255,0.9); padding: 0.75rem; border-radius: 0.75rem; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 220px;">
+        <p style="font-size: 0.7rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.5px;">Intensité (Caméra Thermique)</p>
+        <div style="height: 10px; width: 100%; border-radius: 5px; background: linear-gradient(to right, #00ffff, #00ff00, #ffff00, #ff8000, #ff0000); margin-bottom: 0.4rem;"></div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.6rem; font-weight: 700; color: var(--gray);">
+            <span>Froid</span>
+            <span>Modéré</span>
+            <span>Chaud</span>
+            <span>Alerte</span>
+        </div>
+    </div>
+
+    <div class="card-body" style="padding: 0;">
+        <div id="heatmap"></div>
+    </div>
+    <div class="time-slider-container">
+        <i class="fas fa-clock" style="color: var(--gray);"></i>
+        <input type="range" id="time-slider" min="0" max="23" value="23" step="1">
+        <button id="play-btn" class="btn btn-outline" style="padding: 0.4rem; width: 35px; height: 35px; border-radius: 50%;">
+            <i class="fas fa-play"></i>
+        </button>
+    </div>
+</div>
+
 {% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+
+<script>
+    // --- 1. GRAPHIQUE DES TENDANCES ---
+    const ctxTrend = document.getElementById('trendsChart').getContext('2d');
+    const trendLabels = JSON.parse('{{ trend_labels|safe }}');
+    const trendData = JSON.parse('{{ trend_data|safe }}');
+
+    new Chart(ctxTrend, {
+        type: 'line',
+        data: {
+            labels: trendLabels,
+            datasets: [{
+                label: '{{ pollutant_name }}',
+                data: trendData,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 3,
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true }, x: { grid: { display: false } } }
+        }
+    });
+
+    // --- 2. GRAPHIQUE DES CORRÉLATIONS ---
+    const ctxCorr = document.getElementById('correlationChart').getContext('2d');
+    const corrLabels = JSON.parse('{{ corr_labels|safe }}');
+    const corrVals = JSON.parse('{{ corr_vals|safe }}');
+    const corrTemps = JSON.parse('{{ corr_temps|safe }}');
+    const corrHums = JSON.parse('{{ corr_hums|safe }}');
+
+    new Chart(ctxCorr, {
+        type: 'line',
+        data: {
+            labels: corrLabels,
+            datasets: [
+                {
+                    label: 'Pollution',
+                    data: corrVals,
+                    borderColor: '#ef4444',
+                    yAxisID: 'y',
+                    borderWidth: 2,
+                    pointRadius: 0
+                },
+                {
+                    label: 'Température (°C)',
+                    data: corrTemps,
+                    borderColor: '#f59e0b',
+                    backgroundColor: 'rgba(245, 158, 11, 0.05)',
+                    yAxisID: 'y1',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+                y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Niveau Pollution' } },
+                y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Météo' } },
+            }
+        }
+    });
+
+    // --- 3. HEATMAP TEMPORELLE (Optimisée Visibilité) ---
+    const map = L.map('heatmap', { center: [9.5092, -13.7122], zoom: 12, zoomControl: false });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+
+    const fullHeatData = JSON.parse('{{ heatmap_24h|safe }}');
+    // Augmentation du rayon et de l'opacité minimale pour le mode "thermique"
+    let heatLayer = L.heatLayer([], { 
+        radius: 45, 
+        blur: 15, 
+        max: 1.0, 
+        minOpacity: 0.5, // Force la visibilité même pour les faibles valeurs
+        gradient: { 
+            0.2: '#00ffff', // Cyan (Froid)
+            0.4: '#00ff00', // Lime
+            0.6: '#ffff00', // Jaune
+            0.8: '#ff8000', // Orange
+            1.0: '#ff0000'  // Rouge (Chaud)
+        } 
+    }).addTo(map);
+
+    function updateHeatmap(hourIndex) {
+        // Obtenir l'heure cible (il y a X heures)
+        const now = new Date();
+        const targetDate = new Date(now.getTime() - (23 - hourIndex) * 60 * 60 * 1000);
+        const targetHour = targetDate.getHours();
+
+        // Filtrer les données par heure
+        const currentData = fullHeatData.filter(d => {
+            const dDate = new Date(d.time);
+            return dDate.getHours() === targetHour;
+        }).map(d => [d.lat, d.lng, d.iqa/200]); // Normalisation sur 200 (cohérent Dashboard)
+
+        heatLayer.setLatLngs(currentData);
+        
+        const hoursAgo = 23 - hourIndex;
+        document.getElementById('selected-time-display').innerText = hoursAgo === 0 ? "Temps Réel" : `Il y a ${hoursAgo}h`;
+    }
+
+    const slider = document.getElementById('time-slider');
+    slider.addEventListener('input', (e) => updateHeatmap(parseInt(e.target.value)));
+    
+    // Initial load
+    updateHeatmap(23);
+
+    // Animation play
+    let isPlaying = false;
+    let playInterval;
+    document.getElementById('play-btn').addEventListener('click', function() {
+        const icon = this.querySelector('i');
+        if (!isPlaying) {
+            isPlaying = true;
+            icon.classList.replace('fa-play', 'fa-pause');
+            playInterval = setInterval(() => {
+                let current = parseInt(slider.value);
+                slider.value = current >= 23 ? 0 : current + 1;
+                updateHeatmap(parseInt(slider.value));
+            }, 500);
+        } else {
+            isPlaying = false;
+            icon.classList.replace('fa-pause', 'fa-play');
+            clearInterval(playInterval);
+        }
+    });
+
+    // --- 4. ANALYSE COMPORTEMENTALE (Radar) ---
+    const ctxBehav = document.getElementById('behavioralChart').getContext('2d');
+    const behavLabels = JSON.parse('{{ behavioral_labels|safe }}');
+    const behavValues = JSON.parse('{{ behavioral_values|safe }}');
+
+    new Chart(ctxBehav, {
+        type: 'radar',
+        data: {
+            labels: behavLabels,
+            datasets: [{
+                label: 'Profil Moyen (24h)',
+                data: behavValues,
+                backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                borderColor: 'rgb(139, 92, 246)',
+                pointBackgroundColor: 'rgb(139, 92, 246)',
+                borderWidth: 2,
+                pointRadius: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: { display: true, color: 'rgba(0,0,0,0.05)' },
+                    suggestedMin: 0,
+                    ticks: { display: false }
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+</script>
+{% endblock %}
+

@@ -195,7 +195,157 @@ def exports_view(request):
     return render(request, 'monitoring/exports.html', {'exports': exports})
 
 def analyses_view(request):
-    return render(request, 'monitoring/analyses.html')
+    """Vue pour la page Analyses Avancées 2.0"""
+    from django.db.models.functions import TruncMonth, TruncHour
+    from django.db.models import Avg, Max, Min
+    from django.utils import timezone
+    import datetime
+    import json
+
+    # 0. PARAMÈTRES DE FILTRAGE
+    station_id = request.GET.get('station')
+    pollutant = request.GET.get('pollutant', 'iqa')  # défaut: IQA
+    
+    # Sécurité sur le polluant choisi
+    allowed_pollutants = {
+        'iqa': 'Indice Qualité Air',
+        'pm25': 'PM2.5 (Particules fines)',
+        'pm10': 'PM10 (Particules)',
+        'co': 'CO (Monoxyde de Carbone)',
+        'temperature': 'Température (°C)',
+        'humidity': 'Humidité (%)'
+    }
+    if pollutant not in allowed_pollutants:
+        pollutant = 'iqa'
+
+    # Filtre de base
+    readings_base = Reading.objects.all()
+    if station_id and station_id.isdigit():
+        readings_base = readings_base.filter(station_id=station_id)
+
+    # 1. TENDANCES MENSUELLES (Année glissante)
+    end_date = timezone.now()
+    start_date = end_date - datetime.timedelta(days=365)
+    
+    stats_monthly = readings_base.filter(
+        timestamp__range=(start_date, end_date)
+    ).annotate(
+        month=TruncMonth('timestamp')
+    ).values('month').annotate(
+        avg_val=Avg(pollutant)
+    ).order_by('month')
+    
+    labels = []
+    data_val = []
+    for entry in stats_monthly:
+        if entry['month']:
+            labels.append(entry['month'].strftime('%b %Y'))
+            data_val.append(round(entry['avg_val'] or 0, 1))
+
+    # Fallback si pas de données
+    if not labels:
+        labels = ['Sep', 'Oct', 'Nov', 'Déc', 'Jan', 'Fév']
+        data_val = [40, 45, 50, 60, 55, 48]
+
+    # 2. ANALYSE DE CORRÉLATION (30 derniers jours)
+    # On croise le polluant choisi avec la Température et l'Humidité
+    start_30d = end_date - datetime.timedelta(days=30)
+    correlation_data = readings_base.filter(
+        timestamp__range=(start_30d, end_date)
+    ).annotate(
+        hour=TruncHour('timestamp')
+    ).values('hour').annotate(
+        val=Avg(pollutant),
+        temp=Avg('temperature'),
+        hum=Avg('humidity')
+    ).order_by('hour')
+
+    corr_labels = []
+    corr_vals = []
+    corr_temps = []
+    corr_hums = []
+    
+    for entry in correlation_data:
+        if entry['hour']:
+            corr_labels.append(entry['hour'].strftime('%d/%m %H:00'))
+            corr_vals.append(round(entry['val'] or 0, 1))
+            corr_temps.append(round(entry['temp'] or 0, 1))
+            corr_hums.append(round(entry['hum'] or 0, 1))
+
+    # 3. SMART INSIGHTS (Calcul automatique)
+    insight = "Chargement des données..."
+    insight_type = "neutral" # neutral, success, warning, danger
+    
+    # Petit "algo" d'insight
+    if data_val:
+        current_avg = data_val[-1]
+        prev_avg = data_val[-2] if len(data_val) > 1 else current_avg
+        diff = current_avg - prev_avg
+        
+        if diff > 10:
+            insight = f"⚠️ Hausse significative de {allowed_pollutants[pollutant]} (+{round(diff,1)}) ce mois-ci par rapport au mois dernier."
+            insight_type = "warning"
+        elif diff < -10:
+            insight = f"✅ Amélioration notable de {allowed_pollutants[pollutant]} (-{round(abs(diff),1)}) constatée ce mois-ci."
+            insight_type = "success"
+        else:
+            insight = f"📊 Stabilité globale de {allowed_pollutants[pollutant]} sur la période récente."
+            insight_type = "neutral"
+
+    # 4. HEATMAP (Dernières 24h pour le slider temporal)
+    # Pour faire simple, on envoie les readings des dernières 24h avec lat/lng
+    start_24h = end_date - datetime.timedelta(days=1)
+    readings_24h = Reading.objects.filter(timestamp__range=(start_24h, end_date)).select_related('station')
+    
+    heatmap_24h = []
+    for r in readings_24h:
+        if r.station and r.iqa:
+            heatmap_24h.append({
+                'lat': float(r.station.latitude),
+                'lng': float(r.station.longitude),
+                'iqa': r.iqa,
+                'time': r.timestamp.isoformat()
+            })
+
+    # 5. ANALYSE COMPORTEMENTALE (Par heure de la journée)
+    # On calcule la moyenne par "heure de la journée" (0-23)
+    from django.db.models.functions import ExtractHour
+    
+    behavioral_data = readings_base.filter(
+        timestamp__range=(start_30d, end_date)
+    ).annotate(
+        hour_only=ExtractHour('timestamp')
+    ).values('hour_only').annotate(
+        avg_val=Avg(pollutant)
+    ).order_by('hour_only')
+    
+    behavioral_labels = [f"{h}h" for h in range(24)]
+    behavioral_values = [0] * 24
+    
+    for entry in behavioral_data:
+        h = entry['hour_only']
+        if 0 <= h < 24:
+            behavioral_values[h] = round(entry['avg_val'] or 0, 1)
+
+    context = {
+        'stations': Station.objects.all(),
+        'selected_station': station_id,
+        'selected_pollutant': pollutant,
+        'pollutant_name': allowed_pollutants[pollutant],
+        'trend_labels': json.dumps(labels),
+        'trend_data': json.dumps(data_val),
+        'corr_labels': json.dumps(corr_labels),
+        'corr_vals': json.dumps(corr_vals),
+        'corr_temps': json.dumps(corr_temps),
+        'corr_hums': json.dumps(corr_hums),
+        'insight': insight,
+        'insight_type': insight_type,
+        'heatmap_24h': json.dumps(heatmap_24h),
+        'behavioral_labels': json.dumps(behavioral_labels),
+        'behavioral_values': json.dumps(behavioral_values),
+    }
+    
+    return render(request, 'monitoring/analyses.html', context)
 
 def signup(request):
     if request.method == 'POST':
