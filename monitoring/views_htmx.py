@@ -108,5 +108,24 @@ def chatbot_query(request):
             'user_message': user_message,
             'response_text': response_text,
         })
-    return HttpResponse('Method not allowed', status=405)
+
+def station_ai_insights(request, station_id):
+    station = get_object_or_404(Station, id=station_id)
+    recent_readings = Reading.objects.filter(station=station).order_by('-timestamp')[:10]
+    
+    if not recent_readings.exists():
+        return HttpResponse('<div class="ai-insight-card">Aucune donnée disponible pour analyse.</div>')
+        
+    # Format data for AI
+    data_summary = "\n".join([
+        f"{r.timestamp.strftime('%H:%M')}: IQA={r.iqa}, PM2.5={r.pm25}, Temp={r.temperature}°C"
+        for r in recent_readings
+    ])
+    
+    analysis = ai_service.analyze_readings(f"Station {station.name}:\n{data_summary}")
+    
+    return render(request, 'monitoring/partials/station_ai_insights.html', {
+        'station': station,
+        'analysis': analysis
+    })
 

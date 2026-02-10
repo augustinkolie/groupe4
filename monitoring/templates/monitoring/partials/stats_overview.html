@@ -1,5 +1,5 @@
 {% load static %}
-<div class="grid-4 mb-4" id="stats-overview" hx-get="{% url 'stats_overview' %}" hx-trigger="every 60s" hx-swap="outerHTML">
+<div class="grid-4 mb-4" id="stats-overview" hx-get="{% url 'stats_overview' %}" hx-trigger="every 60s" hx-swap="outerHTML" hx-indicator="#stats-sync-indicator">
     <div class="premium-stat-card">
         <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--primary);">
             <i class="fas fa-map-marker-alt"></i>
@@ -36,7 +36,12 @@
             <div class="stat-label">Relevés (24h)</div>
         </div>
     </div>
-    <div style="grid-column: 1 / -1; text-align: right; font-size: 0.7rem; color: var(--gray); margin-top: -0.5rem; padding-right: 0.5rem;">
-        Dernière synchro : {{ last_sync|date:"H:i:s" }}
+    <div style="grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; padding: 0 0.5rem; margin-top: -0.5rem;">
+        <div id="stats-sync-indicator" class="htmx-indicator" style="font-size: 0.7rem; color: var(--primary);">
+            <i class="fas fa-sync fa-spin"></i> Mise à jour...
+        </div>
+        <div style="font-size: 0.7rem; color: var(--gray);">
+            Dernière synchro : {{ last_sync|date:"H:i:s" }}
+        </div>
     </div>
 </div>

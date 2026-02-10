@@ -104,6 +104,22 @@
       </div>
     </div>
 </div>
+
+<!-- Section Analyse IA -->
+<div id="ai-analysis-container" style="grid-column: span 2; margin-top: 1.5rem;">
+    <button hx-get="{% url 'station_ai_insights' station.id %}" 
+            hx-target="#ai-analysis-container" 
+            hx-swap="outerHTML" 
+            hx-indicator="#ai-loader"
+            class="btn-nav-custom" 
+            style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; border: 2px solid var(--primary); background: transparent; color: var(--primary); padding: 1rem; border-radius: 12px; font-weight: 700; transition: all 0.3s;">
+        <i class="fas fa-magic"></i>
+        Obtenir une analyse IA approfondie
+    </button>
+    <div id="ai-loader" class="htmx-indicator" style="text-align: center; margin-top: 1rem; color: var(--primary);">
+        <i class="fas fa-spinner fa-spin"></i> EcoWatch IA analyse les données en cours...
+    </div>
+</div>
 <!-- Hidden data for Charts update (processed by client-side JS) -->
 <script>
     if (typeof updateChart === 'function') {

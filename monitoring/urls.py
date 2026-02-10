@@ -31,6 +31,7 @@ urlpatterns = [
     path('partials/station-popup/<int:station_id>/', views_htmx.station_popup_partial, name='station_popup_partial'),
     path('partials/get-station-form/<int:station_id>/', views_htmx.get_station_edit_form, name='get_station_edit_form'),
     path('partials/chatbot-query/', views_htmx.chatbot_query, name='chatbot_query'),
+    path('partials/station-ai-insights/<int:station_id>/', views_htmx.station_ai_insights, name='station_ai_insights'),
     
     path('accounts/', include('django.contrib.auth.urls')),
 ]
