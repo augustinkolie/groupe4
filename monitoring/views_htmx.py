@@ -1,9 +1,13 @@
 from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
 from django.db.models import Avg, Count
 from django.utils import timezone
 from datetime import timedelta
 from monitoring.models import Station, Reading
 from .forms import StationForm
+from .ai_service import AIService
+
+ai_service = AIService()
 
 def stats_overview(request):
     """
@@ -84,4 +88,25 @@ def get_station_edit_form(request, station_id):
         'station': station,
         'station_form': form,
     })
+
+def chatbot_query(request):
+    """
+    Handles chatbot messages via HTMX.
+    """
+    if request.method == 'POST':
+        user_message = request.POST.get('message', '')
+        if not user_message:
+            return HttpResponse('')
+            
+        # Get context (latest data from stations)
+        recent_readings = Reading.objects.all()[:5]
+        context_data = "\n".join([str(r) for r in recent_readings])
+        
+        response_text = ai_service.get_chat_response(user_message, context=context_data)
+        
+        return render(request, 'monitoring/partials/chatbot_message.html', {
+            'user_message': user_message,
+            'response_text': response_text,
+        })
+    return HttpResponse('Method not allowed', status=405)
 

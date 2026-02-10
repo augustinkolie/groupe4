@@ -1,0 +1,20 @@
+<div class="chat-message user">
+    <div class="message-bubble">
+        {{ user_message }}
+    </div>
+</div>
+
+<div class="chat-message ai">
+    <div class="message-avatar">
+        <i class="fas fa-robot"></i>
+    </div>
+    <div class="message-bubble">
+        {{ response_text|linebreaksbr }}
+    </div>
+</div>
+
+<!-- Scroll to bottom logic -->
+<script>
+    var chatBody = document.getElementById('chat-body');
+    chatBody.scrollTop = chatBody.scrollHeight;
+</script>
