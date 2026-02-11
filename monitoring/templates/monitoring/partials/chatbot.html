@@ -1,211 +1,338 @@
 <style>
+    :root {
+        --chat-primary: #10b981;
+        --chat-primary-dark: #059669;
+        --chat-bg: var(--card-bg);
+        --chat-border: var(--border-color);
+        --chat-text: var(--text-color);
+        --chat-ai-bubble: var(--section-bg-light);
+        --chat-user-bubble: var(--chat-primary);
+        --chat-width: 380px;
+        --chat-height: 500px; /* Réduit de 550px pour moins d'encombrement */
+    }
+
     .chatbot-widget {
         position: fixed;
-        bottom: 30px;
-        right: 30px;
+        bottom: 25px;
+        right: 25px;
         z-index: 2000;
         font-family: 'Inter', sans-serif;
     }
 
-    .chat-toggle {
+    .chatbot-widget * {
+        box-sizing: border-box;
+    }
+
+    /* Bouton de basculement */
+    .chat-bubble-toggle {
         width: 60px;
         height: 60px;
         border-radius: 50%;
-        background: var(--primary);
+        background: var(--chat-primary);
         color: white;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: none;
     }
 
-    .chat-toggle:hover {
-        transform: scale(1.1);
+    .chat-bubble-toggle:hover {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 12px 30px rgba(16, 185, 129, 0.4);
     }
 
-    .chat-window {
+    /* Fenêtre principale */
+    .chat-container {
         position: absolute;
         bottom: 80px;
         right: 0;
-        width: 350px;
-        height: 500px;
-        background: var(--card-bg);
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        width: var(--chat-width);
+        max-width: calc(100vw - 40px);
+        height: var(--chat-height);
+        max-height: calc(100vh - 120px); /* Garantit que le chatbot reste sous la navbar */
+        background: var(--chat-bg);
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
         display: none;
         flex-direction: column;
         overflow: hidden;
-        border: 1px solid var(--border-color);
-        animation: slideUp 0.3s ease-out;
+        border: 1px solid var(--chat-border);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        z-index: 1050; /* Z-index équilibré pour être au-dessus du contenu mais sous certain modals */
+        animation: chatOpen 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    @keyframes slideUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+    @keyframes chatOpen {
+        from { opacity: 0; transform: translateY(30px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    .chat-window.show {
+    .chat-container.show {
         display: flex;
     }
 
+    /* Header */
     .chat-header {
-        background: var(--primary);
+        background: var(--chat-primary);
         color: white;
-        padding: 1.25rem;
+        padding: 1.25rem 1.5rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
-    }
-
-    .chat-header h3 {
-        font-size: 1rem;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .chat-body {
-        flex-grow: 1;
-        padding: 1rem;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        background: var(--bg-color);
-    }
-
-    .chat-message {
-        display: flex;
-        gap: 10px;
-        max-width: 85%;
-    }
-
-    .chat-message.user {
-        align-self: flex-end;
-        flex-direction: row-reverse;
-    }
-
-    .chat-message.ai {
-        align-self: flex-start;
-    }
-
-    .message-bubble {
-        padding: 0.75rem 1rem;
-        border-radius: 12px;
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
-
-    .user .message-bubble {
-        background: var(--primary);
-        color: white;
-        border-bottom-right-radius: 2px;
-    }
-
-    .ai .message-bubble {
-        background: var(--white);
-        color: var(--text-color);
-        border: 1px solid var(--border-color);
-        border-bottom-left-radius: 2px;
-    }
-
-    .message-avatar {
-        width: 30px;
-        height: 30px;
-        background: var(--primary-light);
-        color: var(--primary);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.8rem;
         flex-shrink: 0;
     }
 
-    .chat-footer {
-        padding: 1rem;
-        border-top: 1px solid var(--border-color);
-        background: var(--card-bg);
-    }
-
-    .chat-input-wrapper {
+    .chat-header-info {
         display: flex;
-        gap: 10px;
-        background: var(--bg-color);
-        padding: 5px 5px 5px 15px;
-        border-radius: 25px;
-        border: 1px solid var(--border-color);
+        align-items: center;
+        gap: 12px;
     }
 
-    .chat-input-wrapper input {
-        flex-grow: 1;
-        background: none;
+    .chat-header-info i {
+        font-size: 1.2rem;
+    }
+
+    .chat-header h3 {
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin: 0;
+        letter-spacing: -0.01em;
+    }
+
+    /* Corps du chat */
+    .chat-body {
+        flex: 1;
+        padding: 1.25rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        background: var(--chat-bg);
+        scroll-behavior: smooth;
+    }
+
+    /* Message Styles */
+    .message-row {
+        display: flex;
+        width: 100%;
+        gap: 10px;
+        animation: msgIn 0.3s ease-out;
+        align-items: flex-end; /* Aligne l'avatar en bas de la bulle */
+    }
+
+    @keyframes msgIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message-row.user {
+        flex-direction: row-reverse;
+    }
+
+    .avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 0.8rem;
+    }
+
+    .ai .avatar { background: rgba(16, 185, 129, 0.1); color: var(--chat-primary); }
+    .user .avatar { background: rgba(255, 255, 255, 0.2); color: white; display: none; }
+
+    .bubble {
+        padding: 0.8rem 1rem;
+        border-radius: 16px;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        max-width: calc(100% - 40px); /* Laisse de la place pour l'avatar */
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+        min-width: 40px;
+        position: relative;
+        hyphens: auto;
+    }
+
+    .ai .bubble {
+        background: var(--chat-ai-bubble);
+        color: var(--chat-text);
+        border: 1px solid var(--chat-border);
+        border-top-left-radius: 4px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .user .bubble {
+        background: var(--chat-user-bubble);
+        color: white;
+        border-top-right-radius: 4px;
+        box-shadow: 0 6px 15px rgba(16, 185, 129, 0.2);
+    }
+
+    /* Markdown Styles */
+    .markdown-content * {
+        max-width: 100%;
+        overflow-wrap: break-word;
+    }
+    .markdown-content pre {
+        background: rgba(0,0,0,0.05);
+        padding: 10px;
+        border-radius: 8px;
+        overflow-x: auto; /* Permet le scroll interne si vraiment nécessaire */
+        white-space: pre-wrap; /* Force le wrap même dans les blocs de code */
+    }
+    .markdown-content code {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.85em;
+    }
+    .markdown-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0.8rem 0;
+        display: block; /* Nécessaire pour overflow-x sur table */
+        overflow-x: auto;
+        font-size: 0.85rem;
+    }
+    .markdown-content th, .markdown-content td {
+        border: 1px solid var(--chat-border);
+        padding: 6px 10px;
+        text-align: left;
+    }
+    .markdown-content th {
+        background: rgba(0,0,0,0.03);
+        font-weight: 600;
+    }
+    .markdown-content ul, .markdown-content ol { padding-left: 1.2rem; margin: 0.8rem 0; }
+    .markdown-content li { margin-bottom: 0.4rem; }
+    .markdown-content p { margin-bottom: 0.8rem; }
+    .markdown-content p:last-child { margin-bottom: 0; }
+    .markdown-content strong { color: var(--chat-primary); font-weight: 700; }
+    [data-theme="dark"] .markdown-content strong { color: #34d399; }
+
+    /* Footer / Input */
+    .chat-footer {
+        padding: 1.25rem;
+        border-top: 1px solid var(--chat-border);
+        background: var(--chat-bg);
+    }
+
+    .input-group {
+        display: flex;
+        align-items: center;
+        background: var(--bg-color);
+        border: 1.5px solid var(--chat-border);
+        border-radius: 30px;
+        padding: 6px 6px 6px 18px;
+        transition: all 0.3s ease;
+    }
+
+    .input-group:focus-within {
+        border-color: var(--chat-primary);
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    }
+
+    .input-group input {
+        flex: 1;
         border: none;
+        background: transparent;
+        color: var(--chat-text);
+        font-size: 0.95rem;
         outline: none;
         padding: 8px 0;
-        font-size: 0.9rem;
-        color: var(--text-color);
     }
 
-    .chat-send-btn {
-        width: 35px;
-        height: 35px;
+    .send-btn {
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        background: var(--primary);
+        background: var(--chat-primary);
         color: white;
         border: none;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background 0.2s;
+        transition: all 0.2s ease;
     }
 
-    .chat-send-btn:hover {
-        background: var(--primary-dark);
+    .send-btn:hover { background: var(--chat-primary-dark); transform: scale(1.05); }
+
+    /* Spinner */
+    .typing-indicator {
+        display: flex;
+        gap: 4px;
+        padding: 4px 0;
+    }
+    .dot {
+        width: 6px;
+        height: 6px;
+        background: var(--chat-primary);
+        border-radius: 50%;
+        animation: dotBounce 1.4s infinite ease-in-out both;
+        opacity: 0.6;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes dotBounce {
+        0%, 80%, 100% { transform: scale(0); }
+        40% { transform: scale(1); }
     }
 
-    /* Loading Indicator */
-    .htmx-indicator {
-        display: none;
-        font-size: 0.8rem;
-        color: var(--gray);
-        font-style: italic;
-        margin-top: 5px;
-    }
-    .htmx-request .htmx-indicator {
-        display: block;
+    .htmx-indicator { display: none !important; }
+    .htmx-request.htmx-indicator { display: flex !important; margin-bottom: 20px; }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+        .chatbot-widget { bottom: 15px; right: 15px; }
+        .chat-container { 
+            width: calc(100vw - 30px); 
+            height: calc(100vh - 120px); 
+            bottom: 75px;
+        }
     }
 </style>
 
 <div class="chatbot-widget">
-    <div class="chat-toggle" onclick="toggleChat()">
+    <button class="chat-bubble-toggle" onclick="toggleChat()" aria-label="Ouvrir le chat">
         <i class="fas fa-comment-dots fa-lg" id="toggle-icon"></i>
-    </div>
+    </button>
 
-    <div class="chat-window" id="chat-window">
+    <div class="chat-container" id="chat-window">
         <div class="chat-header">
-            <h3><i class="fas fa-robot"></i> EcoWatch AI Assistant</h3>
-            <i class="fas fa-times" style="cursor: pointer" onclick="toggleChat()"></i>
+            <div class="chat-header-info">
+                <i class="fas fa-robot"></i>
+                <h3>EcoWatch Assistant</h3>
+            </div>
+            <i class="fas fa-times" style="cursor: pointer; opacity: 0.8;" onclick="toggleChat()"></i>
         </div>
 
         <div class="chat-body" id="chat-body">
-            <div class="chat-message ai">
-                <div class="message-avatar">
-                    <i class="fas fa-robot"></i>
-                </div>
-                <div class="message-bubble">
-                    Bonjour ! Je suis l'assistant EcoWatch. Comment puis-je vous aider aujourd'hui ?
-                </div>
+            <!-- Message de bienvenue -->
+            <div class="message-row ai">
+                <div class="avatar"><i class="fas fa-robot"></i></div>
+                <div class="bubble markdown-content">Bonjour ! Je suis **EcoWatch**, votre assistant dédié à la surveillance environnementale en temps réel à travers la Guinée.</div>
             </div>
-            <div id="chat-history"></div>
-            <div class="htmx-indicator ai" id="loading">
-                 <div class="chat-message ai">
-                    <div class="message-avatar"><i class="fas fa-robot"></i></div>
-                    <div class="message-bubble">En train de réfléchir...</div>
+
+            <div id="chat-history" style="display: flex; flex-direction: column; gap: 1.25rem;"></div>
+
+            <!-- Indicateur de chargement -->
+            <div class="htmx-indicator message-row ai" id="loading">
+                <div class="avatar"><i class="fas fa-robot"></i></div>
+                <div class="bubble">
+                    <div class="typing-indicator">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -217,9 +344,9 @@
                   hx-indicator="#loading"
                   hx-on::after-request="this.reset()">
                 {% csrf_token %}
-                <div class="chat-input-wrapper">
-                    <input type="text" name="message" placeholder="Posez votre question..." required>
-                    <button type="submit" class="chat-send-btn">
+                <div class="input-group">
+                    <input type="text" name="message" placeholder="Posez votre question..." aria-label="Message" required autocomplete="off">
+                    <button type="submit" class="send-btn">
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
@@ -230,16 +357,50 @@
 
 <script>
     function toggleChat() {
-        const window = document.getElementById('chat-window');
+        const win = document.getElementById('chat-window');
         const icon = document.getElementById('toggle-icon');
-        window.classList.toggle('show');
+        const isOpen = win.classList.toggle('show');
         
-        if (window.classList.contains('show')) {
-            icon.classList.remove('fa-comment-dots');
-            icon.classList.add('fa-chevron-down');
-        } else {
-            icon.classList.remove('fa-chevron-down');
-            icon.classList.add('fa-comment-dots');
-        }
+        icon.className = isOpen ? 'fas fa-chevron-down fa-lg' : 'fas fa-comment-dots fa-lg';
+        if (isOpen) scrollToBottom();
     }
+
+    function scrollToBottom() {
+        const body = document.getElementById('chat-body');
+        body.scrollTop = body.scrollHeight;
+    }
+
+    // Rendu Markdown pour les messages existants (bienvenue)
+    function initMarkdown() {
+        if (!window.marked) return;
+        document.querySelectorAll('.markdown-content').forEach(el => {
+            if (!el.dataset.rendered) {
+                const content = el.textContent.trim();
+                el.innerHTML = marked.parse(content);
+                el.dataset.rendered = 'true';
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', initMarkdown);
+
+    // Auto-scroll et Markdown pour les nouveaux messages HTMX
+    document.body.addEventListener('htmx:afterSwap', (e) => {
+        if (e.detail.target.id === "chat-history") {
+            const lastMsg = e.detail.target.lastElementChild;
+            if (lastMsg) {
+                const mdBoxes = lastMsg.querySelectorAll('.markdown-content');
+                mdBoxes.forEach(box => {
+                    if (window.marked) {
+                        box.innerHTML = marked.parse(box.textContent.trim());
+                    }
+                });
+            }
+            scrollToBottom();
+        }
+    });
+
+    document.body.addEventListener('htmx:beforeRequest', () => {
+        setTimeout(scrollToBottom, 50);
+    });
 </script>

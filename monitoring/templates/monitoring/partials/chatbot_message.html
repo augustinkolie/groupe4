@@ -1,20 +1,10 @@
-<div class="chat-message user htmx-added">
-    <div class="message-bubble">
-        {{ user_message }}
-    </div>
+<div class="message-row user">
+    <div class="bubble">{{ user_message }}</div>
 </div>
 
-<div class="chat-message ai htmx-added">
-    <div class="message-avatar">
+<div class="message-row ai">
+    <div class="avatar">
         <i class="fas fa-robot"></i>
     </div>
-    <div class="message-bubble">
-        {{ response_text|linebreaksbr }}
-    </div>
+    <div class="bubble markdown-content">{{ response_text }}</div>
 </div>
-
-<!-- Scroll to bottom logic -->
-<script>
-    var chatBody = document.getElementById('chat-body');
-    chatBody.scrollTop = chatBody.scrollHeight;
-</script>
