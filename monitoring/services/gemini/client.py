@@ -3,9 +3,15 @@ import google.generativeai as genai
 from .config import DEFAULT_CONFIG
 from .safety_config import SAFETY_SETTINGS
 
+from .key_manager import GeminiKeyManager
+
 class GeminiClient:
     def __init__(self, api_key=None):
-        self.api_key = api_key or os.getenv('GOOGLE_GENAI_API_KEY', '').strip()
+        self.key_manager = GeminiKeyManager()
+        
+        # Si une clé spécifique est passée, on l'utilise (rare), sinon on prend celle du manager
+        self.api_key = api_key or self.key_manager.get_active_key()
+        
         if not self.api_key:
             raise ValueError("GOOGLE_GENAI_API_KEY non configurée.")
         

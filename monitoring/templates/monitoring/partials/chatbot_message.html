@@ -6,5 +6,65 @@
     <div class="avatar">
         <i class="fas fa-robot"></i>
     </div>
-    <div class="bubble markdown-content">{{ response_text }}</div>
+    <style>
+        /* Curseur clignotant style ChatGPT */
+        .typing-cursor::after {
+            content: '●';
+            color: var(--primary-color);
+            animation: blink 1s step-start infinite;
+            margin-left: 2px;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+    <div class="bubble markdown-content" id="{{ message_id }}">
+        <span class="raw-response" style="display:none">{{ response_text }}</span>
+        <span class="stream-output"></span>
+    </div>
+    <script>
+        (function() {
+            const container = document.getElementById("{{ message_id }}");
+            if (!container) return;
+            
+            const rawSpan = container.querySelector('.raw-response');
+            const streamSpan = container.querySelector('.stream-output');
+            
+            if (rawSpan && streamSpan) {
+                const text = rawSpan.textContent;
+                let i = 0;
+                
+                // Ajout de la classe curseur au démarrage
+                streamSpan.classList.add('typing-cursor');
+
+                const typeChar = () => {
+                    if (i < text.length) {
+                        streamSpan.textContent += text.charAt(i);
+                        i++;
+                        
+                        const chatBody = document.querySelector('.chat-body');
+                        if(chatBody) chatBody.scrollTop = chatBody.scrollHeight;
+                        
+                        // Vitesse variable (plus "humain")
+                        const randomSpeed = Math.floor(Math.random() * (30 - 10 + 1) + 10);
+                        setTimeout(typeChar, randomSpeed);
+                    } else {
+                        // Fin de frappe : on retire le curseur et on rend le Markdown
+                        streamSpan.classList.remove('typing-cursor');
+                        
+                        if (typeof marked !== 'undefined') {
+                            streamSpan.innerHTML = marked.parse(text);
+                        } else {
+                            streamSpan.textContent = text;
+                        }
+                        
+                        const chatBody = document.querySelector('.chat-body');
+                        if(chatBody) chatBody.scrollTop = chatBody.scrollHeight;
+                    }
+                };
+                
+                setTimeout(typeChar, 50);
+            }
+        })();
+    </script>
 </div>

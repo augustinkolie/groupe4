@@ -89,6 +89,8 @@ def get_station_edit_form(request, station_id):
         'station_form': form,
     })
 
+import uuid
+
 def chatbot_query(request):
     """
     Handles chatbot messages via HTMX.
@@ -98,15 +100,47 @@ def chatbot_query(request):
         if not user_message:
             return HttpResponse('')
             
-        # Get context (latest data from stations)
-        recent_readings = Reading.objects.all()[:5]
-        context_data = "\n".join([str(r) for r in recent_readings])
+        # 1. ANALYSE TRENDS (Dernières 24h)
+        time_threshold = timezone.now() - timedelta(hours=24)
         
-        response_text = ai_service.get_chat_response(user_message, context=context_data)
+        # Aggregate returns None if no data, ensure 0
+        agg_pm25 = Reading.objects.filter(timestamp__gte=time_threshold).aggregate(Avg('pm25'))['pm25__avg']
+        avg_pm25 = round(agg_pm25) if agg_pm25 is not None else 0
+        
+        agg_temp = Reading.objects.filter(timestamp__gte=time_threshold).aggregate(Avg('temperature'))['temperature__avg']
+        avg_temp = round(agg_temp) if agg_temp is not None else 0
+        
+        trends_summary = f"Moyenne 24h: PM2.5={avg_pm25}µg/m³, Temp={avg_temp}°C"
+
+        # 2. CONTEXTE TEMPS RÉEL
+        recent_readings = Reading.objects.order_by('-timestamp')[:5]
+        realtime_data = "\n".join([str(r) for r in recent_readings])
+        
+        full_context = f"TENDANCES 24H: {trends_summary}\n\nDONNÉES TEMPS RÉEL:\n{realtime_data}"
+        
+        # 3. GESTION MÉMOIRE (Session)
+        history = request.session.get('chat_history', [])
+        
+        # Appel IA avec historique
+        try:
+            response_text = ai_service.get_chat_response(user_message, context=full_context, history=history)
+        except Exception as e:
+            response_text = "Désolé, je rencontre une erreur de connexion à mon cerveau IA. 🧠⚠️"
+        
+        # Mise à jour historique (User + AI)
+        history.append({"role": "user", "content": user_message})
+        history.append({"role": "assistant", "content": response_text})
+        
+        # Limiter à 10 échanges pour préserver la session
+        request.session['chat_history'] = history[-10:]
+        
+        # ID unique pour le script JS
+        message_id = f"msg-{str(uuid.uuid4())[:8]}"
         
         return render(request, 'monitoring/partials/chatbot_message.html', {
             'user_message': user_message,
             'response_text': response_text,
+            'message_id': message_id,
         })
 
 def station_ai_insights(request, station_id):

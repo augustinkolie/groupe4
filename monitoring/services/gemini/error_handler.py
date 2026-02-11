@@ -24,7 +24,7 @@ def handle_gemini_response_error(response):
     
     return None
 
-def execute_with_retry(func, *args, **kwargs):
+def execute_with_retry(func, *args, key_manager=None, **kwargs):
     """Système de retry simple pour les erreurs réseau ou 429."""
     from .config import MAX_RETRIES, INITIAL_BACKOFF
     retries = 0
@@ -37,14 +37,24 @@ def execute_with_retry(func, *args, **kwargs):
             retries += 1
             error_msg = str(e)
             
-            # Si c'est une erreur de quota (429) ou de serveur (500/503), on réessaie
+            # Si c'est une erreur de quota (429)
+            if "429" in error_msg or "quota" in error_msg.lower():
+                logger.warning(f"Quota Gemini atteint (Erreur 429). Tentative {retries}/{MAX_RETRIES}.")
+                
+                # Tentative de rotation de clé
+                if key_manager and key_manager.switch_key():
+                    logger.info("Changement de clé API effectué. Nouvelle tentative immédiate.")
+                    continue # On réessaie tout de suite sans attendre
+
+            # Si c'est une erreur serveur (500/503), on réessaie avec backoff
             if "429" in error_msg or "500" in error_msg or "503" in error_msg or "quota" in error_msg.lower():
                 if retries >= MAX_RETRIES:
-                    raise GeminiError(f"Quota Gemini épuisé ou service indisponible après {MAX_RETRIES} tentatives.", "api_failure")
+                    raise GeminiError(f"Echec API après {MAX_RETRIES} tentatives (Quota/Serveur).", "api_failure")
                 
-                logger.warning(f"Gemini API Error (Tentative {retries}/{MAX_RETRIES}). Backoff {backoff}s...")
+                logger.warning(f"Attente backoff {backoff}s avant retry...")
                 time.sleep(backoff)
                 backoff *= 2
             else:
                 # Autres erreurs (auth, etc.), on ne réessaie pas forcément
                 raise GeminiError(f"Erreur API Gemini : {error_msg}", "api_error")
+

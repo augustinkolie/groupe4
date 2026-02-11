@@ -15,11 +15,11 @@ class AIService:
         # On le remet à False pour activer la rotation automatique Pro
         self.force_openai = False 
 
-    def get_chat_response(self, user_message, context=""):
+    def get_chat_response(self, user_message, context="", history=None):
         """Gère la réponse exclusivement via Gemini (OpenAI ignoré pour le moment)."""
         logger.info("Appel du service Gemini Pro Service...")
         try:
-            return self.gemini_service.get_chat_response(user_message, context)
+            return self.gemini_service.get_chat_response(user_message, context, history)
         except Exception as e:
             logger.error(f"Échec Gemini : {str(e)}")
             return f"Désolé, le service Gemini est temporairement indisponible. (Détails: {str(e)})"

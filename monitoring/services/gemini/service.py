@@ -23,8 +23,12 @@ class GeminiService:
             if images:
                 content.extend(images)
 
-            # Exécution avec retry
-            response = execute_with_retry(model.generate_content, content)
+            # Exécution avec retry et rotation de clé
+            response = execute_with_retry(
+                model.generate_content, 
+                content, 
+                key_manager=self.client.key_manager
+            )
             
             # Vérification des erreurs de sécurité/réponse
             error = handle_gemini_response_error(response)
@@ -47,6 +51,25 @@ class GeminiService:
             raise e
             
     def get_chat_response(self, user_message, context="", history=None):
-        """Interface spécialisée pour le Chatbot."""
-        prompt = f"Contexte: {context}\n\nUtilisateur: {user_message}"
+        """Interface spécialisée pour le Chatbot avec mémoire."""
+        
+        # Construction de l'historique
+        history_str = ""
+        if history:
+            history_str = "HISTORIQUE DE CONVERSATION (MÉMOIRE):\n"
+            for msg in history:
+                role = "Utilisateur" if msg.get("role") == "user" else "Assistant"
+                history_str += f"- {role}: {msg.get('content')}\n"
+            history_str += "\n"
+
+        prompt = f"""
+{history_str}
+CONTEXTE ACTUEL (Données & Tendances):
+{context}
+
+NOUVELLE QUESTION UTILISATEUR:
+{user_message}
+
+CONSIGNE: Utilise l'historique pour comprendre le contexte (ex: "Et à Labé ?" se réfère à la question précédente). Réponds de manière concise.
+"""
         return self.generate_content(prompt)
