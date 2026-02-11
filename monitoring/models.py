@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
 
 class Station(models.Model):
     STATION_TYPES = [
@@ -107,6 +110,7 @@ class AlertLog(models.Model):
     reading = models.ForeignKey(Reading, on_delete=models.CASCADE, related_name='triggered_alerts')
     message = models.TextField()
     is_resolved = models.BooleanField(default=False)
+    is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -137,3 +141,36 @@ class GeneratedReport(models.Model):
 
     def __str__(self):
         return f"Rapport {self.report_type} ({self.format}) - {self.created_at.strftime('%d/%m/%Y')}"
+
+class PasswordResetToken(models.Model):
+    """
+    Model to store password reset verification codes
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_reset_tokens')
+    code = models.CharField(max_length=6, help_text="6-digit verification code")
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField(help_text="Expiration time (15 minutes from creation)")
+    is_used = models.BooleanField(default=False, help_text="Whether this code has been used")
+    attempts = models.IntegerField(default=0, help_text="Number of validation attempts")
+    ip_address = models.GenericIPAddressField(null=True, blank=True, help_text="IP address of requester")
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', '-created_at']),
+            models.Index(fields=['code', 'is_used']),
+        ]
+    
+    def __str__(self):
+        return f"Reset code for {self.user.email} - {'Used' if self.is_used else 'Active'}"
+    
+    def is_valid(self):
+        """Check if the token is still valid (not expired and not used)"""
+        return not self.is_used and timezone.now() < self.expires_at and self.attempts < 3
+    
+    def save(self, *args, **kwargs):
+        """Set expiration time on creation"""
+        if not self.pk and not self.expires_at:
+            self.expires_at = timezone.now() + timedelta(minutes=15)
+        super().save(*args, **kwargs)
+

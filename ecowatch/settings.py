@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-default-key-for-dev
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -81,6 +81,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'monitoring.context_processors.notifications_context',
             ],
         },
     },
@@ -173,25 +174,44 @@ SITE_ID = 1
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-        'APPS': [
-            {
-                'client_id': os.getenv('GOOGLE_OAUTH_CLIENT_ID'),
-                'secret': os.getenv('GOOGLE_OAUTH_CLIENT_SECRET'),
-                'key': ''
-            },
-        ],
         'SCOPE': [
             'profile',
             'email',
         ],
         'AUTH_PARAMS': {
             'access_type': 'online',
-            'prompt': 'select_account',
         }
     }
 }
 
+# Enable direct login on GET request (no intermediate page)
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Automatically create account without intermediate signup page
+SOCIALACCOUNT_AUTO_SIGNUP = True
+
+# Email settings - no verification required
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_EMAIL_REQUIRED = True  # Required by ACCOUNT_LOGIN_METHODS
+SOCIALACCOUNT_QUERY_EMAIL = True
+ACCOUNT_EMAIL_REQUIRED = True  # Required for email-based login
+
+# Username settings
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# Use new syntax instead of deprecated ACCOUNT_AUTHENTICATION_METHOD
+ACCOUNT_LOGIN_METHODS = {'email'}  # Login with email only
+
+# Use custom adapter to handle user creation
+SOCIALACCOUNT_ADAPTER = 'monitoring.adapters.CustomSocialAccountAdapter'
+
+# Disable all signup forms
+SOCIALACCOUNT_FORMS = {}
+ACCOUNT_SIGNUP_FORM_CLASS = None
+
+# Store tokens for future use
+SOCIALACCOUNT_STORE_TOKENS = True
 
 # Fix for the default Site record
 from django.db.models.signals import post_migrate
@@ -206,8 +226,9 @@ def update_site_name(sender, **kwargs):
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 # Phase 2: OpenWeather Configuration
 # Get your FREE key at https://openweathermap.org/api
@@ -225,4 +246,25 @@ Q_CLUSTER = {
     'label': 'Django Q',
     'orm': 'default',  # Use the default Django database as broker
 }
+
+
+# ============================================
+# EMAIL CONFIGURATION
+# ============================================
+
+# Email backend - SMTP for real email sending
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # PRODUCTION - Emails réels
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Development only
+
+# Gmail SMTP Configuration
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')  # À configurer dans .env
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')  # App Password Google (voir guide)
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER', 'noreply@ecowatch.com')
+
+# Email timeout
+EMAIL_TIMEOUT = 10
+
 

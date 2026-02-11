@@ -1,0 +1,415 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérification du code | EcoWatch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --dark: #1f2937;
+            --gray: #6b7280;
+            --border: #e5e7eb;
+            --bg-color: #ffffff;
+            --text-color: var(--dark);
+            --input-bg: #ffffff;
+            --input-text: var(--dark);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --text-color: #f1f5f9;
+            --border: #334155;
+            --dark: #f1f5f9;
+            --input-bg: #1e293b;
+            --input-text: #f1f5f9;
+            color-scheme: dark;
+        }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 50px var(--input-bg) inset !important;
+            -webkit-text-fill-color: var(--input-text) !important;
+        }
+    </style>
+
+    <script>
+        const savedTheme = localStorage.getItem("theme") || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .split-screen {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .auth-side {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: var(--bg-color);
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 550px;
+            padding: 8rem 0 4rem;
+        }
+
+        .auth-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .auth-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header p {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        .email-display {
+            background: #f3f4f6;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        [data-theme="dark"] .email-display {
+            background: #1e293b;
+        }
+
+        .code-inputs {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .code-input {
+            width: 60px;
+            height: 70px;
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            transition: all 0.3s;
+            font-family: 'Inter', monospace;
+            background-color: var(--input-bg) !important;
+            color: var(--input-text) !important;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            transform: scale(1.05);
+        }
+
+        .code-input.error {
+            border-color: #ef4444;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .btn-auth {
+            width: 100%;
+            padding: 1.125rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-auth:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-color);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: #f0fdf4;
+        }
+
+        [data-theme="dark"] .btn-secondary:hover {
+            background: #1e3a2f;
+        }
+
+        .auth-footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: #1e40af;
+            text-align: center;
+        }
+
+        [data-theme="dark"] .info-box {
+            background: #1e3a5f;
+            border-color: #2563eb;
+            color: #93c5fd;
+        }
+
+        .image-side {
+            flex: 1.5;
+            position: relative;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-side img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(1.5px);
+        }
+
+        @media (max-width: 992px) {
+            .image-side {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="split-screen">
+        <div class="image-side">
+            <img src="{% static 'monitoring/images/slide2.png' %}" alt="Capteur de qualité de l'air">
+        </div>
+
+        <div class="auth-side">
+            <div class="auth-container">
+                <div class="auth-header">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h1>Vérification du code</h1>
+                        <button id="themeToggle" type="button"
+                            style="background: var(--border); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--text-color); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </div>
+                    <p>Entrez le code à 6 chiffres envoyé par email</p>
+                </div>
+
+                <div class="email-display">
+                    <i class="fas fa-envelope"></i> {{ email }}
+                </div>
+
+                <div class="info-box">
+                    <i class="fas fa-shield-alt"></i>
+                    Le code est valide pendant 15 minutes
+                </div>
+
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="post" id="verifyForm">
+                    {% csrf_token %}
+                    <div class="code-inputs">
+                        <input type="text" class="code-input" maxlength="1" data-index="0" autocomplete="off" autofocus>
+                        <input type="text" class="code-input" maxlength="1" data-index="1" autocomplete="off">
+                        <input type="text" class="code-input" maxlength="1" data-index="2" autocomplete="off">
+                        <input type="text" class="code-input" maxlength="1" data-index="3" autocomplete="off">
+                        <input type="text" class="code-input" maxlength="1" data-index="4" autocomplete="off">
+                        <input type="text" class="code-input" maxlength="1" data-index="5" autocomplete="off">
+                    </div>
+                    <input type="hidden" name="code" id="codeValue">
+
+                    <button type="submit" class="btn-auth">
+                        <i class="fas fa-check-circle"></i> Vérifier le code
+                    </button>
+                </form>
+
+                <form method="post" action="{% url 'resend_code' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-secondary">
+                        <i class="fas fa-redo"></i> Renvoyer un nouveau code
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <a href="{% url 'forgot_password' %}">
+                        <i class="fas fa-arrow-left"></i> Retour
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inputs = document.querySelectorAll('.code-input');
+        const form = document.getElementById('verifyForm');
+        const codeValue = document.getElementById('codeValue');
+
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                const value = e.target.value;
+                if (!/^\d$/.test(value)) {
+                    e.target.value = '';
+                    return;
+                }
+                if (value && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+                if (index === inputs.length - 1 && value) {
+                    updateCodeValue();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    inputs[index - 1].focus();
+                    inputs[index - 1].value = '';
+                }
+            });
+
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text').trim();
+                if (/^\d{6}$/.test(pastedData)) {
+                    pastedData.split('').forEach((char, i) => {
+                        if (inputs[i]) inputs[i].value = char;
+                    });
+                    inputs[5].focus();
+                    updateCodeValue();
+                }
+            });
+        });
+
+        form.addEventListener('submit', (e) => {
+            updateCodeValue();
+            if (codeValue.value.length !== 6) {
+                e.preventDefault();
+                inputs.forEach(input => input.classList.add('error'));
+                setTimeout(() => inputs.forEach(input => input.classList.remove('error')), 500);
+            }
+        });
+
+        function updateCodeValue() {
+            codeValue.value = Array.from(inputs).map(input => input.value).join('');
+        }
+
+        const themeToggle = document.getElementById("themeToggle");
+        const themeIcon = themeToggle.querySelector("i");
+
+        function updateToggleIcon(theme) {
+            if (theme === "dark") {
+                themeIcon.classList.replace("fa-moon", "fa-sun");
+            } else {
+                themeIcon.classList.replace("fa-sun", "fa-moon");
+            }
+        }
+
+        updateToggleIcon(localStorage.getItem("theme") || "light");
+
+        themeToggle.addEventListener("click", () => {
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            const newTheme = currentTheme === "light" ? "dark" : "light";
+            document.documentElement.setAttribute("data-theme", newTheme);
+            localStorage.setItem("theme", newTheme);
+            updateToggleIcon(newTheme);
+        });
+    </script>
+</body>
+
+</html>

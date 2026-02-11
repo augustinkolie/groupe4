@@ -628,6 +628,207 @@ def export_excel(request):
         wb.save(response)
         
         return response
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+# --- Password Reset Views ---
+
+def forgot_password(request):
+    """View to request a password reset code"""
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip()
+        
+        try:
+            user = User.objects.get(email=email)
+            
+            # Generate 6-digit code
+            import random
+            code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+            
+            # Record IP for security
+            ip_address = request.META.get('REMOTE_ADDR')
+            
+            # Invalidate previous tokens for this user
+            PasswordResetToken.objects.filter(user=user, is_used=False).update(is_used=True)
+            
+            # Create new token
+            token = PasswordResetToken.objects.create(
+                user=user,
+                code=code,
+                ip_address=ip_address
+            )
+            
+            # Send email (console backend in development)
+            try:
+                subject = f'EcoWatch - Code de récupération: {code}'
+                message = f'''
+Bonjour {user.first_name or user.username},
+
+Vous avez demandé la réinitialisation de votre mot de passe EcoWatch.
+
+Votre code de vérification est: {code}
+
+Ce code est valide pendant 15 minutes.
+
+Si vous n'avez pas demandé cette réinitialisation, ignorez ce message.
+
+Cordialement,
+L\'équipe EcoWatch
+                '''
+                
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=False,
+                )
+                
+                messages.success(request, f"Un code de vérification a été envoyé à {email}")
+            except Exception as e:
+                # In development, show the code in console only (not in UI)
+                print(f"\n{'='*50}")
+                print(f"CODE DE RÉCUPÉRATION POUR {email}: {code}")
+                print(f"{'='*50}\n")
+                messages.success(request, f"Un code de vérification a été envoyé à {email} (vérifiez la console du serveur en mode développement)")
+            
+            # Store email in session for next step
+            request.session['reset_email'] = email
+            return redirect('verify_code')
+            
+        except User.DoesNotExist:
+            # Don't reveal if email exists or not (security)
+            messages.success(request, f"Si un compte existe avec cet email, un code de vérification a été envoyé.")
+            return redirect('verify_code')
+    
+    return render(request, 'registration/forgot_password.html')
+
+def verify_code(request):
+    """View for verifying the 6-digit code"""
+    email = request.session.get('reset_email')
+    
+    if not email:
+        messages.error(request, "Session expirée. Veuillez recommencer.")
+        return redirect('forgot_password')
+    
+    if request.method == 'POST':
+        code = request.POST.get('code', '').strip()
+        
+        try:
+            user = User.objects.get(email=email)
+            
+            # Find the most recent valid token
+            token = PasswordResetToken.objects.filter(
+                user=user,
+                code=code,
+                is_used=False
+            ).order_by('-created_at').first()
+            
+            if token and token.is_valid():
+                # Mark token as used
+                token.is_used = True
+                token.save()
+                
+                # Store token ID for password reset
+                request.session['reset_token_id'] = token.id
+                messages.success(request, "Code vérifié avec succès !")
+                return redirect('reset_password')
+            else:
+                # Increment attempts if token exists
+                if token:
+                    token.attempts += 1
+                    token.save()
+                    
+                    remaining = 3 - token.attempts
+                    if remaining > 0:
+                        messages.error(request, f"Code incorrect. {remaining} tentative(s) restante(s).")
+                    else:
+                        messages.error(request, "Trop de tentatives. Veuillez demander un nouveau code.")
+                        return redirect('forgot_password')
+                else:
+                    messages.error(request, "Code invalide ou expiré.")
+                    
+        except User.DoesNotExist:
+            messages.error(request, "Erreur lors de la vérification.")
+            return redirect('forgot_password')
+    
+    return render(request, 'registration/verify_code.html', {'email': email})
+
+def reset_password(request):
+    """View for setting new password"""
+    token_id = request.session.get('reset_token_id')
+    
+    if not token_id:
+        messages.error(request, "Session expirée. Veuillez recommencer.")
+        return redirect('forgot_password')
+    
+    try:
+        token = PasswordResetToken.objects.get(id=token_id, is_used=True)
+        user = token.user
+    except PasswordResetToken.DoesNotExist:
+        messages.error(request, "Token invalide.")
+        return redirect('forgot_password')
+    
+    if request.method == 'POST':
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        
+        if password1 != password2:
+            messages.error(request, "Les mots de passe ne correspondent pas.")
+        elif len(password1) < 8:
+            messages.error(request, "Le mot de passe doit contenir au moins 8 caractères.")
+        else:
+            # Set new password
+            user.set_password(password1)
+            user.save()
+            
+            # Clean up session
+            request.session.pop('reset_email', None)
+            request.session.pop('reset_token_id', None)
+            
+            messages.success(request, "Mot de passe réinitialisé avec succès ! Vous pouvez maintenant vous connecter.")
+            return redirect('login')
+    
+    return render(request, 'registration/reset_password.html', {'user': user})
+
+def resend_code(request):
+    """Resend verification code"""
+    email = request.session.get('reset_email')
+    
+    if not email:
+        messages.error(request, "Session expirée.")
+        return redirect('forgot_password')
+    
+    try:
+        user = User.objects.get(email=email)
+        
+        # Generate new code
+        import random
+        code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+        
+        # Record IP
+        ip_address = request.META.get('REMOTE_ADDR')
+        
+        # Invalidate previous tokens
+        PasswordResetToken.objects.filter(user=user, is_used=False).update(is_used=True)
+        
+        # Create new token
+        PasswordResetToken.objects.create(
+            user=user,
+            code=code,
+            ip_address=ip_address
+        )
+        
+        # Send mail
+        subject = f'EcoWatch - Nouveau code: {code}'
+        message = f'Votre nouveau code de vérification est: {code}'
+        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
+        
+        messages.success(request, "Un nouveau code a été envoyé.")
+        return redirect('verify_code')
+        
+    except User.DoesNotExist:
+        return redirect('forgot_password')
         
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
