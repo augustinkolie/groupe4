@@ -7,17 +7,18 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'monitoring/css/dashboard.css' %}">
 <!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 <style>
     /* Design Premium Analyses 2.0 */
     .premium-header-container {
-        padding: 2.5rem; 
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%); 
-        border-radius: 1.5rem; 
-        border: 1px solid rgba(16, 185, 129, 0.1); 
+        padding: 2.5rem;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%);
+        border-radius: 1.5rem;
+        border: 1px solid rgba(16, 185, 129, 0.1);
         margin-bottom: 2rem;
     }
-    
+
     .filter-bar {
         background: var(--card-bg);
         padding: 1rem 1.5rem;
@@ -26,7 +27,7 @@
         gap: 1rem;
         align-items: center;
         margin-bottom: 2rem;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         border: 1px solid var(--border-color);
     }
 
@@ -39,26 +40,46 @@
         margin-bottom: 2rem;
         border-left: 5px solid transparent;
     }
-    .insight-neutral { background: rgba(59, 130, 246, 0.1); border-left-color: var(--secondary); color: var(--secondary); }
-    .insight-success { background: rgba(16, 185, 129, 0.1); border-left-color: var(--primary); color: var(--primary-dark); }
-    .insight-warning { background: rgba(245, 158, 11, 0.1); border-left-color: #f59e0b; color: #b45309; }
-    .insight-danger { background: rgba(239, 68, 68, 0.1); border-left-color: #ef4444; color: #b91c1c; }
+
+    .insight-neutral {
+        background: rgba(59, 130, 246, 0.1);
+        border-left-color: var(--secondary);
+        color: var(--secondary);
+    }
+
+    .insight-success {
+        background: rgba(16, 185, 129, 0.1);
+        border-left-color: var(--primary);
+        color: var(--primary-dark);
+    }
+
+    .insight-warning {
+        background: rgba(245, 158, 11, 0.1);
+        border-left-color: #f59e0b;
+        color: #b45309;
+    }
+
+    .insight-danger {
+        background: rgba(239, 68, 68, 0.1);
+        border-left-color: #ef4444;
+        color: #b91c1c;
+    }
 
     .analysis-card {
         background: var(--card-bg);
         border-radius: 1.5rem;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
         border: 1px solid var(--border-color);
         overflow: hidden;
         height: 100%;
         display: flex;
         flex-direction: column;
     }
-    
+
     .analysis-card .card-body {
         flex-grow: 1;
     }
-    
+
     .card-header-premium {
         padding: 1.25rem 1.5rem;
         border-bottom: 1px solid var(--border-color);
@@ -68,12 +89,12 @@
     }
 
     .chart-container {
-        position: relative; 
-        height: 320px; 
-        width: 100%; 
+        position: relative;
+        height: 320px;
+        width: 100%;
         padding: 1.25rem;
     }
-    
+
     #heatmap {
         height: 400px;
         width: 100%;
@@ -119,6 +140,7 @@
         gap: 0.5rem;
         margin-top: 0.5rem;
     }
+
     .btn-understand:hover {
         background: var(--primary);
         color: white;
@@ -128,7 +150,10 @@
 
     .analysis-modal-overlay {
         position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         background: rgba(15, 23, 42, 0.4);
         backdrop-filter: blur(12px);
         display: none;
@@ -138,6 +163,7 @@
         opacity: 0;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
     .analysis-modal {
         background: rgba(15, 23, 42, 0.95);
         width: 90%;
@@ -150,11 +176,18 @@
         box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.5);
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .analysis-modal-overlay.active { display: flex; opacity: 1; }
-    .analysis-modal-overlay.active .analysis-modal { transform: translateY(0) scale(1); }
+
+    .analysis-modal-overlay.active {
+        display: flex;
+        opacity: 1;
+    }
+
+    .analysis-modal-overlay.active .analysis-modal {
+        transform: translateY(0) scale(1);
+    }
 
     .modal-header-premium {
-        background: linear-gradient(135deg, var(--modal-color, var(--primary)) 0%, rgba(0,0,0,0.2) 100%), var(--modal-color, var(--primary));
+        background: linear-gradient(135deg, var(--modal-color, var(--primary)) 0%, rgba(0, 0, 0, 0.2) 100%), var(--modal-color, var(--primary));
         padding: 3rem 2.5rem 2.5rem;
         color: white;
         position: relative;
@@ -163,7 +196,7 @@
     .modal-body-premium .btn-primary {
         background: var(--modal-color, var(--primary));
         border-color: var(--modal-color, var(--primary));
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
 
     .modal-body-premium {
@@ -174,25 +207,34 @@
     .modal-icon-container {
         background: #1e293b !important;
         border-color: rgba(255, 255, 255, 0.2) !important;
-        color: white !important; /* Inversion de couleur pour visibilité */
+        color: white !important;
+        /* Inversion de couleur pour visibilité */
         box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
     }
 
     .modal-close {
         position: absolute;
-        top: 1.5rem; right: 1.5rem;
+        top: 1.5rem;
+        right: 1.5rem;
         background: rgba(255, 255, 255, 0.2);
         border: none;
-        width: 38px; height: 38px;
+        width: 38px;
+        height: 38px;
         border-radius: 50%;
         cursor: pointer;
-        display: flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         transition: all 0.3s;
         color: white;
         z-index: 10;
         backdrop-filter: blur(4px);
     }
-    .modal-close:hover { background: rgba(255, 255, 255, 0.4); transform: rotate(90deg); }
+
+    .modal-close:hover {
+        background: rgba(255, 255, 255, 0.4);
+        transform: rotate(90deg);
+    }
 </style>
 {% endblock %}
 
@@ -200,11 +242,16 @@
 <!-- Header -->
 <div class="premium-header-container">
     <div>
-        <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
+        <div
+            style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
             <i class="fas fa-brain" style="color: var(--primary);"></i>
-            <span style="color: var(--primary-dark); font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Écosystème Intelligence 2.0</span>
+            <span
+                style="color: var(--primary-dark); font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Écosystème
+                Intelligence 2.0</span>
         </div>
-        <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Analyses : {{ pollutant_name }}</h1>
+        <h1
+            style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            Analyses : {{ pollutant_name }}</h1>
         <p style="color: var(--gray); font-size: 1.1rem;">{{ header_subtitle }}</p>
     </div>
 </div>
@@ -215,7 +262,7 @@
         <i class="fas fa-filter" style="color: var(--gray);"></i>
         <span style="font-weight: 600;">Analyser :</span>
     </div>
-    
+
     <select name="pollutant" class="select-premium" onchange="this.form.submit()">
         <option value="iqa" {% if selected_pollutant == 'iqa' %}selected{% endif %}>Indice Qualité Air (IQA)</option>
         <option value="pm25" {% if selected_pollutant == 'pm25' %}selected{% endif %}>PM2.5</option>
@@ -232,14 +279,16 @@
     <select name="station" class="select-premium" onchange="this.form.submit()">
         <option value="">Toutes les stations</option>
         {% for s in stations %}
-        <option value="{{ s.id }}" {% if selected_station == s.id|stringformat:"s" %}selected{% endif %}>{{ s.name }}</option>
+        <option value="{{ s.id }}" {% if selected_station == s.id|stringformat:"s" %}selected{% endif %}>{{ s.name }}
+        </option>
         {% endfor %}
     </select>
 </form>
 
 <!-- Smart Insight Box -->
 <div class="insight-card insight-{{ insight_type }}">
-    <div style="width: 45px; height: 45px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+    <div
+        style="width: 45px; height: 45px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
         <i class="fas fa-lightbulb"></i>
     </div>
     <div>
@@ -248,20 +297,24 @@
     </div>
 </div>
 
-<div class="grid-3 mb-4" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+<div class="grid-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2.5rem;">
     <div class="analysis-card">
         <div class="card-header-premium">
             <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">Tendances : {{ pollutant_name }}</h3>
-            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 0.4rem 0.8rem; border-radius: 0.75rem; font-size: 0.65rem; font-weight: 800; text-transform: uppercase;">Annuel</span>
+            <span class="badge"
+                style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 0.4rem 0.8rem; border-radius: 0.75rem; font-size: 0.65rem; font-weight: 800; text-transform: uppercase;">Annuel</span>
         </div>
         <div class="card-body" style="padding: 0;">
             <div class="chart-container" style="height: 250px;">
                 <canvas id="trendsChart"></canvas>
             </div>
         </div>
-        <div class="card-footer-premium" style="padding: 1rem; border-top: 1px solid var(--border-color); background: rgba(16, 185, 129, 0.02);">
-            <h5 style="font-size: 0.8rem; font-weight: 700; color: #10b981; margin-bottom: 0.3rem;"><i class="fas fa-chart-line"></i> Analyse de Long Terme</h5>
-            <button class="btn-understand" onclick="openAnalysisModal('Analyse de Long Terme', '{{ pollutant_insights.long_terme|escapejs }}', '#10b981')">
+        <div class="card-footer-premium"
+            style="padding: 1rem; border-top: 1px solid var(--border-color); background: rgba(16, 185, 129, 0.02);">
+            <h5 style="font-size: 0.8rem; font-weight: 700; color: #10b981; margin-bottom: 0.3rem;"><i
+                    class="fas fa-chart-line"></i> Analyse de Long Terme</h5>
+            <button class="btn-understand"
+                onclick="openAnalysisModal('Analyse de Long Terme', '{{ pollutant_insights.long_terme|escapejs }}', '#10b981')">
                 <i class="fas fa-plus-circle"></i> Comprendre mieux l'analyse
             </button>
         </div>
@@ -271,16 +324,21 @@
     <div class="analysis-card">
         <div class="card-header-premium">
             <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">Cycle de 24h : {{ pollutant_name }}</h3>
-            <span class="badge" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; padding: 0.4rem 0.8rem; border-radius: 0.75rem; font-size: 0.65rem; font-weight: 800; text-transform: uppercase;">Cycle Circadien</span>
+            <span class="badge"
+                style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; padding: 0.4rem 0.8rem; border-radius: 0.75rem; font-size: 0.65rem; font-weight: 800; text-transform: uppercase;">Cycle
+                Circadien</span>
         </div>
         <div class="card-body" style="padding: 0;">
             <div class="chart-container" style="height: 250px;">
                 <canvas id="behavioralChart"></canvas>
             </div>
         </div>
-        <div class="card-footer-premium" style="padding: 1rem; border-top: 1px solid var(--border-color); background: rgba(139, 92, 246, 0.02);">
-            <h5 style="font-size: 0.8rem; font-weight: 700; color: #8b5cf6; margin-bottom: 0.3rem;"><i class="fas fa-info-circle"></i> Analyse Comportementale</h5>
-            <button class="btn-understand" onclick="openAnalysisModal('Analyse Comportementale', '{{ pollutant_insights.behavioral|escapejs }}', '#8b5cf6')">
+        <div class="card-footer-premium"
+            style="padding: 1rem; border-top: 1px solid var(--border-color); background: rgba(139, 92, 246, 0.02);">
+            <h5 style="font-size: 0.8rem; font-weight: 700; color: #8b5cf6; margin-bottom: 0.3rem;"><i
+                    class="fas fa-info-circle"></i> Analyse Comportementale</h5>
+            <button class="btn-understand"
+                onclick="openAnalysisModal('Analyse Comportementale', '{{ pollutant_insights.behavioral|escapejs }}', '#8b5cf6')">
                 <i class="fas fa-plus-circle"></i> Comprendre mieux l'analyse
             </button>
         </div>
@@ -290,16 +348,21 @@
     <div class="analysis-card">
         <div class="card-header-premium">
             <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">Corrélation {{ pollutant_name }} / Météo</h3>
-            <span class="badge" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 0.4rem 0.8rem; border-radius: 0.75rem; font-size: 0.65rem; font-weight: 800; text-transform: uppercase;">30 Jours</span>
+            <span class="badge"
+                style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 0.4rem 0.8rem; border-radius: 0.75rem; font-size: 0.65rem; font-weight: 800; text-transform: uppercase;">30
+                Jours</span>
         </div>
         <div class="card-body" style="padding: 0;">
             <div class="chart-container" style="height: 250px;">
                 <canvas id="correlationChart"></canvas>
             </div>
         </div>
-        <div class="card-footer-premium" style="padding: 1rem; border-top: 1px solid var(--border-color); background: rgba(59, 130, 246, 0.02);">
-            <h5 style="font-size: 0.8rem; font-weight: 700; color: #3b82f6; margin-bottom: 0.3rem;"><i class="fas fa-info-circle"></i> Impact Naturel</h5>
-            <button class="btn-understand" onclick="openAnalysisModal('Impact Naturel & Corrélation', '{{ pollutant_insights.natural|escapejs }}', '#3b82f6')">
+        <div class="card-footer-premium"
+            style="padding: 1rem; border-top: 1px solid var(--border-color); background: rgba(59, 130, 246, 0.02);">
+            <h5 style="font-size: 0.8rem; font-weight: 700; color: #3b82f6; margin-bottom: 0.3rem;"><i
+                    class="fas fa-info-circle"></i> Impact Naturel</h5>
+            <button class="btn-understand"
+                onclick="openAnalysisModal('Impact Naturel & Corrélation', '{{ pollutant_insights.natural|escapejs }}', '#3b82f6')">
                 <i class="fas fa-plus-circle"></i> Comprendre mieux l'analyse
             </button>
         </div>
@@ -307,7 +370,7 @@
 </div>
 
 <!-- Heatmap Temporelle -->
-<div class="analysis-card mb-4" style="height: auto; position: relative;">
+<div class="analysis-card" style="height: auto; position: relative; margin-bottom: 2.5rem;">
     <div class="card-header-premium">
         <div style="display: flex; align-items: center; gap: 10px;">
             <i class="fas fa-history" style="color: var(--primary);"></i>
@@ -315,37 +378,46 @@
                 <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0;">Heatmap : {{ pollutant_name }} (24h)</h3>
             </div>
         </div>
-        
-        <div id="selected-time-display" style="font-weight: 600; color: var(--primary-dark); background: var(--primary-light); padding: 0.3rem 0.75rem; border-radius: 0.5rem;">
+
+        <div id="selected-time-display"
+            style="font-weight: 600; color: var(--primary-dark); background: var(--primary-light); padding: 0.3rem 0.75rem; border-radius: 0.5rem;">
             Temps Réel
         </div>
     </div>
-    
+
     <div class="card-body" style="padding: 0;">
         <div id="heatmap"></div>
     </div>
-    
-    <div class="card-footer-premium" style="padding: 1.5rem; border-top: 1px solid var(--border-color); background: rgba(16, 185, 129, 0.02);">
-        <h5 style="font-size: 0.9rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.5rem;"><i class="fas fa-microscope"></i> Analyse Spatiale Avancée (Caméra Thermique)</h5>
+
+    <div class="card-footer-premium"
+        style="padding: 1.5rem; border-top: 1px solid var(--border-color); background: rgba(16, 185, 129, 0.02);">
+        <h5 style="font-size: 0.9rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.5rem;"><i
+                class="fas fa-microscope"></i> Analyse Spatiale Avancée (Caméra Thermique)</h5>
         <div class="grid-2" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; align-items: center;">
             <div>
-                <button class="btn-understand" onclick="openAnalysisModal('Analyse Spatiale Avancée', '{{ pollutant_insights.spatial|escapejs }}', '#10b981')">
+                <button class="btn-understand"
+                    onclick="openAnalysisModal('Analyse Spatiale Avancée', '{{ pollutant_insights.spatial|escapejs }}', '#10b981')">
                     <i class="fas fa-plus-circle"></i> Comprendre mieux l'analyse
                 </button>
             </div>
-            <div style="background: white; padding: 1rem; border-radius: 0.75rem; border: 1px solid var(--border-color); box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);">
-                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 700; color: var(--gray); margin-bottom: 5px;">
+            <div
+                style="background: white; padding: 1rem; border-radius: 0.75rem; border: 1px solid var(--border-color); box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);">
+                <div
+                    style="display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 700; color: var(--gray); margin-bottom: 5px;">
                     <span>{{ pollutant_insights.scale.min|upper }}</span>
                     <span>{{ pollutant_insights.scale.max|upper }}</span>
                 </div>
-                <div style="height: 10px; width: 100%; border-radius: 5px; background: linear-gradient(to right, #00ffff, #00ff00, #ffff00, #ff8000, #ff0000);"></div>
+                <div
+                    style="height: 10px; width: 100%; border-radius: 5px; background: linear-gradient(to right, #00ffff, #00ff00, #ffff00, #ff8000, #ff0000);">
+                </div>
             </div>
         </div>
     </div>
     <div class="time-slider-container">
         <i class="fas fa-clock" style="color: var(--gray);"></i>
         <input type="range" id="time-slider" min="0" max="23" value="23" step="1">
-        <button id="play-btn" class="btn btn-outline" style="padding: 0.4rem; width: 35px; height: 35px; border-radius: 50%;">
+        <button id="play-btn" class="btn btn-outline"
+            style="padding: 0.4rem; width: 35px; height: 35px; border-radius: 50%;">
             <i class="fas fa-play"></i>
         </button>
     </div>
@@ -355,15 +427,21 @@
 <div id="analysisModal" class="analysis-modal-overlay" onclick="closeAnalysisModal()">
     <div class="analysis-modal" onclick="event.stopPropagation()">
         <button class="modal-close" onclick="closeAnalysisModal()"><i class="fas fa-times"></i></button>
-        
+
         <div class="modal-header-premium">
-            <div class="modal-icon-container" style="position: absolute; top: -25px; left: 2.5rem; width: 70px; height: 70px; border-radius: 1.5rem; background: white; display: flex; align-items: center; justify-content: center; color: var(--primary); box-shadow: 0 15px 35px rgba(0,0,0,0.15); border: 4px solid var(--primary-light);">
+            <div class="modal-icon-container"
+                style="position: absolute; top: -25px; left: 2.5rem; width: 70px; height: 70px; border-radius: 1.5rem; background: white; display: flex; align-items: center; justify-content: center; color: var(--primary); box-shadow: 0 15px 35px rgba(0,0,0,0.15); border: 4px solid var(--primary-light);">
                 <i class="fas fa-brain fa-2xl"></i>
             </div>
-            <h3 id="modalTitle" style="margin: 0.5rem 0 0 0; font-size: 1.8rem; font-weight: 800; color: white; letter-spacing: -0.5px;">Analyse d'Expert</h3>
+            <h3 id="modalTitle"
+                style="margin: 0.5rem 0 0 0; font-size: 1.8rem; font-weight: 800; color: white; letter-spacing: -0.5px;">
+                Analyse d'Expert</h3>
             <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; opacity: 0.9;">
-                <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Intelligence EcoWatch IA</span>
-                <span style="padding: 2px 8px; background: rgba(255,255,255,0.2); border-radius: 4px; font-size: 0.65rem; font-weight: 800;">LIVE</span>
+                <span
+                    style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Intelligence
+                    EcoWatch IA</span>
+                <span
+                    style="padding: 2px 8px; background: rgba(255,255,255,0.2); border-radius: 4px; font-size: 0.65rem; font-weight: 800;">LIVE</span>
             </div>
         </div>
 
@@ -371,10 +449,14 @@
             <div id="modalBody" style="font-size: 1.15rem; color: #cbd5e1; line-height: 1.7; font-weight: 500;">
                 <!-- Contenu dynamique -->
             </div>
-            
-            <div style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: flex-end; align-items: center; gap: 1.5rem;">
-                <span style="font-size: 0.8rem; color: #64748b; font-style: italic;">Basé sur l'apprentissage profond</span>
-                <button class="btn btn-primary" onclick="closeAnalysisModal()" style="border-radius: 3rem; padding: 0.8rem 2.5rem; font-weight: 700; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">J'ai compris</button>
+
+            <div
+                style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: flex-end; align-items: center; gap: 1.5rem;">
+                <span style="font-size: 0.8rem; color: #64748b; font-style: italic;">Basé sur l'apprentissage
+                    profond</span>
+                <button class="btn btn-primary" onclick="closeAnalysisModal()"
+                    style="border-radius: 3rem; padding: 0.8rem 2.5rem; font-weight: 700; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">J'ai
+                    compris</button>
             </div>
         </div>
     </div>
@@ -384,7 +466,8 @@
 
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
 
 <script>
@@ -392,15 +475,15 @@
     function openAnalysisModal(title, content, themeColor) {
         document.getElementById('modalTitle').innerText = title;
         document.getElementById('modalBody').innerHTML = content;
-        
+
         // Appliquer le thème dynamique
         const modal = document.getElementById('analysisModal');
         modal.style.setProperty('--modal-color', themeColor || '#10b981');
-        
+
         const iconContainer = modal.querySelector('.modal-icon-container');
         iconContainer.style.boxShadow = `0 0 25px ${(themeColor || '#10b981')}66`;
-        iconContainer.style.borderColor = (themeColor || '#10b981') + '66'; 
-        
+        iconContainer.style.borderColor = (themeColor || '#10b981') + '66';
+
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
@@ -486,18 +569,18 @@
 
     const fullHeatData = JSON.parse('{{ heatmap_24h|safe }}');
     // Augmentation du rayon et de l'opacité minimale pour le mode "thermique"
-    let heatLayer = L.heatLayer([], { 
-        radius: 45, 
-        blur: 15, 
-        max: 1.0, 
+    let heatLayer = L.heatLayer([], {
+        radius: 45,
+        blur: 15,
+        max: 1.0,
         minOpacity: 0.5, // Force la visibilité même pour les faibles valeurs
-        gradient: { 
+        gradient: {
             0.2: '#00ffff', // Cyan (Froid)
             0.4: '#00ff00', // Lime
             0.6: '#ffff00', // Jaune
             0.8: '#ff8000', // Orange
             1.0: '#ff0000'  // Rouge (Chaud)
-        } 
+        }
     }).addTo(map);
 
     function updateHeatmap(hourIndex) {
@@ -510,24 +593,24 @@
         const currentData = fullHeatData.filter(d => {
             const dDate = new Date(d.time);
             return dDate.getHours() === targetHour;
-        }).map(d => [d.lat, d.lng, d.iqa/200]); // Normalisation sur 200 (cohérent Dashboard)
+        }).map(d => [d.lat, d.lng, d.iqa / 200]); // Normalisation sur 200 (cohérent Dashboard)
 
         heatLayer.setLatLngs(currentData);
-        
+
         const hoursAgo = 23 - hourIndex;
         document.getElementById('selected-time-display').innerText = hoursAgo === 0 ? "Temps Réel" : `Il y a ${hoursAgo}h`;
     }
 
     const slider = document.getElementById('time-slider');
     slider.addEventListener('input', (e) => updateHeatmap(parseInt(e.target.value)));
-    
+
     // Initial load
     updateHeatmap(23);
 
     // Animation play
     let isPlaying = false;
     let playInterval;
-    document.getElementById('play-btn').addEventListener('click', function() {
+    document.getElementById('play-btn').addEventListener('click', function () {
         const icon = this.querySelector('i');
         if (!isPlaying) {
             isPlaying = true;
@@ -580,4 +663,3 @@
     });
 </script>
 {% endblock %}
-

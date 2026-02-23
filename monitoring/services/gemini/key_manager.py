@@ -20,24 +20,26 @@ class GeminiKeyManager:
         
         # 1. Clé principale
         main_key = os.getenv('GOOGLE_GENAI_API_KEY')
-        if main_key:
+        if main_key and main_key != 'votre_cle_principale_ici':
             self.keys.append(main_key)
             
         # 2. Clés secondaires (GOOGLE_GENAI_API_KEY_2, _3, etc.)
-        # On cherche jusqu'à 10 clés potentielles
         for i in range(2, 11):
             key = os.getenv(f'GOOGLE_GENAI_API_KEY_{i}')
-            if key:
+            if key and 'votre' not in key:
                 self.keys.append(key)
                 
         if not self.keys:
-            logger.error("Aucune clé GOOGLE_GENAI_API_KEY trouvée dans l'environnement !")
-            raise ValueError("Aucune clé API Gemini configurée.")
+            logger.error("Aucune clé API Gemini valide trouvée dans l'environnement.")
+            # On ne lève plus d'exception ici pour permettre au serveur de démarrer
+            # mais on garde une liste vide.
             
         logger.info(f"GeminiKeyManager initialisé avec {len(self.keys)} clé(s).")
 
     def get_active_key(self):
         """Retourne la clé actuellement utilisée."""
+        if not self.keys:
+            return None
         return self.keys[self.current_key_index]
 
     def switch_key(self):

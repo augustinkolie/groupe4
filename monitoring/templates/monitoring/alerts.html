@@ -15,7 +15,7 @@
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     }
-    
+
     .premium-alert-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
@@ -30,13 +30,32 @@
         box-shadow: 0 0 10px currentColor;
     }
 
-    .status-active { background: #ef4444; color: #ef4444; animation: pulse-red 2s infinite; }
-    .status-resolved { background: #10b981; color: #10b981; }
+    .status-active {
+        background: #ef4444;
+        color: #ef4444;
+        animation: pulse-red 2s infinite;
+    }
+
+    .status-resolved {
+        background: #10b981;
+        color: #10b981;
+    }
 
     @keyframes pulse-red {
-        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-        70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        0% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        }
+
+        70% {
+            transform: scale(1);
+            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+        }
+
+        100% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+        }
     }
 
     .premium-tab-nav {
@@ -138,22 +157,30 @@
 
 {% block content %}
 <!-- Page Header Premium -->
-<div class="flex-between mb-4" style="padding: 2.5rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%); border-radius: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.1); position: relative; overflow: hidden;">
+<div class="flex-between"
+    style="padding: 2.5rem; margin-bottom: 2.5rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%); border-radius: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.1); position: relative; overflow: hidden;">
     <div>
-        <div style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
+        <div
+            style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
             <i class="fas fa-shield-virus" style="color: var(--primary); font-size: 0.9rem;"></i>
-            <span style="color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Sécurité & Vigilance</span>
+            <span
+                style="color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Sécurité
+                & Vigilance</span>
         </div>
-        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -1px; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Centre de Surveillance</h1>
-        <p style="color: var(--gray); font-size: 1.05rem; max-width: 600px; line-height: 1.6;">Configurez des seuils intelligents et recevez des notifications instantanées pour protéger la santé de votre communauté.</p>
+        <h1
+            style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -1px; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            Centre de Surveillance</h1>
+        <p style="color: var(--gray); font-size: 1.05rem; max-width: 600px; line-height: 1.6;">Configurez des seuils
+            intelligents et recevez des notifications instantanées pour protéger la santé de votre communauté.</p>
     </div>
 </div>
 
 <!-- Key Metrics -->
-<div class="grid-4 mb-4">
+<div class="grid-4" style="margin-bottom: 2rem;">
     <div class="premium-alert-card" style="padding: 1.5rem;">
         <div class="flex-between">
-            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; width: 50px; height: 50px; font-size: 1.5rem;">
+            <div class="stat-icon"
+                style="background: rgba(239, 68, 68, 0.1); color: #ef4444; width: 50px; height: 50px; font-size: 1.5rem;">
                 <i class="fas fa-bell"></i>
             </div>
             <div style="text-align: right;">
@@ -162,10 +189,11 @@
             </div>
         </div>
     </div>
-    
+
     <div class="premium-alert-card" style="padding: 1.5rem;">
         <div class="flex-between">
-            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; width: 50px; height: 50px; font-size: 1.5rem;">
+            <div class="stat-icon"
+                style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; width: 50px; height: 50px; font-size: 1.5rem;">
                 <i class="fas fa-bolt"></i>
             </div>
             <div style="text-align: right;">
@@ -177,7 +205,8 @@
 
     <div class="premium-alert-card" style="padding: 1.5rem;">
         <div class="flex-between">
-            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; width: 50px; height: 50px; font-size: 1.5rem;">
+            <div class="stat-icon"
+                style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; width: 50px; height: 50px; font-size: 1.5rem;">
                 <i class="fas fa-calendar-alt"></i>
             </div>
             <div style="text-align: right;">
@@ -189,7 +218,8 @@
 
     <div class="premium-alert-card" style="padding: 1.5rem;">
         <div class="flex-between">
-            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981; width: 50px; height: 50px; font-size: 1.5rem;">
+            <div class="stat-icon"
+                style="background: rgba(16, 185, 129, 0.1); color: #10b981; width: 50px; height: 50px; font-size: 1.5rem;">
                 <i class="fas fa-cog"></i>
             </div>
             <div style="text-align: right;">
@@ -221,7 +251,8 @@
                 <div class="alerts-scroll-container">
                     {% for alert in alerts %}
                     <div class="notification-pill">
-                        <div class="stat-icon" style="flex-shrink: 0; background: var(--light); width: 42px; height: 42px; border-radius: 12px;">
+                        <div class="stat-icon"
+                            style="flex-shrink: 0; background: var(--light); width: 42px; height: 42px; border-radius: 12px;">
                             <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
                         </div>
                         <div style="flex-grow: 1;">
@@ -232,7 +263,8 @@
                             <p style="margin: 4px 0 0; color: var(--gray); font-size: 0.85rem; line-height: 1.4;">{{ alert.message }}</p>
                         </div>
                         <div style="display: flex; align-items: center; padding-left: 10px;">
-                            <span class="{% if alert.is_resolved %}status-resolved{% else %}status-active{% endif %} alert-status-dot"></span>
+                            <span
+                                class="{% if alert.is_resolved %}status-resolved{% else %}status-active{% endif %} alert-status-dot"></span>
                         </div>
                     </div>
                     {% endfor %}
@@ -243,12 +275,14 @@
                         <i class="fas fa-check-circle" style="color: var(--primary);"></i>
                     </div>
                     <h3 class="card-title">Environnement Sain</h3>
-                    <p style="color: var(--gray); margin-top: 0.5rem; max-width: 250px; margin-left: auto; margin-right: auto;">Aucune anomalie détectée. La qualité de l'air est conforme aux normes définies.</p>
+                    <p
+                        style="color: var(--gray); margin-top: 0.5rem; max-width: 250px; margin-left: auto; margin-right: auto;">
+                        Aucune anomalie détectée. La qualité de l'air est conforme aux normes définies.</p>
                 </div>
                 {% endif %}
             </div>
         </div>
-        
+
         <!-- Right Side: Legend and Current Configuration -->
         <div class="premium-alert-card" style="background: linear-gradient(to bottom, var(--white), var(--light));">
             <div class="card-header" style="border: none; padding: 1.5rem 1.5rem 0.5rem;">
@@ -257,29 +291,35 @@
             <div class="card-body" style="padding: 1.5rem;">
                 <!-- Legend -->
                 <div style="margin-bottom: 2rem;">
-                    <h4 style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-color); font-weight: 700;">Légende du Flux</h4>
+                    <h4 style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-color); font-weight: 700;">
+                        Légende du Flux</h4>
                     <div style="display: flex; flex-direction: column; gap: 15px;">
                         <div style="display: flex; align-items: center; gap: 12px; font-size: 0.85rem;">
                             <span class="status-active alert-status-dot" style="margin: 0; flex-shrink: 0;"></span>
-                            <span style="color: var(--gray);"><strong>Critique / Actif :</strong> Un seuil a été dépassé. Une intervention ou une vigilance est requise.</span>
+                            <span style="color: var(--gray);"><strong>Critique / Actif :</strong> Un seuil a été
+                                dépassé. Une intervention ou une vigilance est requise.</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 12px; font-size: 0.85rem;">
-                            <span class="status-resolved alert-status-dot" style="margin: 0; flex-shrink: 0; box-shadow: none;"></span>
-                            <span style="color: var(--gray);"><strong>Rétabli :</strong> La qualité de l'air est revenue sous les seuils de sécurité.</span>
+                            <span class="status-resolved alert-status-dot"
+                                style="margin: 0; flex-shrink: 0; box-shadow: none;"></span>
+                            <span style="color: var(--gray);"><strong>Rétabli :</strong> La qualité de l'air est revenue
+                                sous les seuils de sécurité.</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Active Thresholds Summary -->
                 <div style="margin-top: 1rem;">
-                    <h4 style="font-size: 0.9rem; margin-bottom: 1.25rem; color: var(--text-color); font-weight: 700; display: flex; align-items: center; gap: 10px; padding-left: 5px;">
+                    <h4
+                        style="font-size: 0.9rem; margin-bottom: 1.25rem; color: var(--text-color); font-weight: 700; display: flex; align-items: center; gap: 10px; padding-left: 5px;">
                         <i class="fas fa-microchip" style="color: var(--primary);"></i>
                         Seuils de Déclenchement
                     </h4>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                         <!-- IQA -->
                         <div class="premium-stat-card" style="padding: 1rem; background: white;">
-                            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--primary); width: 38px; height: 38px; font-size: 1.1rem;">
+                            <div class="stat-icon"
+                                style="background: rgba(16, 185, 129, 0.1); color: var(--primary); width: 38px; height: 38px; font-size: 1.1rem;">
                                 <i class="fas fa-leaf"></i>
                             </div>
                             <div class="stat-content">
@@ -289,7 +329,8 @@
                         </div>
                         <!-- PM2.5 -->
                         <div class="premium-stat-card" style="padding: 1rem; background: white;">
-                            <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; width: 38px; height: 38px; font-size: 1.1rem;">
+                            <div class="stat-icon"
+                                style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; width: 38px; height: 38px; font-size: 1.1rem;">
                                 <i class="fas fa-atom"></i>
                             </div>
                             <div class="stat-content">
@@ -299,7 +340,8 @@
                         </div>
                         <!-- CO -->
                         <div class="premium-stat-card" style="padding: 1rem; background: white;">
-                            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); width: 38px; height: 38px; font-size: 1.1rem;">
+                            <div class="stat-icon"
+                                style="background: rgba(239, 68, 68, 0.1); color: var(--danger); width: 38px; height: 38px; font-size: 1.1rem;">
                                 <i class="fas fa-burn"></i>
                             </div>
                             <div class="stat-content">
@@ -309,7 +351,8 @@
                         </div>
                         <!-- Temp -->
                         <div class="premium-stat-card" style="padding: 1rem; background: white;">
-                            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; width: 38px; height: 38px; font-size: 1.1rem;">
+                            <div class="stat-icon"
+                                style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; width: 38px; height: 38px; font-size: 1.1rem;">
                                 <i class="fas fa-thermometer-half"></i>
                             </div>
                             <div class="stat-content">
@@ -318,7 +361,8 @@
                             </div>
                         </div>
                     </div>
-                    <p style="margin-top: 1.25rem; font-size: 0.75rem; color: var(--gray); text-align: center; font-style: italic; opacity: 0.8;">
+                    <p
+                        style="margin-top: 1.25rem; font-size: 0.75rem; color: var(--gray); text-align: center; font-style: italic; opacity: 0.8;">
                         <i class="fas fa-info-circle" style="margin-right: 4px;"></i>
                         Ces seuils sont modifiables dans l'onglet Configuration.
                     </p>
@@ -338,12 +382,14 @@
                 Compare le volume d'alertes par localité pour identifier les zones les plus exposées.
             </p>
             <div class="card-body" style="padding: 0 1.5rem 1rem; height: 300px; position: relative;">
-                 <canvas id="stationChart"></canvas>
+                <canvas id="stationChart"></canvas>
             </div>
-            <div style="padding: 0 1.5rem 1.5rem; background: var(--light); margin: 0 1rem 1rem; border-radius: 0.75rem; font-size: 0.8rem;">
+            <div
+                style="padding: 0 1.5rem 1.5rem; background: var(--light); margin: 0 1rem 1rem; border-radius: 0.75rem; font-size: 0.8rem;">
                 <p style="margin: 0; padding: 0.75rem; color: var(--text-color);">
                     <i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i>
-                    <strong>Comment lire :</strong> Chaque barre représente une station. Plus la barre est haute, plus la pollution dépasse souvent les seuils dans cette zone.
+                    <strong>Comment lire :</strong> Chaque barre représente une station. Plus la barre est haute, plus
+                    la pollution dépasse souvent les seuils dans cette zone.
                 </p>
             </div>
         </div>
@@ -355,12 +401,14 @@
                 Analyse l'évolution temporelle pour détecter des cycles ou des pics de pollution anormaux.
             </p>
             <div class="card-body" style="padding: 0 1.5rem 1rem; height: 300px; position: relative;">
-                 <canvas id="timeChart"></canvas>
+                <canvas id="timeChart"></canvas>
             </div>
-            <div style="padding: 0 1.5rem 1.5rem; background: var(--light); margin: 0 1rem 1rem; border-radius: 0.75rem; font-size: 0.8rem;">
+            <div
+                style="padding: 0 1.5rem 1.5rem; background: var(--light); margin: 0 1rem 1rem; border-radius: 0.75rem; font-size: 0.8rem;">
                 <p style="margin: 0; padding: 0.75rem; color: var(--text-color);">
                     <i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i>
-                    <strong>Comment lire :</strong> La courbe monte lorsqu'il y a eu plusieurs alertes ce jour-là. Un pic indique un événement de pollution majeur.
+                    <strong>Comment lire :</strong> La courbe monte lorsqu'il y a eu plusieurs alertes ce jour-là. Un
+                    pic indique un événement de pollution majeur.
                 </p>
             </div>
         </div>
@@ -383,140 +431,131 @@
                 <div class="grid-2">
                     <div class="premium-form-group">
                         <label class="premium-label">Seuil IQA</label>
-                        <input type="number" name="iqa_threshold" class="premium-control" placeholder="100" value="{{ rule.iqa_threshold|default:'' }}">
+                        <input type="number" name="iqa_threshold" class="premium-control" placeholder="100"
+                            value="{{ rule.iqa_threshold|default:'' }}">
                     </div>
                     <div class="premium-form-group">
                         <label class="premium-label">PM2.5 (µg/m³)</label>
-                        <input type="number" step="0.1" name="pm25_threshold" class="premium-control" placeholder="35.0" value="{{ rule.pm25_threshold|default:'' }}">
-                    </div>
-                </div>
-                
-                <div class="grid-2">
-                    <div class="premium-form-group">
-                        <label class="premium-label">CO (µg/m³)</label>
-                        <input type="number" step="0.1" name="co_threshold" class="premium-control" placeholder="10.0" value="{{ rule.co_threshold|default:'' }}">
-                    </div>
-                    <div class="premium-form-group">
-                        <label class="premium-label">Temp. Max (°C)</label>
-                        <input type="number" step="0.1" name="temp_threshold" class="premium-control" placeholder="40.0" value="{{ rule.temperature_threshold|default:'' }}">
+                        <input type="number" step="0.1" name="pm25_threshold" class="premium-control" placeholder="35.0"
+                            value="{{ rule.pm25_threshold|default:'' }}">
                     </div>
                 </div>
 
-                <div style="background: var(--light); border-radius: 1.25rem; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border-color);">
-                    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--text-color); display: flex; align-items: center; gap: 10px;">
+                <div class="grid-2">
+                    <div class="premium-form-group">
+                        <label class="premium-label">CO (µg/m³)</label>
+                        <input type="number" step="0.1" name="co_threshold" class="premium-control" placeholder="10.0"
+                            value="{{ rule.co_threshold|default:'' }}">
+                    </div>
+                    <div class="premium-form-group">
+                        <label class="premium-label">Temp. Max (°C)</label>
+                        <input type="number" step="0.1" name="temp_threshold" class="premium-control" placeholder="40.0"
+                            value="{{ rule.temperature_threshold|default:'' }}">
+                    </div>
+                </div>
+
+                <div
+                    style="background: var(--light); border-radius: 1.25rem; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border-color);">
+                    <h4
+                        style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--text-color); display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-paper-plane" style="color: var(--primary);"></i>
                         Notifications Multi-Canaux
                     </h4>
-                    
+
                     <div class="premium-form-group">
-                        <input type="email" name="email" class="premium-control" style="background: white;" placeholder="adresse@email.com" value="{{ rule.email_address|default:'' }}">
+                        <input type="email" name="email" class="premium-control" style="background: white;"
+                            placeholder="adresse@email.com" value="{{ rule.email_address|default:'' }}">
                     </div>
-                    
+
                     <div style="display: flex; gap: 1.5rem; margin-top: 1.25rem; padding-left: 5px;">
-                        <label class="flex items-center gap-2 cursor-pointer" style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" name="email_notif" style="width: 20px; height: 20px; accent-color: var(--primary);" {% if rule.email_notification %}checked{% endif %}>
+                        <label class="flex items-center gap-2 cursor-pointer"
+                            style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" name="email_notif"
+                                style="width: 20px; height: 20px; accent-color: var(--primary);" {% if rule.email_notification %}checked{% endif %}>
                             <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-color);">Email</span>
                         </label>
-                        <label class="flex items-center gap-2 cursor-pointer" style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" name="sms_notif" style="width: 20px; height: 20px; accent-color: var(--primary);" {% if rule.sms_notification %}checked{% endif %}>
+                        <label class="flex items-center gap-2 cursor-pointer"
+                            style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" name="sms_notif"
+                                style="width: 20px; height: 20px; accent-color: var(--primary);" {% if rule.sms_notification %}checked{% endif %}>
                             <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-color);">SMS</span>
                         </label>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1.2rem; border-radius: 1.25rem; font-size: 1.05rem; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);">
+                <button type="submit" class="btn btn-primary"
+                    style="width: 100%; justify-content: center; padding: 1.2rem; border-radius: 1.25rem; font-size: 1.05rem; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);">
                     <i class="fas fa-check-circle"></i>
                     Sauvegarder les Paramètres
                 </button>
             </div>
         </form>
     </div>
-</div>
+</section>
 
 <script>
-function switchTab(tabId, el) {
-    document.querySelectorAll('.tab-content').forEach(content => {
-        content.style.display = 'none';
+    function switchTab(tabId, el                    document.querySelectorAll('.tab-content').forEach(c > {
+        content.styl        spla        'none';
     });
-    document.getElementById('section-' + tabId).style.display = 'block';
-    document.querySelectorAll('.premium-tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    el.classList.add('active');
-}
+    document.getElementById('section-        tabId).style.display = 'block';
+            document.querySelec.premium - tab - btn').forEach(btn =                            btn.classList.remove    ('a    ctive');
+            });
+    el.classList.add('acti        ;
+        }
 
-document.addEventListener('DOMContentLoaded', function() {
-    // 1. Data Loading
-    const stationDataScript = document.getElementById('station-data');
-    const dayDataScript = document.getElementById('day-data');
-    
-    if (stationDataScript && dayDataScript) {
-        const stationData = JSON.parse(stationDataScript.textContent);
-        const dayData = JSON.parse(dayDataScript.textContent);
+        cument.addEventListener('DOMContentLoaded', function () {
+                 / 1. Data Loading
+            const stationDataScript = doct        ElementById('station-data');
+            c            DataScript = document.getElementById('day-data');
 
-        // 2. Station Chart (Bar)
-        const ctxStation = document.getElementById('stationChart').getContext('2d');
-        new Chart(ctxStation, {
-            type: 'bar',
-            data: {
-                labels: stationData.map(d => d.station__name),
-                datasets: [{
-                    label: 'Nombre d\'alertes',
-                    data: stationData.map(d => d.count),
-                    backgroundColor: '#10b981',
-                    borderRadius: 6,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { 
-                        beginAtZero: true, 
-                        grid: { color: 'rgba(0,0,0,0.05)' },
-                        ticks: { stepSize: 1 },
-                        title: { display: true, text: 'Alertes', font: { size: 10 } }
-                    },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
+            ionDataScript && dayDataScript) {
+        const             ata = JSON.parse(stationDa.textContent);
+        const dayData = JSON.parse(dayDataScript.textC
 
-        // 3. Time Chart (Line)
-        const ctxTime = document.getElementById('timeChart').getContext('2d');
-        new Chart(ctxTime, {
-            type: 'line',
-            data: {
-                labels: dayData.map(d => d.day),
-                datasets: [{
-                    label: 'Volume d\'alertes',
-                    data: dayData.map(d => d.count),
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#3b82f6',
-                    borderWidth: 3
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { 
-                        beginAtZero: true, 
-                        grid: { color: 'rgba(0,0,0,0.05)' },
-                        ticks: { stepSize: 1 },
-                        title: { display: true, text: 'Volume', font: { size: 10 } }
-                    },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
+                // 2.                 t (Bar)
+                     onst ctx                    nt.getElementById('stationChart').getContext('2                         new Char                                        type: 'bar',                         data: {
+                        labe                        d => d.station__name),
+            atasets: [{
+                Nom                es',
+                                data: statio                    .count),
+        undColor: '#10b981',
+        dius: 6,
     }
-});
+                                              o                                      responsive: true,
+        spectRatio: false,
+        ns: { legend: { display: false } },
+        sc                                                                                 be                    
+                                                : {
+            color: 'rgba(0,0,0,0            
+                                ticks: { stepSize: 1 },
+            title: {
+                di                 text: 'Alerte                size: 10                                     },
+                                 : {
+        grid: { d }
+    });
+
+                                      Line)
+                co                        nt.getElementById('timeChart').getContext('2                         new Chart(c                                  type                                  data:                               labels: dayData.map(d => d.                                  datas                                                          lume d\'ale                                                          ap(d => d.count),
+                                borderColor: '#3b82f6',
+        kgroundCol                        46, .fill: tru, tension: 0.4,
+                                              ,
+        or: '#3b82f6',
+        borderWidth: 3
+                            }]                         },
+        options: po            rue, tainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+        y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(0,0,0,0.05)' },
+            ticks: { stepSize: 1 },
+            title: { display: true, text: 'Volume', font: { size: 10 } }
+        },
+        x: { grid: { display: false } }
+    }
+                    }
+                });
+            }
+        });
 </script>
 {% endblock %}

@@ -41,25 +41,34 @@
 
 {% block content %}
 <!-- Page Header Premium -->
-<div class="flex-between mb-4" style="padding: 2rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%); border-radius: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.1);">
+<div class="flex-between"
+    style="padding: 2rem; margin-bottom: 2.5rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%); border-radius: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.1);">
     <div>
-        <div style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
+        <div
+            style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
             <i class="fas fa-chart-line" style="color: var(--primary); font-size: 0.9rem;"></i>
-            <span style="color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Analytique Avancée</span>
+            <span
+                style="color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Analytique
+                Avancée</span>
         </div>
-        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -1px; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Rapports & Analyses</h1>
-        <p style="color: var(--gray); font-size: 1.05rem; max-width: 600px; line-height: 1.6;">Générez des rapports professionnels et exportez vos données environnementales en quelques clics.</p>
+        <h1
+            style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -1px; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            Rapports & Analyses</h1>
+        <p style="color: var(--gray); font-size: 1.05rem; max-width: 600px; line-height: 1.6;">Générez des rapports
+            professionnels et exportez vos données environnementales en quelques clics.</p>
     </div>
 </div>
 
 <!-- Stats Overview Premium -->
-<div class="grid-4 mb-4" style="gap: 1.25rem;">
+<div class="grid-4" style="gap: 1.25rem; margin-bottom: 2rem;">
     <div class="premium-stat-card">
         <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--primary);">
             <i class="fas fa-file-contract"></i>
         </div>
         <div class="stat-content">
-            <div class="stat-value" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">{{ total_reports }}</div>
+            <div class="stat-value"
+                style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                {{ total_reports }}</div>
             <div class="stat-label">Rapports Générés</div>
         </div>
     </div>
@@ -68,7 +77,9 @@
             <i class="fas fa-download"></i>
         </div>
         <div class="stat-content">
-            <div class="stat-value" style="background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">{{ total_exports }}</div>
+            <div class="stat-value"
+                style="background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                {{ total_exports }}</div>
             <div class="stat-label">Exports ce Mois</div>
         </div>
     </div>
@@ -77,7 +88,9 @@
             <i class="fas fa-database"></i>
         </div>
         <div class="stat-content">
-            <div class="stat-value" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">{{ total_readings|default:0 }}</div>
+            <div class="stat-value"
+                style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                {{ total_readings|default:0 }}</div>
             <div class="stat-label">Total Relevés</div>
         </div>
     </div>
@@ -86,7 +99,9 @@
             <i class="fas fa-map-marker-alt"></i>
         </div>
         <div class="stat-content">
-            <div class="stat-value" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">{{ stations.count }}</div>
+            <div class="stat-value"
+                style="background: linear-gradient(135deg, #059669 0%, #047857 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                {{ stations.count }}</div>
             <div class="stat-label">Stations Actives</div>
         </div>
     </div>
@@ -99,28 +114,36 @@
     <div class="card" style="animation-delay: 0.1s;">
         <div class="card-header" style="padding: 1.75rem 1.5rem; border-bottom: 1px solid var(--gray-light);">
             <div>
-                <h3 class="card-title" style="font-size: 1.35rem; margin-bottom: 0.5rem; font-weight: 800;">Paramétrer Nouveau Rapport</h3>
-                <p style="color: var(--gray); font-size: 0.9rem; margin: 0;">Configurez et générez des analyses détaillées sur mesure</p>
+                <h3 class="card-title" style="font-size: 1.35rem; margin-bottom: 0.5rem; font-weight: 800;">Paramétrer
+                    Nouveau Rapport</h3>
+                <p style="color: var(--gray); font-size: 0.9rem; margin: 0;">Configurez et générez des analyses
+                    détaillées sur mesure</p>
             </div>
         </div>
         <div class="card-body" style="padding: 0;">
             <form id="reportForm" method="post" action="{% url 'generate_report' %}" style="margin: 0;">
                 {% csrf_token %}
-                
+
                 <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: stretch;">
                     <!-- Colonne Gauche : Configuration Rapport (Colorée dans l'image) -->
-                    <div style="padding: 2.5rem; border-right: 1px solid var(--gray-light); display: flex; flex-direction: column;">
+                    <div
+                        style="padding: 2.5rem; border-right: 1px solid var(--gray-light); display: flex; flex-direction: column;">
                         <div class="premium-form-group" style="margin-bottom: 2.5rem;">
-                            <label class="premium-label" style="color: var(--text-color); font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
-                                <div style="width: 32px; height: 32px; background: var(--primary-light); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <label class="premium-label"
+                                style="color: var(--text-color); font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                                <div
+                                    style="width: 32px; height: 32px; background: var(--primary-light); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                                     <i class="fas fa-sliders-h" style="color: var(--primary); font-size: 0.9rem;"></i>
                                 </div>
                                 1. Configuration Générale
                             </label>
-                            
+
                             <div style="margin-bottom: 1.5rem;">
-                                <label style="display: block; font-size: 0.8rem; color: var(--gray); margin-bottom: 0.6rem; font-weight: 700; text-transform: uppercase;">Type de rapport</label>
-                                <select class="premium-control form-select" name="report_type" id="reportType" style="height: 50px; font-size: 0.95rem; background-color: var(--card-bg);">
+                                <label
+                                    style="display: block; font-size: 0.8rem; color: var(--gray); margin-bottom: 0.6rem; font-weight: 700; text-transform: uppercase;">Type
+                                    de rapport</label>
+                                <select class="premium-control form-select" name="report_type" id="reportType"
+                                    style="height: 50px; font-size: 0.95rem; background-color: var(--card-bg);">
                                     <option value="DAILY">Rapport Quotidien</option>
                                     <option value="WEEKLY">Rapport Hebdomadaire</option>
                                     <option value="MONTHLY">Rapport Mensuel</option>
@@ -131,19 +154,25 @@
 
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                                 <div>
-                                    <label style="display: block; font-size: 0.8rem; color: var(--gray); margin-bottom: 0.6rem; font-weight: 700; text-transform: uppercase;">Début</label>
-                                    <input type="date" class="premium-control" name="start_date" id="startDate" required style="font-size: 0.9rem; height: 45px; background-color: var(--card-bg);">
+                                    <label
+                                        style="display: block; font-size: 0.8rem; color: var(--gray); margin-bottom: 0.6rem; font-weight: 700; text-transform: uppercase;">Début</label>
+                                    <input type="date" class="premium-control" name="start_date" id="startDate" required
+                                        style="font-size: 0.9rem; height: 45px; background-color: var(--card-bg);">
                                 </div>
                                 <div>
-                                    <label style="display: block; font-size: 0.8rem; color: var(--gray); margin-bottom: 0.6rem; font-weight: 700; text-transform: uppercase;">Fin</label>
-                                    <input type="date" class="premium-control" name="end_date" id="endDate" required style="font-size: 0.9rem; height: 45px; background-color: var(--card-bg);">
+                                    <label
+                                        style="display: block; font-size: 0.8rem; color: var(--gray); margin-bottom: 0.6rem; font-weight: 700; text-transform: uppercase;">Fin</label>
+                                    <input type="date" class="premium-control" name="end_date" id="endDate" required
+                                        style="font-size: 0.9rem; height: 45px; background-color: var(--card-bg);">
                                 </div>
                             </div>
                         </div>
 
                         <div class="premium-form-group" style="margin-bottom: 3rem;">
-                            <label class="premium-label" style="color: var(--text-color); font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
-                                <div style="width: 32px; height: 32px; background: var(--primary-light); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <label class="premium-label"
+                                style="color: var(--text-color); font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                                <div
+                                    style="width: 32px; height: 32px; background: var(--primary-light); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                                     <i class="fas fa-file-export" style="color: var(--primary); font-size: 0.9rem;"></i>
                                 </div>
                                 2. Format d'Exportation
@@ -152,7 +181,8 @@
                                 <label class="format-option-card">
                                     <input type="radio" name="format" value="PDF" checked>
                                     <div class="format-card-content">
-                                        <div class="format-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                                        <div class="format-icon"
+                                            style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
                                             <i class="fas fa-file-pdf"></i>
                                         </div>
                                         <div class="format-text">
@@ -164,7 +194,8 @@
                                 <label class="format-option-card">
                                     <input type="radio" name="format" value="EXCEL">
                                     <div class="format-card-content">
-                                        <div class="format-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                                        <div class="format-icon"
+                                            style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
                                             <i class="fas fa-file-excel"></i>
                                         </div>
                                         <div class="format-text">
@@ -178,7 +209,8 @@
 
                         <!-- Bouton de Génération Intégré (Dans la section gauche) -->
                         <div style="margin-top: auto; padding-top: 1rem;">
-                            <button type="submit" form="reportForm" class="btn btn-primary btn-lg" id="generateBtn" style="width: 100%; justify-content: center; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2); height: 55px; font-weight: 800; border-radius: 12px; font-size: 1rem;">
+                            <button type="submit" form="reportForm" class="btn btn-primary btn-lg" id="generateBtn"
+                                style="width: 100%; justify-content: center; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2); height: 55px; font-weight: 800; border-radius: 12px; font-size: 1rem;">
                                 <i class="fas fa-file-contract"></i>
                                 <span id="btnText">Lancer la Génération</span>
                             </button>
@@ -188,18 +220,24 @@
                     <!-- Colonne Droite : Données -->
                     <div style="padding: 2.5rem; display: flex; flex-direction: column;">
                         <div class="premium-form-group" style="margin-bottom: 2.5rem;">
-                            <label class="premium-label" style="color: var(--text-color); font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
-                                <div style="width: 32px; height: 32px; background: var(--primary-light); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-map-marked-alt" style="color: var(--primary); font-size: 0.9rem;"></i>
+                            <label class="premium-label"
+                                style="color: var(--text-color); font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                                <div
+                                    style="width: 32px; height: 32px; background: var(--primary-light); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-map-marked-alt"
+                                        style="color: var(--primary); font-size: 0.9rem;"></i>
                                 </div>
                                 3. Sélection des Stations
                             </label>
-                            <div class="station-selector-wrapper" style="border: 1px solid var(--gray-light); border-radius: 1rem; overflow: hidden;">
+                            <div class="station-selector-wrapper"
+                                style="border: 1px solid var(--gray-light); border-radius: 1rem; overflow: hidden;">
                                 <div class="station-search" style="border-bottom: 1px solid var(--gray-light);">
                                     <i class="fas fa-search" style="color: var(--gray);"></i>
-                                    <input type="text" placeholder="Filtrer les stations..." id="stationSearch" style="border: none;">
+                                    <input type="text" placeholder="Filtrer les stations..." id="stationSearch"
+                                        style="border: none;">
                                 </div>
-                                <div class="station-list-container" id="stationList" style="max-height: 160px; background: var(--card-bg);">
+                                <div class="station-list-container" id="stationList"
+                                    style="max-height: 160px; background: var(--card-bg);">
                                     {% for station in stations %}
                                     <label class="station-option">
                                         <input type="checkbox" name="stations" value="{{ station.id }}">
@@ -208,21 +246,28 @@
                                     {% endfor %}
                                 </div>
                             </div>
-                            <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
-                                <div style="color: var(--gray); font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem;">
+                            <div
+                                style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div
+                                    style="color: var(--gray); font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem;">
                                     <i class="fas fa-info-circle"></i>
                                     <span id="selectedCount">0 sélectionnée</span>
                                 </div>
-                                <button type="button" class="btn btn-outline btn-sm" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 0.6rem;" onclick="selectAllStations()">
+                                <button type="button" class="btn btn-outline btn-sm"
+                                    style="padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 0.6rem;"
+                                    onclick="selectAllStations()">
                                     Tout cocher
                                 </button>
                             </div>
                         </div>
 
                         <div class="premium-form-group" style="margin-bottom: 0;">
-                            <label class="premium-label" style="color: var(--text-color); font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
-                                <div style="width: 32px; height: 32px; background: var(--primary-light); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-check-double" style="color: var(--primary); font-size: 0.9rem;"></i>
+                            <label class="premium-label"
+                                style="color: var(--text-color); font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                                <div
+                                    style="width: 32px; height: 32px; background: var(--primary-light); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-check-double"
+                                        style="color: var(--primary); font-size: 0.9rem;"></i>
                                 </div>
                                 4. Indicateurs Inclus
                             </label>
@@ -282,28 +327,33 @@
                             {% for report in generated_reports %}
                             <tr>
                                 <td>
-                                    <span class="badge {% if report.format == 'PDF' %}badge-danger{% else %}badge-success{% endif %}" style="border-radius: 6.5px; font-size: 0.7rem; padding: 4px 10px; font-weight: 700;">
-                                        <i class="fas {% if report.format == 'PDF' %}fa-file-pdf{% else %}fa-file-excel{% endif %}" style="margin-right: 5px;"></i>
+                                    <span
+                                        class="badge {% if report.format == 'PDF' %}badge-danger{% else %}badge-success{% endif %}"
+                                        style="border-radius: 6.5px; font-size: 0.7rem; padding: 4px 10px; font-weight: 700;">
+                                        <i class="fas {% if report.format == 'PDF' %}fa-file-pdf{% else %}fa-file-excel{% endif %}"
+                                            style="margin-right: 5px;"></i>
                                         {{ report.format }}
                                     </span>
                                 </td>
                                 <td>
-                                    <span style="font-weight: 600; font-size: 0.9rem; color: var(--text-color);">{{ report.get_report_type_display }}</span>
+                                    <span style="font-weight: 600; font-size: 0.9rem; color: var(--text-color);">{{
+                                        report.get_report_type_display }}</span>
                                 </td>
                                 <td style="font-size: 0.85rem; color: var(--gray);">
                                     {{ report.start_date|date:"d/m/Y" }} - {{ report.end_date|date:"d/m/Y" }}
                                 </td>
                                 <td>
-                                    <span style="font-weight: 600; color: var(--primary); font-size: 0.9rem;">{{ report.stations_included|length }}</span> <span style="font-size: 0.8rem; color: var(--gray);">station{{ report.stations_included|length|pluralize }}</span>
+                                    <span style="font-weight: 600; color: var(--primary); font-size: 0.9rem;">{{
+                                        report.stations_included|length }}</span> <span
+                                        style="font-size: 0.8rem; color: var(--gray);">station{{
+                                        report.stations_included|length|pluralize }}</span>
                                 </td>
                                 <td style="font-size: 0.85rem; color: var(--gray);">
                                     {{ report.created_at|date:"d/m/Y à H:i" }}
                                 </td>
                                 <td style="text-align: right;">
-                                    <a href="/media/{{ report.file_path }}" 
-                                       download 
-                                       class="btn btn-primary" 
-                                       style="padding: 0.45rem 0.9rem; font-size: 0.8rem; border-radius: 8px;">
+                                    <a href="/media/{{ report.file_path }}" download class="btn btn-primary"
+                                        style="padding: 0.45rem 0.9rem; font-size: 0.8rem; border-radius: 8px;">
                                         <i class="fas fa-download"></i>
                                     </a>
                                 </td>
@@ -315,11 +365,14 @@
             </div>
             {% else %}
             <div class="premium-empty" style="padding: 4rem 2rem;">
-                <div class="premium-empty-icon" style="background: var(--light); width: 70px; height: 70px; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2rem; color: var(--border-color);">
+                <div class="premium-empty-icon"
+                    style="background: var(--light); width: 70px; height: 70px; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2rem; color: var(--border-color);">
                     <i class="fas fa-folder-open"></i>
                 </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem;">Aucun document archivé</h3>
-                <p style="color: var(--gray); max-width: 280px; margin: 0 auto; font-size: 0.9rem;">Vos rapports générés apparaîtront ici pour téléchargement ultérieur.</p>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem;">Aucun
+                    document archivé</h3>
+                <p style="color: var(--gray); max-width: 280px; margin: 0 auto; font-size: 0.9rem;">Vos rapports générés
+                    apparaîtront ici pour téléchargement ultérieur.</p>
             </div>
             {% endif %}
         </div>
@@ -327,9 +380,11 @@
 </div>
 
 <!-- Quick Export -->
-<div class="card" style="animation-delay: 0.3s; margin-top: 3rem; border: 1px solid var(--gray-light); border-top: none; background: var(--white); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); border-radius: 1.5rem;">
+<div class="card"
+    style="animation-delay: 0.3s; margin-top: 3rem; border: 1px solid var(--gray-light); border-top: none; background: var(--white); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); border-radius: 1.5rem;">
     <div class="card-header" style="background: transparent; border: none; padding: 2rem 2rem 0 2rem;">
-        <h3 class="card-title" style="font-size: 1.4rem; font-weight: 800; color: var(--dark); display: flex; align-items: center; gap: 0.75rem;">
+        <h3 class="card-title"
+            style="font-size: 1.4rem; font-weight: 800; color: var(--dark); display: flex; align-items: center; gap: 0.75rem;">
             <i class="fas fa-bolt" style="color: #f59e0b;"></i>
             Export Rapide des Données
         </h3>
@@ -337,7 +392,7 @@
             Extractions instantanées pour vos analyses externes
         </p>
     </div>
-    
+
     <div class="card-body" style="padding: 1.5rem 2rem 2.5rem 2rem;">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
             <!-- CSV Card -->
@@ -369,7 +424,8 @@
             </div>
 
             <!-- DB Card (Disabled) -->
-            <div class="export-premium-card disabled" style="opacity: 0.6; cursor: not-allowed; filter: grayscale(0.5);">
+            <div class="export-premium-card disabled"
+                style="opacity: 0.6; cursor: not-allowed; filter: grayscale(0.5);">
                 <div class="export-icon-wrapper" style="background: rgba(107, 114, 128, 0.1); color: #6b7280;">
                     <i class="fas fa-database"></i>
                 </div>
@@ -478,18 +534,18 @@
         background: var(--card-bg);
     }
 
-    .format-option-card input[type="radio"]:checked + .format-card-content {
+    .format-option-card input[type="radio"]:checked+.format-card-content {
         border-color: var(--primary);
         background: var(--primary-light);
         box-shadow: 0 8px 20px rgba(16, 185, 129, 0.12);
         transform: translateY(-2px);
     }
 
-    .format-option-card input[type="radio"]:checked + .format-card-content .title {
+    .format-option-card input[type="radio"]:checked+.format-card-content .title {
         color: var(--primary-dark);
     }
 
-    .format-option-card input[type="radio"]:checked + .format-card-content .desc {
+    .format-option-card input[type="radio"]:checked+.format-card-content .desc {
         color: var(--primary-dark);
         opacity: 0.8;
     }
@@ -547,13 +603,13 @@
         flex-shrink: 0;
     }
 
-    .indicator-checkbox-card input:checked + .check-box {
+    .indicator-checkbox-card input:checked+.check-box {
         background: var(--primary);
         border-color: var(--primary);
         box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
     }
 
-    .indicator-checkbox-card input:checked + .check-box::after {
+    .indicator-checkbox-card input:checked+.check-box::after {
         content: '\f00c';
         font-family: 'Font Awesome 5 Free';
         font-weight: 900;
@@ -597,20 +653,20 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Définir les dates par défaut (7 derniers jours)
         const endDate = new Date();
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - 7);
-        
+
         const startDateInput = document.getElementById('startDate');
         const endDateInput = document.getElementById('endDate');
-        
+
         if (startDateInput && endDateInput) {
             endDateInput.valueAsDate = endDate;
             startDateInput.valueAsDate = startDate;
         }
-        
+
         const stationSearch = document.getElementById('stationSearch');
         const stationList = document.getElementById('stationList');
         const stationOptions = stationList ? stationList.querySelectorAll('.station-option') : [];
@@ -618,27 +674,27 @@
         const reportForm = document.getElementById('reportForm');
         const generateBtn = document.getElementById('generateBtn');
         const btnText = document.getElementById('btnText');
-        
+
         // Handle form submission
         if (reportForm) {
-            reportForm.addEventListener('submit', function(e) {
+            reportForm.addEventListener('submit', function (e) {
                 e.preventDefault();
-                
+
                 // Validate stations selection
                 const checkedStations = stationList.querySelectorAll('input[name="stations"]:checked');
                 if (checkedStations.length === 0) {
                     showToast('Stations manquantes', 'Veuillez sélectionner au moins une station.', 'info');
                     return;
                 }
-                
+
                 // Show loading state
                 generateBtn.disabled = true;
                 btnText.textContent = 'Génération en cours...';
                 generateBtn.querySelector('i').className = 'fas fa-spinner fa-spin';
-                
+
                 // Prepare form data
                 const formData = new FormData(reportForm);
-                
+
                 // Send request
                 fetch(reportForm.action, {
                     method: 'POST',
@@ -647,124 +703,124 @@
                         'X-Requested-With': 'XMLHttpRequest'
                     }
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(errorData => {
-                            throw new Error(errorData.error || 'Erreur serveur');
-                        }).catch(() => {
-                            throw new Error('Erreur de génération (500)');
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success && data.url) {
-                        // Créer un lien de téléchargement invisible
-                        const a = document.createElement('a');
-                        a.href = data.url;
-                        a.download = data.filename || 'rapport.pdf';
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        
-                        // Reset button
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(errorData => {
+                                throw new Error(errorData.error || 'Erreur serveur');
+                            }).catch(() => {
+                                throw new Error('Erreur de génération (500)');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success && data.url) {
+                            // Créer un lien de téléchargement invisible
+                            const a = document.createElement('a');
+                            a.href = data.url;
+                            a.download = data.filename || 'rapport.pdf';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+
+                            // Reset button
+                            generateBtn.disabled = false;
+                            btnText.textContent = 'Lancer la Génération';
+                            generateBtn.querySelector('i').className = 'fas fa-file-contract';
+
+                            showToast('Succès', 'Le rapport a été généré avec succès ! Le téléchargement commence.', 'success');
+
+                            // Optionnel : recharger la page pour voir l'historique mis à jour
+                            // setTimeout(() => window.location.reload(), 1500);
+                        } else {
+                            throw new Error(data.error || 'Réponse invalide du serveur');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('Erreur', error.message, 'error');
                         generateBtn.disabled = false;
                         btnText.textContent = 'Lancer la Génération';
                         generateBtn.querySelector('i').className = 'fas fa-file-contract';
-                        
-                        showToast('Succès', 'Le rapport a été généré avec succès ! Le téléchargement commence.', 'success');
-                        
-                        // Optionnel : recharger la page pour voir l'historique mis à jour
-                        // setTimeout(() => window.location.reload(), 1500);
-                    } else {
-                        throw new Error(data.error || 'Réponse invalide du serveur');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('Erreur', error.message, 'error');
-                    generateBtn.disabled = false;
-                    btnText.textContent = 'Lancer la Génération';
-                    generateBtn.querySelector('i').className = 'fas fa-file-contract';
-                });
+                    });
             });
         }
-        
+
         // CSV Export
         const csvExportBtn = document.getElementById('csvExportBtn');
         if (csvExportBtn) {
-            csvExportBtn.addEventListener('click', function() {
+            csvExportBtn.addEventListener('click', function () {
                 this.disabled = true;
                 this.querySelector('i').className = 'fas fa-spinner fa-spin';
-                
+
                 fetch('{% url "export_csv" %}', {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': '{{ csrf_token }}'
                     }
                 })
-                .then(response => response.blob())
-                .then(blob => {
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `donnees_${new Date().toISOString().split('T')[0]}.csv`;
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    a.remove();
-                    
-                    this.disabled = false;
-                    this.querySelector('i').className = 'fas fa-file-csv';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('Erreur Export', 'Une erreur est survenue lors de l\'export CSV.', 'error');
-                    this.disabled = false;
-                    this.querySelector('i').className = 'fas fa-file-csv';
-                });
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `donnees_${new Date().toISOString().split('T')[0]}.csv`;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        a.remove();
+
+                        this.disabled = false;
+                        this.querySelector('i').className = 'fas fa-file-csv';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('Erreur Export', 'Une erreur est survenue lors de l\'export CSV.', 'error');
+                        this.disabled = false;
+                        this.querySelector('i').className = 'fas fa-file-csv';
+                    });
             });
         }
-        
+
         // Excel Export
         const excelExportBtn = document.getElementById('excelExportBtn');
         if (excelExportBtn) {
-            excelExportBtn.addEventListener('click', function() {
+            excelExportBtn.addEventListener('click', function () {
                 this.disabled = true;
                 this.querySelector('i').className = 'fas fa-spinner fa-spin';
-                
+
                 fetch('{% url "export_excel" %}', {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': '{{ csrf_token }}'
                     }
                 })
-                .then(response => response.blob())
-                .then(blob => {
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `donnees_${new Date().toISOString().split('T')[0]}.xlsx`;
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    a.remove();
-                    
-                    this.disabled = false;
-                    this.querySelector('i').className = 'fas fa-file-excel';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('Erreur Export', 'Une erreur est survenue lors de l\'export Excel.', 'error');
-                    this.disabled = false;
-                    this.querySelector('i').className = 'fas fa-file-excel';
-                });
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `donnees_${new Date().toISOString().split('T')[0]}.xlsx`;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        a.remove();
+
+                        this.disabled = false;
+                        this.querySelector('i').className = 'fas fa-file-excel';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('Erreur Export', 'Une erreur est survenue lors de l\'export Excel.', 'error');
+                        this.disabled = false;
+                        this.querySelector('i').className = 'fas fa-file-excel';
+                    });
             });
         }
-        
+
         // Search functionality
         if (stationSearch) {
-            stationSearch.addEventListener('input', function() {
+            stationSearch.addEventListener('input', function () {
                 const term = this.value.toLowerCase();
                 stationOptions.forEach(option => {
                     const text = option.querySelector('span').innerText.toLowerCase();
@@ -779,7 +835,7 @@
 
         // Update count and style on change
         if (stationList) {
-            stationList.addEventListener('change', function(e) {
+            stationList.addEventListener('change', function (e) {
                 if (e.target.type === 'checkbox') {
                     const option = e.target.closest('.station-option');
                     if (e.target.checked) {
@@ -798,12 +854,12 @@
                 selectedCount.innerText = `${checked} station${checked > 1 ? 's' : ''} sélectionnée${checked > 1 ? 's' : ''}`;
             }
         }
-        
-        window.selectAllStations = function() {
+
+        window.selectAllStations = function () {
             if (!stationList) return;
             const checkboxes = stationList.querySelectorAll('input[type="checkbox"]');
             const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-            
+
             checkboxes.forEach(cb => {
                 cb.checked = !allChecked;
                 const option = cb.closest('.station-option');

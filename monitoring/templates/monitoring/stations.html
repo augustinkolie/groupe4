@@ -303,7 +303,8 @@
 
     .modal-content {
         background-color: var(--card-bg);
-        padding: 0; /* Remove padding to contain scrollbar */
+        padding: 0;
+        /* Remove padding to contain scrollbar */
         border-radius: 1.25rem;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         position: relative;
@@ -313,7 +314,8 @@
         display: flex;
         flex-direction: column;
         animation: slideUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        overflow: hidden; /* Contain body */
+        overflow: hidden;
+        /* Contain body */
     }
 
     .modal-header {
@@ -349,13 +351,16 @@
     }
 
     .modal-body::-webkit-scrollbar-thumb {
-        background: var(--primary); /* Green color */
+        background: var(--primary);
+        /* Green color */
         border-radius: 10px;
-        border: 2px solid var(--card-bg); /* Padding around thumb */
+        border: 2px solid var(--card-bg);
+        /* Padding around thumb */
     }
 
     .modal-body::-webkit-scrollbar-thumb:hover {
-        background: #059669; /* Darker green */
+        background: #059669;
+        /* Darker green */
     }
 
     .close-modal {
@@ -374,42 +379,64 @@
     }
 
     @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
     }
 
     @keyframes slideUp {
-        from { transform: translateY(20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-    <!-- Page Header Premium -->
-    <div class="flex-between mb-4" style="padding: 2.5rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%); border-radius: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.1); position: relative; overflow: hidden;">
-        <div>
-            <div style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
-                <i class="fas fa-satellite-dish" style="color: var(--primary); font-size: 0.9rem;"></i>
-                <span style="color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Réseau de Surveillance</span>
-            </div>
-            <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -1px; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Stations de Surveillance</h1>
-            <p style="color: var(--gray); font-size: 1.05rem; max-width: 600px; line-height: 1.6;">Gérez et surveillez vos unités de mesure en temps réel sur l'ensemble du territoire.</p>
+<!-- Page Header Premium -->
+<div class="flex-between"
+    style="padding: 2.5rem; margin-bottom: 2.5rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%); border-radius: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.1); position: relative; overflow: hidden;">
+    <div>
+        <div
+            style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
+            <i class="fas fa-satellite-dish" style="color: var(--primary); font-size: 0.9rem;"></i>
+            <span
+                style="color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Réseau
+                de Surveillance</span>
         </div>
-        <button class="btn btn-primary" onclick="openAddStationModal()" style="padding: 0.75rem 1.5rem; border-radius: 0.8rem; height: fit-content; align-self: flex-end; margin-bottom: 0.5rem;">
-            <i class="fas fa-plus"></i>
-            Ajouter une Station
-        </button>
+        <h1
+            style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -1px; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            Stations de Surveillance</h1>
+        <p style="color: var(--gray); font-size: 1.05rem; max-width: 600px; line-height: 1.6;">Gérez et surveillez vos
+            unités de mesure en temps réel sur l'ensemble du territoire.</p>
     </div>
+    <button class="btn btn-primary" onclick="openAddStationModal()"
+        style="padding: 0.75rem 1.5rem; border-radius: 0.8rem; height: fit-content; align-self: flex-end; margin-bottom: 0.5rem;">
+        <i class="fas fa-plus"></i>
+        Ajouter une Station
+    </button>
+</div>
 
 <!-- Stats Overview -->
-<div class="grid-4 mb-4">
+<div class="grid-4" style="margin-bottom: 2.5rem;">
     <div class="premium-stat-card">
         <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--secondary);">
             <i class="fas fa-map-marker-alt"></i>
         </div>
         <div class="stat-content">
-            <div class="stat-value" id="total-stations" style="background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">{{ page_obj.paginator.count }}</div>
+            <div class="stat-value" id="total-stations"
+                style="background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                {{ page_obj.paginator.count }}</div>
             <div class="stat-label">Total Stations</div>
         </div>
     </div>
@@ -418,7 +445,9 @@
             <i class="fas fa-check-circle"></i>
         </div>
         <div class="stat-content">
-            <div class="stat-value" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">{{ page_obj.paginator.count }}</div>
+            <div class="stat-value"
+                style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                {{ page_obj.paginator.count }}</div>
             <div class="stat-label">Actives</div>
         </div>
     </div>
@@ -443,23 +472,28 @@
 </div>
 
 <!-- Filters -->
-<div class="card mb-4">
+<div class="card" style="margin-bottom: 1rem;">
     <div class="card-body" style="padding: 0.75rem 1rem;">
         <div class="flex gap-2">
             <div class="form-group" style="flex: 1; margin: 0;">
-                <input type="text" id="stationLocalSearch" class="premium-control" style="padding: 0.5rem 1rem; border-radius: 0.5rem;" placeholder="Rechercher une station dans la liste...">
+                <input type="text" id="stationLocalSearch" class="premium-control"
+                    style="padding: 0.5rem 1rem; border-radius: 0.5rem;"
+                    placeholder="Rechercher une station dans la liste...">
             </div>
-            <select class="premium-control form-select" style="width: 180px; padding: 0.5rem 1rem; border-radius: 0.5rem;">
+            <select class="premium-control form-select"
+                style="width: 180px; padding: 0.5rem 1rem; border-radius: 0.5rem;">
                 <option>Statut : Tous</option>
                 <option>Actif</option>
                 <option>Inactif</option>
             </select>
-            <select class="premium-control form-select" style="width: 180px; padding: 0.5rem 1rem; border-radius: 0.5rem;">
+            <select class="premium-control form-select"
+                style="width: 180px; padding: 0.5rem 1rem; border-radius: 0.5rem;">
                 <option>Ville : Toutes</option>
                 <option>Conakry</option>
                 <option>Kindia</option>
             </select>
-            <div class="flex" style="background: var(--card-bg); padding: 3px; border-radius: 0.5rem; border: 1px solid var(--border-color);">
+            <div class="flex"
+                style="background: var(--card-bg); padding: 3px; border-radius: 0.5rem; border: 1px solid var(--border-color);">
                 <button class="view-toggle-btn active" id="gridToggle" title="Vue Grille">
                     <i class="fas fa-th-large"></i>
                 </button>
@@ -477,11 +511,10 @@
     <div class="card" id="station-card-{{ station.id }}" style="padding: 0.75rem;">
         <div class="station-card">
             <div class="station-image-wrapper">
-                <img src="{% if station.image %}{{ station.image.url }}{% else %}{{ station.image_url|default:'/static/monitoring/images/conakry.png' }}{% endif %}" 
-                     alt="{{ station.name }}" 
-                     class="station-image"
-                     style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; border-radius: 0.5rem;"
-                     onerror="this.src='/static/monitoring/images/conakry.png'; this.onerror=null;">
+                <img src="{% if station.image %}{{ station.image.url }}{% else %}{{ station.image_url|default:'/static/monitoring/images/conakry.png' }}{% endif %}"
+                    alt="{{ station.name }}" class="station-image"
+                    style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; border-radius: 0.5rem;"
+                    onerror="this.src='/static/monitoring/images/conakry.png'; this.onerror=null;">
             </div>
 
             <div class="station-header">
@@ -491,11 +524,11 @@
                     {{ station.latitude|floatformat:1 }}, {{ station.longitude|floatformat:1 }}
                 </div>
             </div>
-            
+
             <p class="station-description">
                 {{ station.location_description|default:"Station de surveillance environnementale EcoWatch." }}
             </p>
-            
+
             <div class="station-meta">
                 <div class="meta-item" title="Nombre de capteurs">
                     <i class="fas fa-microchip" style="color: var(--secondary);"></i>
@@ -504,23 +537,26 @@
                 <div class="meta-item" title="Indice de Qualité de l'Air">
                     <i class="fas fa-wind" style="color: var(--primary);"></i>
                     {% if station.readings.first %}
-                        IQA: <strong style="color: var(--primary);">{{ station.readings.first.iqa }}</strong>
+                    IQA: <strong style="color: var(--primary);">{{ station.readings.first.iqa }}</strong>
                     {% else %}
-                        --
+                    --
                     {% endif %}
                 </div>
             </div>
-            
+
             <div class="station-actions">
-                <a href="{% url 'dashboard' %}?station={{ station.id }}" class="btn btn-primary btn-sm" style="flex: 1; justify-content: center; padding: 0.5rem 1rem;">
+                <a href="{% url 'dashboard' %}?station={{ station.id }}" class="btn btn-primary btn-sm"
+                    style="flex: 1; justify-content: center; padding: 0.5rem 1rem;">
                     Détails
                 </a>
-                <button hx-get="{% url 'get_station_edit_form' station.id %}" hx-target="#editStationModalBody" onclick="openEditStationModal()" class="btn btn-outline btn-sm" style="padding: 0.5rem; width: 38px; height: 38px; justify-content: center;">
+                <button hx-get="{% url 'get_station_edit_form' station.id %}" hx-target="#editStationModalBody"
+                    onclick="openEditStationModal()" class="btn btn-outline btn-sm"
+                    style="padding: 0.5rem; width: 38px; height: 38px; justify-content: center;">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button onclick="openDeleteModal('{{ station.id }}', '{{ station.name|escapejs }}')" 
-                        class="btn btn-outline btn-sm delete-btn" 
-                        style="padding: 0.5rem; width: 38px; height: 38px; justify-content: center; color: var(--danger); border-color: var(--danger-light);">
+                <button onclick="openDeleteModal('{{ station.id }}', '{{ station.name|escapejs }}')"
+                    class="btn btn-outline btn-sm delete-btn"
+                    style="padding: 0.5rem; width: 38px; height: 38px; justify-content: center; color: var(--danger); border-color: var(--danger-light);">
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </div>
@@ -545,30 +581,30 @@
 {% if page_obj.paginator.num_pages > 1 %}
 <div class="pagination-wrapper">
     {% if page_obj.has_previous %}
-        <a href="?page=1" class="page-btn" title="Première page">
-            <i class="fas fa-angle-double-left"></i>
-        </a>
-        <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">
-            <i class="fas fa-angle-left"></i>
-        </a>
+    <a href="?page=1" class="page-btn" title="Première page">
+        <i class="fas fa-angle-double-left"></i>
+    </a>
+    <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">
+        <i class="fas fa-angle-left"></i>
+    </a>
     {% endif %}
 
     {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-            <span class="page-btn active">{{ num }}</span>
-        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
+    {% if page_obj.number == num %}
+    <span class="page-btn active">{{ num }}</span>
+    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <a href="?page={{ num }}"
+        class="page-btn">{{ num }}</a>
         {% endif %}
-    {% endfor %}
+        {% endfor %}
 
-    {% if page_obj.has_next %}
+        {% if page_obj.has_next %}
         <a href="?page={{ page_obj.next_page_number }}" class="page-btn">
             <i class="fas fa-angle-right"></i>
         </a>
         <a href="?page={{ page_obj.paginator.num_pages }}" class="page-btn" title="Dernière page">
             <i class="fas fa-angle-double-right"></i>
         </a>
-    {% endif %}
+        {% endif %}
 </div>
 {% endif %}
 
@@ -576,54 +612,71 @@
 <div id="addStationModal" class="modal" onclick="if(event.target == this) closeAddStationModal()">
     <div class="modal-content">
         <div class="modal-header">
-            <div style="width: 45px; height: 45px; background: var(--primary-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--primary);">
+            <div
+                style="width: 45px; height: 45px; background: var(--primary-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--primary);">
                 <i class="fas fa-plus-circle" style="font-size: 1.5rem;"></i>
             </div>
             <h2 style="margin: 0; color: var(--text-color); font-size: 1.4rem;">Nouvelle Station</h2>
-            <span class="close-modal" onclick="closeAddStationModal()" style="position: static; font-size: 2rem; margin-left: auto;">&times;</span>
+            <span class="close-modal" onclick="closeAddStationModal()"
+                style="position: static; font-size: 2rem; margin-left: auto;">&times;</span>
         </div>
-        
-        <form hx-post="{% url 'add_station' %}" enctype="multipart/form-data" hx-swap="none" hx-on::after-request="if(event.detail.successful) { closeAddStationModal(); window.location.reload(); }" style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+
+        <form hx-post="{% url 'add_station' %}" enctype="multipart/form-data" hx-swap="none"
+            hx-on::after-request="if(event.detail.successful) { closeAddStationModal(); window.location.reload(); }"
+            style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
             {% csrf_token %}
             <div class="modal-body">
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
                     <div class="form-group">
-                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Nom de la station</label>
+                        <label
+                            style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Nom
+                            de la station</label>
                         {{ station_form.name }}
                     </div>
                     <div class="form-group">
-                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Type de station</label>
+                        <label
+                            style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Type
+                            de station</label>
                         {{ station_form.station_type }}
                     </div>
                     <div class="form-group">
-                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Latitude</label>
+                        <label
+                            style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Latitude</label>
                         {{ station_form.latitude }}
                     </div>
                     <div class="form-group">
-                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Longitude</label>
+                        <label
+                            style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Longitude</label>
                         {{ station_form.longitude }}
                     </div>
                     <div class="form-group">
-                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Nombre de capteurs</label>
+                        <label
+                            style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Nombre
+                            de capteurs</label>
                         {{ station_form.sensors_count }}
                     </div>
                 </div>
-                
+
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Description</label>
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Description</label>
                     {{ station_form.location_description }}
                 </div>
 
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Photo de la station</label>
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray);">Photo
+                        de la station</label>
                     {{ station_form.image }}
-                    <small style="color: var(--gray); font-size: 0.75rem;">Sélectionnez une image de haute qualité depuis votre ordinateur.</small>
+                    <small style="color: var(--gray); font-size: 0.75rem;">Sélectionnez une image de haute qualité
+                        depuis votre ordinateur.</small>
                 </div>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline" onclick="closeAddStationModal()">Annuler</button>
-                <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.5rem;">Enregistrer la station</button>
+                <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.5rem;">Enregistrer la
+                    station</button>
             </div>
         </form>
     </div>
@@ -644,21 +697,29 @@
 <div id="deleteModal" class="modal" onclick="if(event.target == this) closeDeleteModal()">
     <div class="modal-content" style="max-width: 450px;">
         <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
-            <div style="width: 45px; height: 45px; background: var(--danger-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--danger);">
+            <div
+                style="width: 45px; height: 45px; background: var(--danger-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--danger);">
                 <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem;"></i>
             </div>
             <h2 style="margin: 0; color: var(--text-color); font-size: 1.4rem;">Suppression</h2>
-            <span class="close-modal" onclick="closeDeleteModal()" style="position: static; font-size: 2rem; margin-left: auto;">&times;</span>
-        </div>
-        
-        <div class="modal-body" style="padding-top: 1rem; text-align: center;">
-            <p style="color: var(--text-color); font-size: 1.1rem; margin-bottom: 0.5rem;">Confirmer la suppression ?</p>
-            <p style="color: var(--gray); font-size: 0.95rem;">Vous êtes sur le point de supprimer la station <strong id="deleteStationName" style="color: var(--text-color);"></strong>. Cette action est irréversible.</p>
+            <span class="close-modal" onclick="closeDeleteModal()"
+                style="position: static; font-size: 2rem; margin-left: auto;">&times;</span>
         </div>
 
-        <form id="deleteForm" hx-post="" hx-on::after-request="if(event.detail.successful) { closeDeleteModal(); }" class="modal-footer" style="border-top: none; padding-top: 0.5rem; justify-content: center; gap: 1rem; padding-bottom: 2rem;">
+        <div class="modal-body" style="padding-top: 1rem; text-align: center;">
+            <p style="color: var(--text-color); font-size: 1.1rem; margin-bottom: 0.5rem;">Confirmer la suppression ?
+            </p>
+            <p style="color: var(--gray); font-size: 0.95rem;">Vous êtes sur le point de supprimer la station <strong
+                    id="deleteStationName" style="color: var(--text-color);"></strong>. Cette action est irréversible.
+            </p>
+        </div>
+
+        <form id="deleteForm" hx-post="" hx-on::after-request="if(event.detail.successful) { closeDeleteModal(); }"
+            class="modal-footer"
+            style="border-top: none; padding-top: 0.5rem; justify-content: center; gap: 1rem; padding-bottom: 2rem;">
             {% csrf_token %}
-            <button type="button" class="btn btn-outline" onclick="closeDeleteModal()" style="min-width: 120px;">Annuler</button>
+            <button type="button" class="btn btn-outline" onclick="closeDeleteModal()"
+                style="min-width: 120px;">Annuler</button>
             <button type="submit" class="btn" style="min-width: 140px; background: var(--danger); color: white;">
                 Supprimer
             </button>
@@ -667,7 +728,7 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const container = document.getElementById('stationsContainer');
         const gridBtn = document.getElementById('gridToggle');
         const listBtn = document.getElementById('listToggle');
@@ -735,7 +796,7 @@
         document.getElementById('deleteStationName').textContent = name;
         document.getElementById('deleteModal').style.display = 'flex';
         document.body.style.overflow = 'hidden';
-        
+
         // Update HTMX form in modal
         const deleteForm = document.getElementById('deleteForm');
         deleteForm.setAttribute('hx-post', `/stations/${id}/delete/`);

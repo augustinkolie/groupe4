@@ -7,7 +7,9 @@ from .forms import CustomUserCreationForm, ContactForm, NewsletterForm, StationF
 from datetime import timedelta, datetime
 from rest_framework import viewsets
 from django.utils import timezone
-from .models import Station, Reading, AlertRule, AlertLog, GeneratedReport
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from .models import Station, Reading, AlertRule, AlertLog, GeneratedReport, PasswordResetToken
 from .serializers import StationSerializer, ReadingSerializer
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, FileResponse, JsonResponse
@@ -35,14 +37,44 @@ def contact(request):
         if 'submit_contact' in request.POST:
             form = ContactForm(request.POST)
             if form.is_valid():
-                form.save()
+                contact_message = form.save()
+                
+                # Envoi d'un email de notification
+                try:
+                    subject = f"EcoWatch - Nouveau contact: {contact_message.subject}"
+                    body = f"Nom: {contact_message.name}\nEmail: {contact_message.email}\nSujet: {contact_message.subject}\n\nMessage:\n{contact_message.message}"
+                    send_mail(
+                        subject,
+                        body,
+                        settings.DEFAULT_FROM_EMAIL,
+                        [settings.EMAIL_HOST_USER],
+                        fail_silently=True,
+                    )
+                except Exception:
+                    pass
+
                 messages.success(request, "Votre message a été envoyé avec succès !")
                 return redirect('contact')
         
         elif 'submit_newsletter' in request.POST:
             newsletter_form = NewsletterForm(request.POST)
             if newsletter_form.is_valid():
-                newsletter_form.save()
+                subscriber = newsletter_form.save()
+                
+                # Envoi d'un email de notification
+                try:
+                    subject = "EcoWatch - Nouvelle inscription Newsletter"
+                    body = f"Nouvel abonné: {subscriber.email}"
+                    send_mail(
+                        subject,
+                        body,
+                        settings.DEFAULT_FROM_EMAIL,
+                        [settings.EMAIL_HOST_USER],
+                        fail_silently=True,
+                    )
+                except Exception:
+                    pass
+
                 messages.success(request, "Merci de vous être inscrit à notre newsletter !")
                 return redirect('contact')
             else:
@@ -419,7 +451,8 @@ def signup(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            # Specify the backend since multiple are configured in settings.py
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('dashboard')
     else:
         form = CustomUserCreationForm()

@@ -13,10 +13,11 @@ class GeminiClient:
         self.api_key = api_key or self.key_manager.get_active_key()
         
         if not self.api_key:
-            raise ValueError("GOOGLE_GENAI_API_KEY non configurée.")
-        
-        # Configuration globale du SDK
-        genai.configure(api_key=self.api_key)
+            import logging
+            logging.getLogger(__name__).warning("GOOGLE_GENAI_API_KEY non configurée. Les fonctionnalités IA seront désactivées.")
+        else:
+            # Configuration globale du SDK
+            genai.configure(api_key=self.api_key)
 
     def get_model(self, model_name):
         """Initialise et configure le modèle génératif."""

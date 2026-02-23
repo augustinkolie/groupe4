@@ -6,12 +6,8 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'monitoring/css/dashboard.css' %}" />
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-  crossorigin=""
-/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 <style>
   #map {
     height: 500px;
@@ -59,11 +55,25 @@
   }
 
   /* IQA Status Colors */
-  .iqa-good { background-color: #10b981 !important; }
-  .iqa-moderate { background-color: #f59e0b !important; }
-  .iqa-unhealthy { background-color: #f97316 !important; }
-  .iqa-hazardous { background-color: #ef4444 !important; }
-  .iqa-unknown { background-color: #94a3b8 !important; }
+  .iqa-good {
+    background-color: #10b981 !important;
+  }
+
+  .iqa-moderate {
+    background-color: #f59e0b !important;
+  }
+
+  .iqa-unhealthy {
+    background-color: #f97316 !important;
+  }
+
+  .iqa-hazardous {
+    background-color: #ef4444 !important;
+  }
+
+  .iqa-unknown {
+    background-color: #94a3b8 !important;
+  }
 
   /* Force Grid Layout for Stats */
   #current-stats.stats-grid {
@@ -71,23 +81,23 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
+
   @media (max-width: 768px) {
     #current-stats.stats-grid {
       grid-template-columns: 1fr;
     }
   }
+
   /* IQA Card full width */
   #current-stats .iqa-card {
-     grid-column: span 2;
+    grid-column: span 2;
   }
 </style>
 {% endblock %}
 
 {% block content %}
 <!-- Debug Panel (Masqué par défaut - Appuyez sur 'D' pour afficher) -->
-<div
-  id="debug-panel"
-  style="
+<div id="debug-panel" style="
     background: #1e293b;
     color: #38bdf8;
     padding: 1rem;
@@ -96,41 +106,49 @@
     font-family: monospace;
     font-size: 0.8rem;
     display: none;
-  "
->
+  ">
   <b>[DEBUG ECOWATCH]</b> <small>(Appuyez sur 'D' pour masquer)</small><br />
   - Etat Map: <span id="debug-map">Initialisation...</span><br />
   - API Stations: <span id="debug-api-stations">Attente...</span><br />
-  - Marqueurs visibles: <span id="debug-markers" style="color: #22c55e">0</span
-  ><br />
+  - Marqueurs visibles: <span id="debug-markers" style="color: #22c55e">0</span><br />
   - Erreur JS: <span id="debug-js-error" style="color: #f87171">Aucune</span>
 </div>
 
 <!-- Stats Overview (Managed by HTMX Polling) -->
 <!-- Page Header Premium -->
-<div class="flex-between mb-4" style="padding: 2.5rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%); border-radius: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.1); position: relative; overflow: hidden;">
-    <div>
-        <div style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
-            <i class="fas fa-microchip" style="color: var(--primary); font-size: 0.9rem;"></i>
-            <span style="color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Système Intelligent</span>
-        </div>
-        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -1px; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Tableau de Bord</h1>
-        <p style="color: var(--gray); font-size: 1.05rem; max-width: 600px; line-height: 1.6;">Bienvenue sur votre interface de pilotage. Suivez en temps réel la qualité de l'air et les performances de vos stations.</p>
+<div class="flex-between"
+  style="padding: 2.5rem; margin-bottom: 2.5rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%); border-radius: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.1); position: relative; overflow: hidden;">
+  <div>
+    <div
+      style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 2rem; margin-bottom: 1rem;">
+      <i class="fas fa-microchip" style="color: var(--primary); font-size: 0.9rem;"></i>
+      <span
+        style="color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Système
+        Intelligent</span>
     </div>
+    <h1
+      style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -1px; background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+      Tableau de Bord</h1>
+    <p style="color: var(--gray); font-size: 1.05rem; max-width: 600px; line-height: 1.6;">Bienvenue sur votre interface
+      de pilotage. Suivez en temps réel la qualité de l'air et les performances de vos stations.</p>
+  </div>
 </div>
 
-<div
-  id="stats-container"
-  hx-get="{% url 'stats_overview' %}"
-  hx-trigger="load, every 60s"
-  hx-swap="innerHTML"
->
+<div id="stats-container" hx-get="{% url 'stats_overview' %}" hx-trigger="load, every 60s" hx-swap="innerHTML">
   <div class="grid-4 mb-4">
     <!-- Loader / Initial State -->
-    <div class="stat-card"><div class="stat-label">Chargement...</div></div>
-    <div class="stat-card"><div class="stat-label">Chargement...</div></div>
-    <div class="stat-card"><div class="stat-label">Chargement...</div></div>
-    <div class="stat-card"><div class="stat-label">Chargement...</div></div>
+    <div class="stat-card">
+      <div class="stat-label">Chargement...</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Chargement...</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Chargement...</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Chargement...</div>
+    </div>
   </div>
 </div>
 
@@ -140,36 +158,30 @@
     <h3 class="card-title">Carte de la Qualité de l'Air</h3>
     <div style="display: flex; gap: 0.75rem; font-size: 0.85rem">
       <span style="display: flex; align-items: center; gap: 5px">
-        <span
-          style="
+        <span style="
             width: 12px;
             height: 12px;
             background: #10b981;
             border-radius: 50%;
-          "
-        ></span>
+          "></span>
         Bon
       </span>
       <span style="display: flex; align-items: center; gap: 5px">
-        <span
-          style="
+        <span style="
             width: 12px;
             height: 12px;
             background: #f59e0b;
             border-radius: 50%;
-          "
-        ></span>
+          "></span>
         Modéré
       </span>
       <span style="display: flex; align-items: center; gap: 5px">
-        <span
-          style="
+        <span style="
             width: 12px;
             height: 12px;
             background: #ef4444;
             border-radius: 50%;
-          "
-        ></span>
+          "></span>
         Mauvais
       </span>
     </div>
@@ -180,15 +192,11 @@
 </div>
 
 <!-- Station Details & Chart -->
-<div class="grid-2">
+<div class="grid-2" style="margin-top: 1.5rem;">
   <div class="card">
     <div class="card-header">
       <h3 class="card-title">Détails de la Station</h3>
-      <button
-        id="export-btn"
-        class="btn btn-primary btn-sm"
-        style="display: none"
-      >
+      <button id="export-btn" class="btn btn-primary btn-sm" style="display: none">
         <i class="fas fa-download"></i> Export CSV
       </button>
     </div>
@@ -205,10 +213,7 @@
 
 
 
-  <div
-    class="charts-column"
-    style="display: flex; flex-direction: column; gap: 1.5rem"
-  >
+  <div class="charts-column" style="display: flex; flex-direction: column; gap: 1.5rem">
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Évolution Temporelle</h3>
@@ -234,18 +239,11 @@
 </div>
 
 <!-- Background Data Fetch (HTMX) -->
-<div
-  hx-post="/api/v1/ingest/trigger-fetch/"
-  hx-trigger="every 10m"
-  hx-swap="none"
-></div>
+<div hx-post="/api/v1/ingest/trigger-fetch/" hx-trigger="every 10m" hx-swap="none"></div>
 {% endblock %}
 
 {% block extra_js %}
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  crossorigin=""
-></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
@@ -271,15 +269,15 @@
   L.control.layers({ Standard: standard, Satellite: satellite }).addTo(map);
 
   // Add Last Sync Control with HTMX
-  const lastSyncControl = L.control({position: 'bottomleft'});
+  const lastSyncControl = L.control({ position: 'bottomleft' });
   lastSyncControl.onAdd = function (map) {
-      const div = L.DomUtil.create('div', 'info legend');
-      // Load initial content via HTMX
-      div.setAttribute('hx-get', '{% url "map_sync_badge" %}');
-      div.setAttribute('hx-trigger', 'load');
-      div.setAttribute('hx-swap', 'outerHTML');
-      setTimeout(() => htmx.process(div), 100); // Trigger HTMX manually
-      return div;
+    const div = L.DomUtil.create('div', 'info legend');
+    // Load initial content via HTMX
+    div.setAttribute('hx-get', '{% url "map_sync_badge" %}');
+    div.setAttribute('hx-trigger', 'load');
+    div.setAttribute('hx-swap', 'outerHTML');
+    setTimeout(() => htmx.process(div), 100); // Trigger HTMX manually
+    return div;
   };
   lastSyncControl.addTo(map);
 
@@ -328,10 +326,10 @@
           const latest = station.latest_reading;
           const iqa = latest ? latest.iqa : 0;
           const lastTime = latest
-            ? new Date(latest.timestamp).toLocaleString('fr-FR', { 
-                day: '2-digit', month: '2-digit', year: 'numeric', 
-                hour: '2-digit', minute: '2-digit' 
-              })
+            ? new Date(latest.timestamp).toLocaleString('fr-FR', {
+              day: '2-digit', month: '2-digit', year: 'numeric',
+              hour: '2-digit', minute: '2-digit'
+            })
             : "N/A";
 
           const marker = L.marker([station.latitude, station.longitude], {
@@ -353,13 +351,13 @@
                     `);
 
           marker.on("click", async () => {
-             // Use HTMX to load station details
-             const stationDetailsContainer = document.getElementById("station-details-container");
-             stationDetailsContainer.innerHTML = '<div style="text-align:center; padding: 2rem;"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>';
-             
-             htmx.ajax('GET', `/partials/station-details/${station.id}/`, {target:'#station-details-container', swap:'innerHTML'});
-             
-             // Also load charts logic still needs JS for now, so we keep fetching raw data for charts
+            // Use HTMX to load station details
+            const stationDetailsContainer = document.getElementById("station-details-container");
+            stationDetailsContainer.innerHTML = '<div style="text-align:center; padding: 2rem;"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>';
+
+            htmx.ajax('GET', `/partials/station-details/${station.id}/`, { target: '#station-details-container', swap: 'innerHTML' });
+
+            // Also load charts logic still needs JS for now, so we keep fetching raw data for charts
             try {
               const rResp = await fetch(
                 `/api/v1/readings/?station=${station.id}`,
@@ -378,8 +376,8 @@
         }
       }
       debugApi.innerText = `OK (${stations.length} stations, ${markersCreated} marqueurs créés)`;
-      
-      
+
+
       // Removed manual sync update here as HTMX handles it self-contained
 
 
@@ -418,7 +416,7 @@
     if (readings.length > 0) {
       const latest = readings[0];
       const color = getIQAColor(latest.iqa);
-      
+
       // Update Charts
       updateChart(readings.slice(0, 24).reverse(), color);
       updatePieChart(latest);
@@ -546,8 +544,8 @@
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-        const stationName = document.querySelector('#station-info h4').innerText.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        a.download = `readings_${stationName}_${new Date().toISOString().split('T')[0]}.csv`;
+    const stationName = document.querySelector('#station-info h4').innerText.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    a.download = `readings_${stationName}_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
   });
 
